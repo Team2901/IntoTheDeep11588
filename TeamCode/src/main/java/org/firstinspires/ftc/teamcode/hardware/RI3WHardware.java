@@ -12,6 +12,12 @@ import org.openftc.easyopencv.OpenCvCamera;
 
 public class RI3WHardware {
 
+    public static final double TICKS_PER_MOTOR_REV = 537.7;
+    public static final double DRIVE_GEAR_RATIO = 1.0/1.0;
+    public static final double TICKS_PER_DRIVE_REV = TICKS_PER_MOTOR_REV * DRIVE_GEAR_RATIO;
+    public static final double WHEEL_DIAMETER = 0;
+    public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
+    public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
