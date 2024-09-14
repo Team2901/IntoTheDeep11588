@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -22,10 +25,17 @@ public class RI3WHardware {
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backRight;
-
+    public double speed = .15;
     public OpenCvCamera camera;
     public VisionPortal visionPortal;
     public AprilTagProcessor aprilTag;
+    public double turnTolerance = 0.5;
+    public IMU imu;
+
+    public double getAngle(){
+        YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
+        return AngleUnit.normalizeDegrees(angles.getYaw(AngleUnit.DEGREES));
+    }
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
