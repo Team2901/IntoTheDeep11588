@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 @Autonomous(name = "testErrorSpeed", group = "test")
 public class testErrorSpeed extends RI3WAbstractAutonomous {
-    public RI3WHardware robot = new RI3WHardware();
     double increase_speed = (0.0);
     double set_distance_x = (0.0);
     double set_distance_y = (0.0);
@@ -23,6 +22,7 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
         robot.init(this.hardwareMap, telemetry);
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
         while(!isStarted()){
+            gamepad.update();
             if(gamepad.dpad_up.isInitialPress()){
                 if(increase_speed >= 1){
                     increase_speed = 0.0;
@@ -58,10 +58,13 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
                     set_distance_x = set_distance_x + 5;
                 }
             }
-
+        telemetry.addData( "increase_speed", increase_speed);
+            telemetry.addData("set_distance_y", set_distance_y);
+            telemetry.addData("set_distance_x", set_distance_x);
+            telemetry.update();
         }
         waitForStart();
         robot.speed = increase_speed;
-
+        move(set_distance_y, set_distance_x);
     }
 }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -30,6 +31,8 @@ public class RI3WHardware {
     public VisionPortal visionPortal;
     public AprilTagProcessor aprilTag;
     public double turnTolerance = 0.5;
+    RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection;
+    RevHubOrientationOnRobot.LogoFacingDirection logoDirection;
     public IMU imu;
 
     public double getAngle(){
@@ -65,5 +68,26 @@ public class RI3WHardware {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+
+        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+
+        // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
+        // requesting a refernce to the IMU hardware. What chip you have can be determined by
+        // using "program and manage" tab on dr iver station, then "manage" on the hamburger menu.
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        // Use the new RevHubOrientationOnRobot classes to describe how the control hub is mounted on the robot.
+        // For the coach bot its mounted Bgackward / usb cable on the right (as seen from back of robot)
+        // Doc: https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Universal-IMU-Interface
+
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbFacingDirection);
+        IMU.Parameters parameters = new IMU.Parameters(orientationOnRobot);
+
+        boolean success = imu.initialize(parameters);
+        if(success){
+            telemetry.addLine("IMU initialized");
+            telemetry.update();
+        }
     }
 }
