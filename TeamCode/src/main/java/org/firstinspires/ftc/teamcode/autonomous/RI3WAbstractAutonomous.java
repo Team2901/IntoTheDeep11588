@@ -12,7 +12,7 @@ public class RI3WAbstractAutonomous extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
 
-    public void moveXY(double yInches, double xInches) {
+    public void move(double yInches, double xInches) {
         int ticksY = (int) (yInches * robot.TICKS_PER_INCH);
         int ticksX = (int) (xInches * robot.TICKS_PER_INCH);
 
