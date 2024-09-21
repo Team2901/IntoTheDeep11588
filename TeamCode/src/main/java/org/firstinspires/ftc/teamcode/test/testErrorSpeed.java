@@ -14,6 +14,7 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
     double set_distance_x = (0.0);
     double set_distance_y = (0.0);
     double x_max = (132);
+    // only move up to 11 feet/132 inches
     double y_max = (132);
     double x_negative_max = (-132);
     double y_negative_max = (-132);

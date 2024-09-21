@@ -40,5 +40,11 @@ public class RI3WTeleop extends OpMode {
         robot.frontRight.setPower(y - x - rx);
         robot.backLeft.setPower(y - x + rx);
         robot.backRight.setPower(y + x - rx);
+
+        telemetry.addData("frontLeft", robot.frontLeft.getCurrentPosition());
+        telemetry.addData("frontRight", robot.frontRight.getCurrentPosition());
+        telemetry.addData("backLeft", robot.backLeft.getCurrentPosition());
+        telemetry.addData("backRight", robot.backRight.getCurrentPosition());
+        telemetry.update();
     }
 }

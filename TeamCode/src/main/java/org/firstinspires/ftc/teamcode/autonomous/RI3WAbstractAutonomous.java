@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
-public class RI3WAbstractAutonomous extends LinearOpMode {
+public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
@@ -90,8 +90,4 @@ public class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backLeft.setPower(0);
     }
 
-    @Override
-    public void runOpMode() throws InterruptedException {
-
-    }
 }
