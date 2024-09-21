@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -23,6 +24,10 @@ public class RI3WHardware {
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
     public static int clawOffset = 4; // offset when claw is up, in inches
+    public DcMotorEx linearSlides;
+    public Servo claw;
+    public DcMotorEx arm; // this is an arm
+    public Servo contIntake;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
@@ -69,6 +74,16 @@ public class RI3WHardware {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
+
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
+        claw = hardwareMap.get(Servo.class, "claw");
+        contIntake = hardwareMap.get(Servo.class, "contIntake");
+
+        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
