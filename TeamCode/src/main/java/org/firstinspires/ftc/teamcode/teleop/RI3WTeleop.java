@@ -32,9 +32,8 @@ public class RI3WTeleop extends OpMode {
             turningPower = .75 * gamepad.right_stick.x.getValue();
         }
 
-        double y = 1 * gamepad.left_stick.y.getValue();
-        double x = 1 * gamepad.left_stick.x.getValue();
-        double rx = turningPower;
+        double y = 0.5 * gamepad.left_stick.y.getValue();
+        double x = 0.5 * gamepad.left_stick.x.getValue();
 
         if (gamepad.dpad_up.isPressed()){
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
@@ -42,10 +41,16 @@ public class RI3WTeleop extends OpMode {
             robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
         } else { robot.linearSlides.setPower(0);}
 
-        robot.frontLeft.setPower(y + x + rx);
-        robot.frontRight.setPower(y - x - rx);
-        robot.backLeft.setPower(y - x + rx);
-        robot.backRight.setPower(y + x - rx);
+        if (gamepad.left_bumper.isPressed()) {
+            robot.openClaw();
+        } else {
+            robot.closeClaw();
+        }
+
+        robot.frontLeft.setPower(y + x + turningPower);
+        robot.frontRight.setPower(y - x - turningPower);
+        robot.backLeft.setPower(y - x + turningPower);
+        robot.backRight.setPower(y + x - turningPower);
 
         telemetry.addData("frontLeft", robot.frontLeft.getCurrentPosition());
         telemetry.addData("frontRight", robot.frontRight.getCurrentPosition());

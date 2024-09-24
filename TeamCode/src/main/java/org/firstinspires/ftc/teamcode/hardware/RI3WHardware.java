@@ -26,6 +26,16 @@ public class RI3WHardware {
     // Constant speed the linear slides will move at.
     public static final double linearSlidesPower = .25;
     public static int clawOffset = 4; // offset when claw is up, in inches
+    public static int CLAW_OPEN_POSITION = 0;
+    public static int CLAW_CLOSED_POSITION = 0;
+
+    public void closeClaw() {
+        claw.setPosition(CLAW_CLOSED_POSITION);
+    }
+    public void openClaw() {
+        claw.setPosition(CLAW_OPEN_POSITION);
+    }
+
     public DcMotorEx linearSlides;
     public Servo claw;
     public DcMotorEx arm; // this is an arm
@@ -91,7 +101,7 @@ public class RI3WHardware {
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
 
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
-        // requesting a refernce to the IMU hardware. What chip you have can be determined by
+        // requesting a reference to the IMU hardware. What chip you have can be determined by
         // using "program and manage" tab on dr iver station, then "manage" on the hamburger menu.
         imu = hardwareMap.get(IMU.class, "imu");
 
