@@ -23,6 +23,8 @@ public class RI3WHardware {
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
+    // Constant speed the linear slides will move at.
+    public static final double linearSlidesPower = .25;
     public static int clawOffset = 4; // offset when claw is up, in inches
     public DcMotorEx linearSlides;
     public Servo claw;
