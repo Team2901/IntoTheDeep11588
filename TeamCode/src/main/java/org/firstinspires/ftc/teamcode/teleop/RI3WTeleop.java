@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
@@ -37,9 +38,15 @@ public class RI3WTeleop extends OpMode {
 
         if (gamepad.dpad_up.isInitialPress()){
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
+            robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } else if (gamepad.dpad_down.isInitialPress()) {
             robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
-        } else { robot.linearSlides.setPower(0);}
+            robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        } else if (gamepad.dpad_down.isInitialRelease() || gamepad.dpad_up.isInitialRelease()) {
+            robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
+            robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
+            robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
 
         if (gamepad.left_bumper.isInitialPress()) {
             robot.openClaw();
@@ -52,6 +59,13 @@ public class RI3WTeleop extends OpMode {
         } else if (gamepad.right_bumper.isInitialRelease()){
             robot.stopContIntake();
         }
+
+        if (gamepad.a.isPressed()) {
+            robot.arm.setPower(-.5);
+        } else if (gamepad.y.isPressed()) {
+            robot.arm.setPower(.5);
+        } else { robot.arm.setPower(0);}
+        // set target position instead of 0 for set power
 
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
