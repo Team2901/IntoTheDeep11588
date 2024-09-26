@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -24,10 +25,11 @@ public class RI3WHardware {
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
     // Constant speed the linear slides will move at.
-    public static final double linearSlidesPower = .25;
+    public static double linearSlidesPower = .25;
     public static int clawOffset = 4; // offset when claw is up, in inches
     public static int CLAW_OPEN_POSITION = 0;
     public static int CLAW_CLOSED_POSITION = 0;
+    public static double CONT_INTAKE_POWER = .5;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
@@ -35,11 +37,17 @@ public class RI3WHardware {
     public void openClaw() {
         claw.setPosition(CLAW_OPEN_POSITION);
     }
+    public void runContIntake() {
+        contIntake.setPower(CONT_INTAKE_POWER);
+    }
+    public void stopContIntake() {
+        contIntake.setPower(0);
+    }
 
     public DcMotorEx linearSlides;
     public Servo claw;
     public DcMotorEx arm; // this is an arm
-    public Servo contIntake;
+    public CRServo contIntake;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
@@ -90,7 +98,7 @@ public class RI3WHardware {
         arm = hardwareMap.get(DcMotorEx.class, "arm");
         linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
         claw = hardwareMap.get(Servo.class, "claw");
-        contIntake = hardwareMap.get(Servo.class, "contIntake");
+        contIntake = hardwareMap.get(CRServo.class, "contIntake");
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
