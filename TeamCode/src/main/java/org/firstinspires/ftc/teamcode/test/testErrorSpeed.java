@@ -31,18 +31,39 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
                     increase_speed = increase_speed+0.1;
                 }
             }
+            if(gamepad.dpad_down.isInitialPress()){
+                if(increase_speed <= -1){
+                    increase_speed = 0.0;
+                }else{
+                    increase_speed = increase_speed-0.1;
+                }
+            }
+            if(gamepad.dpad_right.isInitialPress()){
+                if(increase_speed >= 1){
+                    increase_speed = 0.0;
+                }else{
+                    increase_speed = increase_speed+0.01;
+                }
+            }
+            if(gamepad.dpad_left.isInitialPress()){
+                if(increase_speed <= -1){
+                    increase_speed = 0.0;
+                }else{
+                    increase_speed = increase_speed-0.01;
+                }
+            }
             if (gamepad.y.isInitialPress()){
                 if (set_distance_y <= y_negative_max){
                     set_distance_y = 0;
                 }else{
-                    set_distance_y = set_distance_y-5;
+                    set_distance_y = set_distance_y+5;
                 }
             }
             if (gamepad.a.isInitialPress()){
                 if(set_distance_y >= y_max){
                     set_distance_y = 0;
                 }else {
-                    set_distance_y = set_distance_y + 5;
+                    set_distance_y = set_distance_y-5;
                 }
             }
             if (gamepad.x.isInitialPress()){
