@@ -122,7 +122,7 @@ public class RI3WHardware {
         linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.FORWARD;
+        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
         // requesting a reference to the IMU hardware. What chip you have can be determined by

@@ -80,7 +80,7 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
                     set_distance_x = set_distance_x + 5;
                 }
             }
-        telemetry.addData( "increase_speed", increase_speed);
+            telemetry.addData( "increase_speed", increase_speed);
             telemetry.addData("set_distance_y", set_distance_y);
             telemetry.addData("set_distance_x", set_distance_x);
             telemetry.update();
