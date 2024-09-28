@@ -20,7 +20,8 @@ public class PathFourLeft extends RI3WAbstractAutonomous {
         //Robot strafes left 17 in.
         move(0,-17);
         waitForContinue();
-        //Robot moves backward 42 in. (stopped here)
+        //Robot moves backward 42 in.
+        // TODO (stopped here)
         move(-44, 0);
         waitForContinue();
         //Robot strafes left 3 in.
