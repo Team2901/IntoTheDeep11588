@@ -36,7 +36,7 @@ public class RI3WTeleop extends OpMode {
         double y = 0.5 * gamepad.left_stick.y.getValue();
         double x = 0.5 * gamepad.left_stick.x.getValue();
 
-        if (gamepad.dpad_up.isInitialPress()){
+        if (gamepad.dpad_up.isInitialPress()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } else if (gamepad.dpad_down.isInitialPress()) {
@@ -50,13 +50,13 @@ public class RI3WTeleop extends OpMode {
 
         if (gamepad.left_bumper.isInitialPress()) {
             robot.openClaw();
-        } else if (gamepad.left_bumper.isInitialRelease()){
+        } else if (gamepad.left_bumper.isInitialRelease()) {
             robot.closeClaw();
         }
 
         if (gamepad.right_bumper.isInitialPress()) {
             robot.runContIntake();
-        } else if (gamepad.right_bumper.isInitialRelease()){
+        } else if (gamepad.right_bumper.isInitialRelease()) {
             robot.stopContIntake();
         }
 
@@ -83,4 +83,5 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("backRight", robot.backRight.getCurrentPosition());
         telemetry.update();
     }
+
 }

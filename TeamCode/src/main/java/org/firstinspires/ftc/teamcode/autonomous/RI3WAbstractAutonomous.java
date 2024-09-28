@@ -93,5 +93,11 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         double targetAngle = (robot.getAngle()+realtiveAngle);
         turnToAngle(targetAngle);
     }
+    public void waitForContinue() {
+        while (!gamepad1.x) {
+
+        }
+
+    }
 
 }
