@@ -62,10 +62,15 @@ public class RI3WTeleop extends OpMode {
 
         if (gamepad.a.isPressed()) {
             robot.arm.setPower(-.5);
+            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } else if (gamepad.y.isPressed()) {
             robot.arm.setPower(.5);
-        } else { robot.arm.setPower(0);}
-        // set target position instead of 0 for set power
+            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        } else if (gamepad.a.isInitialRelease() || gamepad.y.isInitialRelease()) {
+            robot.arm.setTargetPosition(robot.arm.getCurrentPosition());
+            robot.arm.setPower(.5);
+            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
 
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
