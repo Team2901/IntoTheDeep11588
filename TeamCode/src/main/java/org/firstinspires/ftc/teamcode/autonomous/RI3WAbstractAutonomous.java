@@ -14,7 +14,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     public void move(double yInches, double xInches) {
         int ticksY = (int) (yInches * robot.TICKS_PER_INCH);
-        int ticksX = (int) (xInches * robot.TICKS_PER_INCH);
+        int ticksX = (int) (xInches * (robot.TICKS_PER_INCH/0.9));
 
         robot.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
