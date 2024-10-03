@@ -14,21 +14,21 @@ public class PathFourRight extends RI3WAbstractAutonomous {
 
         //move 23 in. forward
         move(23, 0);
-
+        //waitForContinue();
         //move 28 in. strafe left (negative)
         move(0, -28);
-
+        //waitForContinue();
         //move 28 in. forward
         move(28, 0);
-
+        //waitForContinue();
         //180 turn negative?
 
         //strafe right 14 in.
         move(0, 14);
-
+        //waitForContinue();
         //move forward 42 in.
         move(42, 0);
-
+        //waitForContinue();
         // strafe 112 in. left
         move(0, -112);
     }

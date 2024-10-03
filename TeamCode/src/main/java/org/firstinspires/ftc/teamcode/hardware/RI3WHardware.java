@@ -53,7 +53,7 @@ public class RI3WHardware {
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backRight;
-    public double speed = .5;
+    public double speed = .55;
     public OpenCvCamera camera;
     public VisionPortal visionPortal;
     public AprilTagProcessor aprilTag;
