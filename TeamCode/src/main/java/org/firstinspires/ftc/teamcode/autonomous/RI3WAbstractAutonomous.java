@@ -5,12 +5,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
 public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
+    public ImprovedGamepad gamepad;
 
     public void move(double yInches, double xInches) {
         int ticksY = (int) (yInches * robot.TICKS_PER_INCH);
