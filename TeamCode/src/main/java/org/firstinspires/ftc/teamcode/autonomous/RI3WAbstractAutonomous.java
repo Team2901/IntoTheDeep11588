@@ -53,6 +53,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     private void telemetryLog() {
         telemetry.addData("angle", robot.getAngle());
+        telemetry.addData("PIDFCoefficients", robot.frontLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
+        telemetry.addData("Target Position", robot.frontLeft.getTargetPosition());
+        telemetry.addData("Current Position", robot.frontLeft.getCurrentPosition());
         telemetry.update();
     }
 
@@ -99,5 +102,6 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
 
     }
+
 
 }

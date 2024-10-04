@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
@@ -88,5 +89,8 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
         waitForStart();
         robot.speed = increase_speed;
         move(set_distance_y, set_distance_x);
+        while (!isStopRequested()){
+            idle();
+        }
     }
 }
