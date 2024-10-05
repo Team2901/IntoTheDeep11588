@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 
-@Autonomous (name = "PathFourLeft4")
-public class PathFourLeft4 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFourLeft5")
+public class PathFourLeft5 extends RI3WAbstractAutonomous {
 
     enum ParkPosition {
         CORNER,
@@ -43,22 +43,18 @@ public class PathFourLeft4 extends RI3WAbstractAutonomous {
 
             if (gamepad.b.isPressed()){
                 whereToPark = ParkPosition.CORNER;
-                telemetry.addLine("b button pushed.");
             }
 
             if (gamepad.x.isPressed()){
                 whereToPark = ParkPosition.EDGE;
-                telemetry.addLine("x button pushed.");
             }
 
             if (gamepad.left_bumper.isInitialPress()){
                 whereToStart = StartingPosition.LEFT;
-                telemetry.addLine("left bumper pushed.");
             }
 
             if (gamepad.right_bumper.isInitialPress()){
                 whereToStart = StartingPosition.RIGHT;
-                telemetry.addLine("right bumper pushed.");
             }
             telemetry.update();
         }
@@ -85,8 +81,8 @@ public class PathFourLeft4 extends RI3WAbstractAutonomous {
         move(46,0);
         //waitForContinue();
         // 13-14 in
-        //Robot strafes left 14 in.
-        move(0,-14);
+        //Robot strafes left 12 in.
+        move(0,-12);
         move(-26, 0);
         //waitForContinue();
         // robot moves to the left 6 inches - to move the block a little
