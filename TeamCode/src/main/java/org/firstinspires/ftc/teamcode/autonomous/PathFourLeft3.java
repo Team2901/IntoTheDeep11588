@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 
-@Autonomous (name = "PathFourLeft2")
-public class PathFourLeft2 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFourLeft3")
+public class PathFourLeft3 extends RI3WAbstractAutonomous {
 
     enum ParkPosition {
         CORNER,
@@ -67,10 +67,14 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
 
         robot.init(hardwareMap, telemetry);
         waitForStart();
-        // robot strafes left 23 in
-        // 20 in
-        //waitForContinue();
-        move(0,-20);
+
+        if (whereToStart == StartingPosition.LEFT){
+            move(0,-20);
+        } else if (whereToStart == StartingPosition.RIGHT){
+            move(23, 0);
+            move(0, -28);
+        }
+        waitForContinue();
         move(46,0);
         //waitForContinue();
         // 13-14 in
