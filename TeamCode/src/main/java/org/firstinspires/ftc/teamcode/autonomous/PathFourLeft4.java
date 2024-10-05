@@ -43,19 +43,24 @@ public class PathFourLeft4 extends RI3WAbstractAutonomous {
 
             if (gamepad.b.isPressed()){
                 whereToPark = ParkPosition.CORNER;
+                telemetry.addLine("b button pushed.");
             }
 
             if (gamepad.x.isPressed()){
                 whereToPark = ParkPosition.EDGE;
+                telemetry.addLine("x button pushed.");
             }
 
             if (gamepad.left_bumper.isInitialPress()){
                 whereToStart = StartingPosition.LEFT;
+                telemetry.addLine("left bumper pushed.");
             }
 
             if (gamepad.right_bumper.isInitialPress()){
                 whereToStart = StartingPosition.RIGHT;
+                telemetry.addLine("right bumper pushed.");
             }
+            telemetry.update();
         }
     }
     @Override
