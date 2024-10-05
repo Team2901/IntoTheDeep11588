@@ -104,6 +104,94 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
 
     }
+    //TODO Claw close and open, lift move to positions, other things????
+    public void parsePath(String path) throws Exception {
+        String[] pathSteps = path.split("\n");
+        for (String step : pathSteps) {
+            String[] components = step.split(" ");
+            switch (components[0]) {
+                case "Strafe": {
+                    int sign;
+                    switch (components[1]) {
+                        case "right":
+                            sign = 1;
+                            break;
+                        case "left":
+                            sign = -1;
+                            break;
+                        default:
+                            throw new Exception("Invalid path: unexpected direction " + components[1]);
+                    }
+                    double distanceValue = Double.parseDouble(components[2]);
+                    switch (components[3]){
+                        case "inches":
+                            break;
+                        case "centimeters":
+                            distanceValue = distanceValue/2.54;
+                            break;
+                        default:
+                            throw new Exception("Invalid path: unexpected unit " + components[3]);
+                    }
+                    move(0, distanceValue*sign);
+                } break;
+                case "Move": {
+                    int sign;
+                    switch (components[1]) {
+                        case "forward":
+                            sign = 1;
+                            break;
+                        case "back":
+                            sign = -1;
+                            break;
+                        default:
+                            throw new Exception("Invalid path: unexpected direction " + components[1]);
+                    }
+                    double distanceValue = Double.parseDouble(components[2]);
+                    switch (components[3]){
+                        case "inches":
+                            break;
+                        case "centimeters":
+                            distanceValue = distanceValue/2.54;
+                            break;
+                        default:
+                            throw new Exception("Invalid path: unexpected unit " + components[3]);
+                    }
+                    move(distanceValue*sign, 0);
+                } break;
+                case "Turn": {
+                    int sign;
+                    switch (components[1]){
+                        case "clockwise":
+                            sign = 1;
+                            break;
+                        case "counterclockwise":
+                            sign = -1;
+                            break;
+                        default:
+                            throw new Exception("Invalid turn: unexpected direction " + components[1]);
+                    }
+                    double turnValue= Double.parseDouble(components[2]);
+                    switch (components[3]){
+                        case "degrees":
+                            break;
+                        case "radians":
+                            turnValue = turnValue*(180/Math.PI);
+                            break;
+                        default:
+                            throw new Exception("Invalid turn: unexpected unit " + components[3]);
+                    }
+                    turnRelative(turnValue*sign);
+                } break;
+                /*
+                case "Lift":{
+                    switch(components[1]){
+                        case "":
+                            break;
 
-
+                    }
+                }
+                 */
+            }
+        }
+    }
 }
