@@ -73,11 +73,11 @@ public class PathFourLeft5 extends RI3WAbstractAutonomous {
 
         if (whereToStart == StartingPosition.LEFT){
             move(0,-20);
-        } else if (whereToStart == StartingPosition.RIGHT){
+        } else if (whereToStart == StartingPosition.RIGHT){ // TODO this
             move(23, 0);
-            move(0, -28);
+            move(0, -51);
         }
-        waitForContinue();
+        //waitForContinue();
         move(46,0);
         //waitForContinue();
         // 13-14 in
@@ -93,15 +93,16 @@ public class PathFourLeft5 extends RI3WAbstractAutonomous {
         //Robot strafes left 3 in.
         move(0,-3);
         move(20,0);
+        turnToAngle(0);
 
         waitForContinue();
 
         if (whereToPark == ParkPosition.CORNER){
-            move(0,102);
-            move(-25,0);
+            move(0,119);
+            move(-20,0);
         } else if (whereToPark == ParkPosition.EDGE){
             move(0,92);
-            move(-25,0);
+            move(-20,0);
         }
     }
 
