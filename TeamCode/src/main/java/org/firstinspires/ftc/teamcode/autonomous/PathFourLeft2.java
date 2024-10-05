@@ -87,15 +87,15 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
         move(0,-3);
         move(20,0);
 
+        waitForContinue();
 
-
-        //waitForContinue();
-        //Robot strafes right 102 in.
-        //92
-        move(0,92);
-        move(-25,0);
-
-
+        if (whereToPark == ParkPosition.CORNER){
+            move(0,102);
+            move(-25,0);
+        } else if (whereToPark == ParkPosition.EDGE){
+            move(0,92);
+            move(-25,0);
+        }
     }
 
 }
