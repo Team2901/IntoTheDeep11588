@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 
-@Autonomous (name = "PathFourLeft3")
-public class PathFourLeft3 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFourLeft4")
+public class PathFourLeft4 extends RI3WAbstractAutonomous {
 
     enum ParkPosition {
         CORNER,
@@ -23,7 +23,8 @@ public class PathFourLeft3 extends RI3WAbstractAutonomous {
     ParkPosition whereToPark = ParkPosition.CORNER;
     StartingPosition whereToStart = StartingPosition.LEFT;
     public void help(){
-        telemetry.addLine("Configure Mode");
+        telemetry.addLine("Set Up Mode");
+        telemetry.addLine();
         telemetry.addData("startLocation", whereToStart);
         telemetry.addLine("LB: Staring on left");
         telemetry.addLine("RB: Staring on right");
@@ -33,7 +34,7 @@ public class PathFourLeft3 extends RI3WAbstractAutonomous {
         telemetry.addLine("B: Park corner");
         telemetry.update();
     }
-    public void configuration() {
+    public void setUp() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
 
         while (!isStarted()){
@@ -41,19 +42,19 @@ public class PathFourLeft3 extends RI3WAbstractAutonomous {
             gamepad.update();
 
             if (gamepad.b.isPressed()){
-                ParkPosition whereToPark = ParkPosition.CORNER;
+                whereToPark = ParkPosition.CORNER;
             }
 
             if (gamepad.x.isPressed()){
-                ParkPosition whereToPark = ParkPosition.EDGE;
+                whereToPark = ParkPosition.EDGE;
             }
 
             if (gamepad.left_bumper.isInitialPress()){
-                StartingPosition whereToStart = StartingPosition.LEFT;
+                whereToStart = StartingPosition.LEFT;
             }
 
             if (gamepad.right_bumper.isInitialPress()){
-                StartingPosition whereToStart = StartingPosition.RIGHT;
+                whereToStart = StartingPosition.RIGHT;
             }
         }
     }
@@ -66,6 +67,7 @@ public class PathFourLeft3 extends RI3WAbstractAutonomous {
 
 
         robot.init(hardwareMap, telemetry);
+        setUp();
         waitForStart();
 
         if (whereToStart == StartingPosition.LEFT){
