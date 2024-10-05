@@ -7,23 +7,34 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 
-@Autonomous (name = "PathFourLeft2")
-public class PathFourLeft2 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFourLeft5")
+public class PathFourLeft5 extends RI3WAbstractAutonomous {
 
     enum ParkPosition {
         CORNER,
         EDGE
     }
 
+    enum StartingPosition {
+        LEFT,
+        RIGHT
+    }
+
     ParkPosition whereToPark = ParkPosition.CORNER;
+    StartingPosition whereToStart = StartingPosition.LEFT;
     public void help(){
-        telemetry.addLine("Configure Mode");
-        telemetry.addData("currentValue", whereToPark);
+        telemetry.addLine("Set Up Mode");
+        telemetry.addLine();
+        telemetry.addData("startLocation", whereToStart);
+        telemetry.addLine("LB: Staring on left");
+        telemetry.addLine("RB: Staring on right");
+        telemetry.addLine();
+        telemetry.addData("parkValue", whereToPark);
         telemetry.addLine("X: Park edge");
         telemetry.addLine("B: Park corner");
         telemetry.update();
     }
-    public void configuration() {
+    public void setUp() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
 
         while (!isStarted()){
@@ -31,12 +42,21 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
             gamepad.update();
 
             if (gamepad.b.isPressed()){
-                ParkPosition whereToPark = ParkPosition.CORNER;
+                whereToPark = ParkPosition.CORNER;
             }
 
             if (gamepad.x.isPressed()){
-                ParkPosition whereToPark = ParkPosition.EDGE;
+                whereToPark = ParkPosition.EDGE;
             }
+
+            if (gamepad.left_bumper.isInitialPress()){
+                whereToStart = StartingPosition.LEFT;
+            }
+
+            if (gamepad.right_bumper.isInitialPress()){
+                whereToStart = StartingPosition.RIGHT;
+            }
+            telemetry.update();
         }
     }
     @Override
@@ -48,16 +68,23 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
 
 
         robot.init(hardwareMap, telemetry);
+        setUp();
         waitForStart();
-        // robot strafes left 23 in
-        // 20 in
+
+        if (whereToStart == StartingPosition.LEFT){
+            move(0,-20);
+            move(46, 0);
+        } else if (whereToStart == StartingPosition.RIGHT){ // TODO this
+            move(23, 0);
+            move(0, -51);
+            move(23, 0);
+        }
         //waitForContinue();
-        move(0,-20);
-        move(46,0);
+        //move(46,0);
         //waitForContinue();
         // 13-14 in
-        //Robot strafes left 14 in.
-        move(0,-14);
+        //Robot strafes left 12 in.
+        move(0,-12);
         move(-26, 0);
         //waitForContinue();
         // robot moves to the left 6 inches - to move the block a little
@@ -68,16 +95,17 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
         //Robot strafes left 3 in.
         move(0,-3);
         move(20,0);
+        turnToAngle(0);
 
+        waitForContinue();
 
-
-        //waitForContinue();
-        //Robot strafes right 102 in.
-        //92
-        move(0,92);
-        move(-25,0);
-
-
+        if (whereToPark == ParkPosition.CORNER){
+            move(0,118);
+            move(-22,0);
+        } else if (whereToPark == ParkPosition.EDGE){
+            move(0,92);
+            move(-22,0);
+        }
     }
 
 }
