@@ -15,10 +15,20 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
         EDGE
     }
 
+    enum StartingPosition {
+        LEFT,
+        RIGHT
+    }
+
     ParkPosition whereToPark = ParkPosition.CORNER;
+    StartingPosition whereToStart = StartingPosition.LEFT;
     public void help(){
         telemetry.addLine("Configure Mode");
-        telemetry.addData("currentValue", whereToPark);
+        telemetry.addData("startLocation", whereToStart);
+        telemetry.addLine("LB: Staring on left");
+        telemetry.addLine("RB: Staring on right");
+        telemetry.addLine();
+        telemetry.addData("parkValue", whereToPark);
         telemetry.addLine("X: Park edge");
         telemetry.addLine("B: Park corner");
         telemetry.update();
@@ -36,6 +46,14 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
 
             if (gamepad.x.isPressed()){
                 ParkPosition whereToPark = ParkPosition.EDGE;
+            }
+
+            if (gamepad.left_bumper.isInitialPress()){
+                StartingPosition whereToStart = StartingPosition.LEFT;
+            }
+
+            if (gamepad.right_bumper.isInitialPress()){
+                StartingPosition whereToStart = StartingPosition.RIGHT;
             }
         }
     }
