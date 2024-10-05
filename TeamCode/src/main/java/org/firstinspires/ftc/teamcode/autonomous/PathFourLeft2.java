@@ -28,6 +28,8 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
 
         while (!isStarted()){
             help();
+            gamepad.update();
+
             if (gamepad.b.isPressed()){
                 ParkPosition whereToPark = ParkPosition.CORNER;
             }
@@ -66,11 +68,16 @@ public class PathFourLeft2 extends RI3WAbstractAutonomous {
         //Robot strafes left 3 in.
         move(0,-3);
         move(20,0);
+
+
+
         //waitForContinue();
         //Robot strafes right 102 in.
         //92
         move(0,92);
         move(-25,0);
+
+
     }
 
 }

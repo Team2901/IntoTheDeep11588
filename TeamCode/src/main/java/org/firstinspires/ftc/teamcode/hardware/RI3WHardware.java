@@ -25,10 +25,8 @@ public class RI3WHardware {
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
-    // Constant speed the linear slides will move at.
-    public static double linearSlidesPower = .25;
+    public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
     public static int clawOffset = 4; // offset when claw is up, in inches
-    public static int armTargetPos = 0; // Resting position of arm
     public static int CLAW_OPEN_POSITION = 0;
     public static int CLAW_CLOSED_POSITION = 0;
     public static double CONT_INTAKE_POWER = .5;

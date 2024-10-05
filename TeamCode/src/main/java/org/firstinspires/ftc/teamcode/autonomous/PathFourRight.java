@@ -9,6 +9,7 @@ public class PathFourRight extends RI3WAbstractAutonomous {
         // Robot moves to cage, turns left 180 degrees, moves to sample, moves sample to area,
         // and goes back to park
 
+
         robot.init(hardwareMap, telemetry);
         waitForStart();
 
@@ -18,10 +19,11 @@ public class PathFourRight extends RI3WAbstractAutonomous {
         //move 28 in. strafe left (negative)
         move(0, -28);
         //waitForContinue();
-        //move 28 in. forward
+        //move 28 in. forward  ..?
         move(28, 0);
         //waitForContinue();
         //180 turn negative?
+        turnToAngle(-180);
 
         //strafe right 14 in.
         move(0, 14);
