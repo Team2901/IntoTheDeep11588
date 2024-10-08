@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 
-@Autonomous (name = "PathFourLeft5")
-public class PathFourLeft5 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFourLeft6")
+public class PathFourLeft6 extends RI3WAbstractAutonomous {
 
     enum ParkPosition {
         CORNER,
@@ -97,7 +97,7 @@ public class PathFourLeft5 extends RI3WAbstractAutonomous {
         move(20,0);
         turnToAngle(0);
 
-        waitForContinue();
+        //waitForContinue();
 
         if (whereToPark == ParkPosition.CORNER){
             move(0,118);
