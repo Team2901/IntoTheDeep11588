@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 public class PathOneLeft extends RI3WAbstractAutonomous {
     String path =
         "Strafe right 3 inches\n" +
-        "Move forward 26 inches\n" +
+        "Move forward 30 inches clawOffset\n" +
         "Strafe right 64 inches\n" +
         "Move back 24 inches\n";
-
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -136,6 +136,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 } break;
                 case "Move": {
                     int sign;
+                    int offset = 0;
                     switch (components[1]) {
                         case "forward":
                             sign = 1;
@@ -156,7 +157,18 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                         default:
                             throw new Exception("Invalid path: unexpected unit " + components[3]);
                     }
-                    move(distanceValue*sign, 0);
+                    if(components.length >= 5){
+                        switch (components[4]){
+                            case "clawOffset":
+                                offset = robot.clawOffset;
+                                break;
+                            case "":
+                                break;
+                            default:
+                                throw new Exception("Invalid path: unexpected offset"+ components[4]);
+                        }
+                    }
+                    move((distanceValue*sign)+offset, 0);
                 } break;
                 case "Turn": {
                     int sign;
@@ -182,6 +194,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                     turnRelative(turnValue*sign);
                 } break;
+
                 /*
                 case "Lift":{
                     switch(components[1]){
