@@ -13,6 +13,7 @@ public class PathOneLeft extends RI3WAbstractAutonomous {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap, telemetry);
+        setUp();
         waitForStart();
 
         try {
@@ -20,20 +21,28 @@ public class PathOneLeft extends RI3WAbstractAutonomous {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        /*
-        //Robot strafes 3 in. right
-        move(0,3);
 
-        // move forward 30" - clawOffset
-        move(30 - robot.clawOffset, 0);
+        if (whereToStart == StartingPosition.LEFT){
+            //Robot strafes 3 in. right
+            move(0,3);
+            // move forward 30" - clawOffset
+            move(30 - robot.clawOffset, 0);
+        } else if (whereToStart == StartingPosition.RIGHT){
+            // move forward 30" - clawOffset
+            move(30 - robot.clawOffset, 0);
+        }
 
-        // Claw code
+        // Claw code goes here
 
         // strafe right 64 in.
         move(0,64);
-
         // move back 24 in.
         move(-24,0);
-         */
+
+        if (whereToPark == ParkPosition.CORNER){
+            //
+        } else if (whereToPark == ParkPosition.EDGE){
+            //
+        }
     }
 }

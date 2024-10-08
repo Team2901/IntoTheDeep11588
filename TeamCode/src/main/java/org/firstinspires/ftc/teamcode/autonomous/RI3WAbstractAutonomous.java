@@ -105,7 +105,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     }
     //TODO Claw close and open, lift move to positions, other things????
-    public void parsePath(String path) throws Exception {
+    public void parsePath(String path) {
         String[] pathSteps = path.split("\n");
         for (String step : pathSteps) {
             String[] components = step.split(" ");
@@ -120,7 +120,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             sign = -1;
                             break;
                         default:
-                            throw new Exception("Invalid path: unexpected direction " + components[1]);
+                            telemetry.addLine("Invalid path: unexpected direction " + components[1]);
+                            return;
                     }
                     double distanceValue = Double.parseDouble(components[2]);
                     switch (components[3]){
@@ -130,7 +131,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             distanceValue = distanceValue/2.54;
                             break;
                         default:
-                            throw new Exception("Invalid path: unexpected unit " + components[3]);
+                            telemetry.addLine("Invalid path: unexpected unit " + components[3]);
+                            return;
                     }
                     move(0, distanceValue*sign);
                 } break;
@@ -142,10 +144,13 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             sign = 1;
                             break;
                         case "back":
+                        case "backward":
+                        case "backwards":
                             sign = -1;
                             break;
                         default:
-                            throw new Exception("Invalid path: unexpected direction " + components[1]);
+                            telemetry.addLine("Invalid path: unexpected direction " + components[1]);
+                            return;
                     }
                     double distanceValue = Double.parseDouble(components[2]);
                     switch (components[3]){
@@ -155,7 +160,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             distanceValue = distanceValue/2.54;
                             break;
                         default:
-                            throw new Exception("Invalid path: unexpected unit " + components[3]);
+                            telemetry.addLine("Invalid path: unexpected unit " + components[3]);
+                            return;
                     }
                     if(components.length >= 5){
                         switch (components[4]){
@@ -165,7 +171,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             case "":
                                 break;
                             default:
-                                throw new Exception("Invalid path: unexpected offset"+ components[4]);
+                                telemetry.addLine("Invalid path: unexpected offset"+ components[4]);
+                                return;
                         }
                     }
                     move((distanceValue*sign)+offset, 0);
@@ -180,7 +187,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             sign = -1;
                             break;
                         default:
-                            throw new Exception("Invalid turn: unexpected direction " + components[1]);
+                            telemetry.addLine("Invalid turn: unexpected direction " + components[1]);
+                            return;
                     }
                     double turnValue= Double.parseDouble(components[2]);
                     switch (components[3]){
@@ -190,7 +198,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             turnValue = turnValue*(180/Math.PI);
                             break;
                         default:
-                            throw new Exception("Invalid turn: unexpected unit " + components[3]);
+                            telemetry.addLine("Invalid turn: unexpected unit " + components[3]);
+                            return;
                     }
                     turnRelative(turnValue*sign);
                 } break;
@@ -205,6 +214,56 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 }
                  */
             }
+        }
+    }
+
+    enum ParkPosition {
+        CORNER,
+        EDGE
+    }
+
+    enum StartingPosition {
+        LEFT,
+        RIGHT
+    }
+
+    ParkPosition whereToPark = ParkPosition.CORNER;
+    StartingPosition whereToStart = StartingPosition.LEFT;
+    public void help(){
+        telemetry.addLine("Set Up Mode");
+        telemetry.addLine();
+        telemetry.addData("startLocation", whereToStart);
+        telemetry.addLine("LB: Staring on left");
+        telemetry.addLine("RB: Staring on right");
+        telemetry.addLine();
+        telemetry.addData("parkValue", whereToPark);
+        telemetry.addLine("X: Park edge");
+        telemetry.addLine("B: Park corner");
+        telemetry.update();
+    }
+    public void setUp() {
+        gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
+
+        while (!isStarted()){
+            help();
+            gamepad.update();
+
+            if (gamepad.b.isPressed()){
+                whereToPark = ParkPosition.CORNER;
+            }
+
+            if (gamepad.x.isPressed()){
+                whereToPark = ParkPosition.EDGE;
+            }
+
+            if (gamepad.left_bumper.isInitialPress()){
+                whereToStart = StartingPosition.LEFT;
+            }
+
+            if (gamepad.right_bumper.isInitialPress()){
+                whereToStart = StartingPosition.RIGHT;
+            }
+            telemetry.update();
         }
     }
 }

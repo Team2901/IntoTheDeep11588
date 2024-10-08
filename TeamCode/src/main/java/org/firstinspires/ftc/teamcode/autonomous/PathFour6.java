@@ -1,21 +1,20 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "PathFourRight")
-public class PathFourRight extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFour6")
+public class PathFour6 extends RI3WAbstractAutonomous {
+
     @Override
     public void runOpMode() throws InterruptedException {
-        // Robot moves to cage, turns left 180 degrees, moves to sample, moves sample to area,
-        // and goes back to park
-
+        // Initialize FTC Dashboard to show the telemetry
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         robot.init(hardwareMap, telemetry);
         setUp();
         waitForStart();
-
-        //move 23 in. forward
-        move(23, 0);
 
         if (whereToStart == StartingPosition.LEFT){
             move(0,-20);
@@ -26,28 +25,27 @@ public class PathFourRight extends RI3WAbstractAutonomous {
             move(23, 0);
         }
 
-        //waitForContinue();
-        //move 28 in. forward  ..?
-        move(28, 0);
-        //waitForContinue();
-        //180 turn negative?
-        turnToAngle(-180);
+        parsePath(
+            "Strafe left 12 inches\n" +
+            "Move backward 26 inches \n" +
+            "Strafe left 7 inches\n" +
+            "Move backward 18 inches\n" +
+            "Strafe left 3 inches\n" +
+            "Move forward 20 inches\n"
+        );
 
-        //strafe right 14 in.
-        move(0, 14);
+        turnToAngle(0);
+
         //waitForContinue();
-        //move forward 42 in.
-        move(42, 0);
-        //waitForContinue();
-        // strafe 112 in. left
-        //move(0, -112);
 
         if (whereToPark == ParkPosition.CORNER){
             move(0,118);
+            // TODO: some of this moves too far
             move(-22,0);
         } else if (whereToPark == ParkPosition.EDGE){
             move(0,92);
             move(-22,0);
         }
     }
+
 }
