@@ -116,6 +116,26 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
 
     }
+    public enum SlidePosition
+    {
+        LowChamber,
+        highChamber,
+        lowBasket,
+        highBasket
+    }
+    public void moveSlides(SlidePosition position){
+        if(position == SlidePosition.LowChamber){
+
+        } else if (position == SlidePosition.highChamber) {
+
+        } else if (position == SlidePosition.lowBasket) {
+
+        } else if (position == SlidePosition.highBasket) {
+
+        }else{
+            telemetry.addLine("Invalid Position: "+position);
+        }
+    }
     //TODO Claw close and open, lift move to positions, other things????
     public void parsePath(String path) {
         String[] pathSteps = path.split("\n");
