@@ -18,7 +18,7 @@ public class PathFour extends RI3WAbstractAutonomous {
         robot.init(hardwareMap, telemetry);
         setUp();
         waitForStart();
-        waitForDelay();
+        //waitForDelay();
 
         if (whereToStart == StartingPosition.LEFT){
             move(0,-20);
