@@ -31,12 +31,9 @@ public class PathFour6 extends RI3WAbstractAutonomous {
             "Strafe left 7 inches\n" +
             "Move backward 18 inches\n" +
             "Strafe left 3 inches\n" +
-            "Move forward 20 inches\n"
+            "Move forward 20 inches\n" +
+            "TurnA 0\n"
         );
-
-        turnToAngle(0);
-
-        //waitForContinue();
 
         if (whereToPark == ParkPosition.CORNER){
             move(0,118);
