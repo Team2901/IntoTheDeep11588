@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
@@ -13,8 +14,10 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;
-
+    int delayNumSec = 0;
     public void move(double yInches, double xInches) {
+        double original_angle = robot.getAngle();
+
         int ticksY = (int) (yInches * robot.TICKS_PER_INCH);
         int ticksX = (int) (xInches * (robot.TICKS_PER_INCH/0.9));
 
@@ -42,6 +45,15 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 robot.backLeft.isBusy() || robot.backRight.isBusy())) {
             telemetryLog();
         }
+
+        double end_angle = robot.getAngle();
+
+        if(Math.abs(original_angle - end_angle) > 2){
+            turnToAngle(original_angle);
+        }
+
+        telemetry.addData("Original Angle", original_angle);
+        telemetry.addData("End Angle", end_angle);
 
         robot.frontLeft.setPower(0);
         robot.frontRight.setPower(0);
@@ -264,6 +276,12 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addData("parkValue", whereToPark);
         telemetry.addLine("X: Park edge");
         telemetry.addLine("B: Park corner");
+        telemetry.addLine();
+        telemetry.addData("Current Speed", robot.speed);
+        telemetry.addLine("Y: Increase Speed (0.1)");
+        telemetry.addLine("A: Decrease Speed (0.1)");
+        telemetry.addLine();
+
         telemetry.update();
     }
     public void setUp() {
@@ -281,6 +299,22 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 whereToPark = ParkPosition.EDGE;
             }
 
+            if (gamepad.y.isPressed()){
+                robot.speed = robot.speed + 0.1 ;
+            }
+
+            if (gamepad.a.isPressed()){
+                robot.speed = robot.speed - 0.1 ;
+            }
+
+            if (gamepad.dpad_up.isPressed()){
+                delayNumSec = delayNumSec + 1 ;
+            }
+
+            if (gamepad.dpad_down.isPressed()){
+                delayNumSec = delayNumSec - 1 ;
+            }
+
             if (gamepad.left_bumper.isInitialPress()){
                 whereToStart = StartingPosition.LEFT;
             }
@@ -289,6 +323,13 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 whereToStart = StartingPosition.RIGHT;
             }
             telemetry.update();
+        }
+    }
+    private void waitForDelay() {
+        CountDownTimer cdt = new CountDownTimer(ElapsedTime.Resolution.SECONDS);
+        cdt.setTargetTime(delayNumSec);
+        while(cdt.hasRemainingTime()){
+
         }
     }
 }
