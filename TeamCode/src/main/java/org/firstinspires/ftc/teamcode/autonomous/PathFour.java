@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous (name = "PathFour6")
-public class PathFour6 extends RI3WAbstractAutonomous {
+@Autonomous (name = "PathFour")
+public class PathFour extends RI3WAbstractAutonomous {
 
     @Override
     public void runOpMode() throws InterruptedException {
