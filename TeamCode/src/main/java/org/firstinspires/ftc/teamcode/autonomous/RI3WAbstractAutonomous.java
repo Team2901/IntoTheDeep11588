@@ -177,7 +177,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                     move((distanceValue*sign)+offset, 0);
                 } break;
-                case "Turn": {
+                case "TurnR": {
                     int sign;
                     switch (components[1]){
                         case "clockwise":
@@ -203,7 +203,32 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                     turnRelative(turnValue*sign);
                 } break;
-
+                case "TurnA": {
+                    int sign;
+                    switch (components[1]) {
+                        case "clockwise":
+                            sign = 1;
+                            break;
+                        case "counterclockwise":
+                            sign = -1;
+                            break;
+                        default:
+                            telemetry.addLine("Invalid turn: unexpected direction " + components[1]);
+                            return;
+                    }
+                    double turnValue = Double.parseDouble(components[2]);
+                    switch (components[3]) {
+                        case "degrees":
+                            break;
+                        case "radians":
+                            turnValue = turnValue * (180 / Math.PI);
+                            break;
+                        default:
+                            telemetry.addLine("Invalid turn: unexpected unit " + components[3]);
+                            return;
+                    }
+                    turnToAngle(turnValue * sign);
+                } break;
                 /*
                 case "Lift":{
                     switch(components[1]){
