@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
 
 @Autonomous (name = "PathFour")
 public class PathFour extends RI3WAbstractAutonomous {
-
+// Emergency Auto + Push Bot (pushes 1 yellow sample into Net Zone, Park either position)
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize FTC Dashboard to show the telemetry
