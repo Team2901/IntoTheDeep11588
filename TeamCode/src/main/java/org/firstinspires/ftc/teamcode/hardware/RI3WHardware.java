@@ -20,6 +20,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 public class RI3WHardware {
 
     public static final double TICKS_PER_MOTOR_REV = 537.7;
+    public static final double TICKS_PER_MOTOR_REV_ARM = 2786.2;
     public static final double DRIVE_GEAR_RATIO = 1.0/1.0;
     public static final double TICKS_PER_DRIVE_REV = TICKS_PER_MOTOR_REV * DRIVE_GEAR_RATIO;
     public static final double WHEEL_DIAMETER = 3.78;
@@ -32,7 +33,7 @@ public class RI3WHardware {
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
     public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
-    public static int clawOffset = -4; // offset when claw is up, in inches
+    public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static int CLAW_OPEN_POSITION = 0;
     public static int CLAW_CLOSED_POSITION = 0;
     public static double CONT_INTAKE_POWER = .5;
@@ -52,10 +53,10 @@ public class RI3WHardware {
 
     public DcMotorEx linearSlides;
     public static int linearSlidesBase = 0;
-    public static int highBasket = ;
-    public static int lowBasket = ;
-    public static int lowChamber = ;
-    public static int highChamber = ;
+    public static int highBasket = 0;
+    public static int lowBasket = 0;
+    public static int lowChamber = 0;
+    public static int highChamber = 0;
     public Servo claw;
     public DcMotorEx arm; // this is an arm
     public CRServo contIntake;

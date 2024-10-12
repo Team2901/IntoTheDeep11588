@@ -178,7 +178,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 } break;
                 case "Move": {
                     int sign;
-                    int offset = 0;
+                    double offset = 0;
                     switch (components[1]) {
                         case "forward":
                             sign = 1;
