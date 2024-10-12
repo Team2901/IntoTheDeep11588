@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
-@TeleOp(name = "RI3WTeleop")
+@TeleOp(name = "RI6WTeleop")
 public class RI3WTeleop extends OpMode {
 
     public RI3WHardware robot = new RI3WHardware();
@@ -48,15 +48,21 @@ public class RI3WTeleop extends OpMode {
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        if (gamepad.left_bumper.isInitialPress()) {
+        if (gamepad.x.isInitialPress()) {
             robot.openClaw();
-        } else if (gamepad.left_bumper.isInitialRelease()) {
+        } else if (gamepad.x.isInitialRelease()) {
             robot.closeClaw();
         }
 
         if (gamepad.right_bumper.isInitialPress()) {
-            robot.runContIntake();
+            robot.runContExtake();
         } else if (gamepad.right_bumper.isInitialRelease()) {
+            robot.stopContIntake();
+        }
+
+        if (gamepad.left_bumper.isInitialPress()) {
+            robot.runContIntake();
+        } else if (gamepad.left_bumper.isInitialRelease()) {
             robot.stopContIntake();
         }
 

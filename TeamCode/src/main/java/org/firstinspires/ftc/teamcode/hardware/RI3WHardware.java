@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -36,13 +35,17 @@ public class RI3WHardware {
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static int CLAW_OPEN_POSITION = 0;
     public static int CLAW_CLOSED_POSITION = 0;
-    public static double CONT_INTAKE_POWER = .5;
+    public static double CONT_EXTAKE_POWER = .5;
+    public static double CONT_INTAKE_POWER = -.5;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
     }
     public void openClaw() {
         claw.setPosition(CLAW_OPEN_POSITION);
+    }
+    public void runContExtake() {
+        contIntake.setPower(CONT_EXTAKE_POWER);
     }
     public void runContIntake() {
         contIntake.setPower(CONT_INTAKE_POWER);
