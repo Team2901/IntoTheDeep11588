@@ -10,7 +10,7 @@ public class PathOneRight extends RI3WAbstractAutonomous {
         robot.init(hardwareMap, telemetry);
         setUp();
         waitForStart();
-        //TODO get robot to stop in same place for both left and right
+        //TODO get robot to stop in same place for both left and right.
         if (whereToStart == StartingPosition.LEFT){
             //Robot strafes 3 in. right
             move(0,18);
