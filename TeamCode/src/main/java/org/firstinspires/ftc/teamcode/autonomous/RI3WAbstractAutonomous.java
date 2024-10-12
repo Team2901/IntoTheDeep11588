@@ -327,19 +327,19 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 whereToPark = ParkPosition.EDGE;
             }
 
-            if (gamepad.y.isPressed()){
+            if (gamepad.y.isInitialPress()){
                 robot.speed = robot.speed + 0.1 ;
             }
 
-            if (gamepad.a.isPressed()){
+            if (gamepad.a.isInitialPress()){
                 robot.speed = robot.speed - 0.1 ;
             }
 
-            if (gamepad.dpad_up.isPressed()){
+            if (gamepad.dpad_up.isInitialPress()){
                 delayNumSec = delayNumSec + 1 ;
             }
 
-            if (gamepad.dpad_down.isPressed()){
+            if (gamepad.dpad_down.isInitialPress()){
                 delayNumSec = delayNumSec - 1 ;
             }
 
