@@ -25,6 +25,12 @@ public class RI3WHardware {
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
+    public static double TICKS_PER_MOTOR_REV_SLIDES = 1425.1;
+    public static double DRIVE_GEAR_RATIO_SLIDES = 1; //TODO: Unknown for now
+    public static double TICKS_PER_DRIVE_REV_SLIDES = TICKS_PER_MOTOR_REV_SLIDES * DRIVE_GEAR_RATIO_SLIDES;
+    public static double WHEEL_DIAMETER_SLIDES = 1.42;
+    public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
+    public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
     public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
     public static int clawOffset = -4; // offset when claw is up, in inches
     public static int CLAW_OPEN_POSITION = 0;
@@ -45,6 +51,11 @@ public class RI3WHardware {
     }
 
     public DcMotorEx linearSlides;
+    public static int linearSlidesBase = 0;
+    public static int highBasket = ;
+    public static int lowBasket = ;
+    public static int lowChamber = ;
+    public static int highChamber = ;
     public Servo claw;
     public DcMotorEx arm; // this is an arm
     public CRServo contIntake;
@@ -103,6 +114,10 @@ public class RI3WHardware {
         }
         try {
             linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
+            linearSlides.setPower(linearSlidesPower);
+            linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            linearSlides.setTargetPosition(linearSlidesBase);
         } catch (IllegalArgumentException e){
             linearSlides = new MockDcMotor();
         }

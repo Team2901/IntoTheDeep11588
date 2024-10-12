@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -18,8 +19,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     public void move(double yInches, double xInches) {
         double original_angle = robot.getAngle();
 
-        int ticksY = (int) (yInches * robot.TICKS_PER_INCH);
-        int ticksX = (int) (xInches * (robot.TICKS_PER_INCH/0.9));
+        int ticksY = (int) (yInches * RI3WHardware.TICKS_PER_INCH);
+        int ticksX = (int) (xInches * (RI3WHardware.TICKS_PER_INCH /0.9));
 
         robot.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -43,7 +44,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
         while (opModeIsActive() && (robot.frontLeft.isBusy() || robot.frontRight.isBusy() ||
                 robot.backLeft.isBusy() || robot.backRight.isBusy())) {
-            telemetryLog();
+            telemetryLog(robot.frontLeft);
         }
 
         double end_angle = robot.getAngle();
@@ -65,11 +66,11 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-    private void telemetryLog() {
+    private void telemetryLog(DcMotorEx dcMotorEx) {
         telemetry.addData("angle", robot.getAngle());
-        telemetry.addData("PIDFCoefficients", robot.frontLeft.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
-        telemetry.addData("Target Position", robot.frontLeft.getTargetPosition());
-        telemetry.addData("Current Position", robot.frontLeft.getCurrentPosition());
+        telemetry.addData("PIDFCoefficients", dcMotorEx.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
+        telemetry.addData("Target Position", dcMotorEx.getTargetPosition());
+        telemetry.addData("Current Position", dcMotorEx.getCurrentPosition());
         telemetry.update();
     }
 
@@ -99,7 +100,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
             double currentAngle = robot.getAngle() + 180;
             turnError = AngleUnit.normalizeDegrees(targetAngle - currentAngle);
-            telemetryLog();
+            telemetryLog(robot.frontLeft);
         }
         robot.frontLeft.setPower(0);
         robot.frontRight.setPower(0);
@@ -121,17 +122,24 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         LowChamber,
         highChamber,
         lowBasket,
-        highBasket
+        highBasket,
+        base
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.LowChamber){
-
-        } else if (position == SlidePosition.highChamber) {
-
-        } else if (position == SlidePosition.lowBasket) {
-
-        } else if (position == SlidePosition.highBasket) {
-
+            robot.linearSlides.setTargetPosition(RI3WHardware.lowChamber);
+        }
+        else if (position == SlidePosition.highChamber) {
+            robot.linearSlides.setTargetPosition(RI3WHardware.highChamber);
+        }
+        else if (position == SlidePosition.lowBasket) {
+            robot.linearSlides.setTargetPosition(RI3WHardware.lowBasket);
+        }
+        else if (position == SlidePosition.highBasket) {
+            robot.linearSlides.setTargetPosition(RI3WHardware.highBasket);
+        }
+        else if (position == SlidePosition.base) {
+            robot.linearSlides.setTargetPosition(RI3WHardware.linearSlidesBase);
         }else{
             telemetry.addLine("Invalid Position: "+position);
         }
@@ -198,7 +206,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     if(components.length >= 5){
                         switch (components[4]){
                             case "clawOffset":
-                                offset = robot.clawOffset;
+                                offset = RI3WHardware.clawOffset;
                                 break;
                             case "":
                                 break;
