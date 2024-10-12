@@ -119,14 +119,14 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     public enum SlidePosition
     {
-        LowChamber,
+        lowChamber,
         highChamber,
         lowBasket,
         highBasket,
         base
     }
     public void moveSlides(SlidePosition position){
-        if(position == SlidePosition.LowChamber){
+        if(position == SlidePosition.lowChamber){
             robot.linearSlides.setTargetPosition(RI3WHardware.lowChamber);
         }
         else if (position == SlidePosition.highChamber) {
@@ -144,7 +144,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             telemetry.addLine("Invalid Position: "+position);
         }
     }
-    //TODO Claw close and open, lift move to positions, other things????
+    //TODO Claw close and open, other things????
     public void parsePath(String path) {
         String[] pathSteps = path.split("\n");
         for (String step : pathSteps) {
@@ -269,15 +269,28 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                     turnToAngle(turnValue * sign);
                 } break;
-                /*
                 case "Lift":{
                     switch(components[1]){
-                        case "":
+                        case "lowBasket":
+                            moveSlides(SlidePosition.lowBasket);
                             break;
-
+                        case "highBasket":
+                            moveSlides(SlidePosition.highBasket);
+                            break;
+                        case "lowChamber":
+                            moveSlides(SlidePosition.lowChamber);
+                            break;
+                        case "highChamber":
+                            moveSlides(SlidePosition.highChamber);
+                            break;
+                        case "base":
+                            moveSlides(SlidePosition.base);
+                            break;
+                        default:
+                            telemetry.addLine("Invalid Path: unexpected position " + components[1]);
+                            break;
                     }
-                }
-                 */
+                } break;
             }
         }
     }
