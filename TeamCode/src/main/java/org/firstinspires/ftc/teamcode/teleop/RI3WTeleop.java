@@ -78,6 +78,14 @@ public class RI3WTeleop extends OpMode {
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
+        //MUST DE-COMMENT FOR COMPETITIONS - Joe :)
+
+//        if (robot.arm.getCurrentPosition() > 0) {
+//            robot.arm.setTargetPosition(-10);
+//        } else if (robot.arm.getCurrentPosition() < -8500) {
+//            robot.arm.setTargetPosition(-8400);
+//        }
+
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
         robot.backLeft.setPower(y - x + turningPower);
@@ -87,6 +95,8 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("frontRight", robot.frontRight.getCurrentPosition());
         telemetry.addData("backLeft", robot.backLeft.getCurrentPosition());
         telemetry.addData("backRight", robot.backRight.getCurrentPosition());
+        telemetry.addData("Arm", robot.arm.getCurrentPosition());
+        telemetry.addData("Claw Position", robot.claw.getPosition());
         telemetry.update();
     }
 
