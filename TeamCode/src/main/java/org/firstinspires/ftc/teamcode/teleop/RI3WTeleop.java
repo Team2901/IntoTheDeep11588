@@ -78,13 +78,12 @@ public class RI3WTeleop extends OpMode {
             robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        //MUST DE-COMMENT FOR COMPETITIONS - Joe :)
-
-//        if (robot.arm.getCurrentPosition() > 0) {
-//            robot.arm.setTargetPosition(-10);
-//        } else if (robot.arm.getCurrentPosition() < -8500) {
-//            robot.arm.setTargetPosition(-8400);
-//        }
+        //This is a soft-stop for the arm
+        if (robot.arm.getCurrentPosition() > 0) {
+            robot.arm.setTargetPosition(-10);
+        } else if (robot.arm.getCurrentPosition() < -8500) {
+            robot.arm.setTargetPosition(-8400);
+        }
 
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
