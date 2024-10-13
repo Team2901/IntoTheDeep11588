@@ -341,11 +341,11 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             }
 
             if (gamepad.y.isInitialPress()){
-                robot.speed = robot.speed + 0.1 ;
+                robot.speed = robot.speed + 0.05 ;
             }
 
             if (gamepad.a.isInitialPress()){
-                robot.speed = robot.speed - 0.1 ;
+                robot.speed = robot.speed - 0.05 ;
             }
 
             if (gamepad.dpad_up.isInitialPress()){

@@ -30,8 +30,10 @@ public class PathFour extends RI3WAbstractAutonomous {
         }
 
         parsePath(
-            "Strafe left 12 inches\n" +
-            "Move backward 26 inches \n" +
+             //12 in originally
+            "Strafe left 18 inches\n" +
+            "Move backward 44 inches\n" +
+            "Move forward 46 inches\n" +
             "Strafe left 7 inches\n" +
             "Move backward 18 inches\n" +
             "Strafe left 3 inches\n" +
@@ -40,7 +42,7 @@ public class PathFour extends RI3WAbstractAutonomous {
         );
 
         if (whereToPark == ParkPosition.CORNER){
-            move(0,118);
+            move(0,115);
             // TODO: some of this moves too far
             move(-22,0);
         } else if (whereToPark == ParkPosition.EDGE){
