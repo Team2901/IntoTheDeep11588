@@ -107,8 +107,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backRight.setPower(0);
         robot.backLeft.setPower(0);
     }
-    public void turnRelative(double realtiveAngle){
-        double targetAngle = (robot.getAngle()+realtiveAngle);
+    public void turnRelative(double relativeAngle){
+        double targetAngle = (robot.getAngle()+relativeAngle);
         turnToAngle(targetAngle);
     }
     public void waitForContinue() {
