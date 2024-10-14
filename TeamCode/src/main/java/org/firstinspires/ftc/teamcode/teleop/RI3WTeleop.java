@@ -103,12 +103,12 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("Claw Position", robot.claw.getPosition());
         telemetry.update();
     }
-    public void turnRelative(double relativeAngle){
-        double targetAngle = (robot.getAngle()+relativeAngle);
+    public void turnRelative(int relativeAngle){
+        int targetAngle = (int) (robot.getAngle()+relativeAngle);
         turnToAngle(targetAngle);
     }
 
-    private void turnToAngle(double targetAngle) {
+    private void turnToAngle(int targetAngle) {
     }
 
 }
