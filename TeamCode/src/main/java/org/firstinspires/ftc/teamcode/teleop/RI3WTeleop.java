@@ -36,6 +36,11 @@ public class RI3WTeleop extends OpMode {
         double y = 0.5 * gamepad.left_stick.y.getValue();
         double x = 0.5 * gamepad.left_stick.x.getValue();
 
+        //This turns the robot 180 degrees
+        if (gamepad.x.isInitialPress()) {
+            turningPower = .3;
+        }
+
         if (gamepad.dpad_up.isInitialPress()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -48,21 +53,21 @@ public class RI3WTeleop extends OpMode {
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        if (gamepad.x.isInitialPress()) {
+        if (gamepad.b.isInitialPress()) {
             robot.openClaw();
-        } else if (gamepad.x.isInitialRelease()) {
+        } else if (gamepad.b.isInitialRelease()) {
             robot.closeClaw();
         }
 
-        if (gamepad.right_bumper.isInitialPress()) {
+        if (gamepad.left_bumper.isInitialPress()) {
             robot.runContExtake();
-        } else if (gamepad.right_bumper.isInitialRelease()) {
+        } else if (gamepad.left_bumper.isInitialRelease()) {
             robot.stopContIntake();
         }
 
-        if (gamepad.left_bumper.isInitialPress()) {
+        if (gamepad.right_bumper.isInitialPress()) {
             robot.runContIntake();
-        } else if (gamepad.left_bumper.isInitialRelease()) {
+        } else if (gamepad.right_bumper.isInitialRelease()) {
             robot.stopContIntake();
         }
 
