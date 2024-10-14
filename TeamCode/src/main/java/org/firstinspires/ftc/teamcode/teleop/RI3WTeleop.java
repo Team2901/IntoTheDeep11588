@@ -21,11 +21,6 @@ public class RI3WTeleop extends OpMode {
         robot.init(this.hardwareMap, telemetry);
     }
 
-    public void turnRelative(double relativeAngle){
-        double targetAngle = (robot.getAngle()+relativeAngle);
-        turnToAngle(targetAngle);
-    }
-
     @Override
     public void loop() {
         gamepad.update();
@@ -107,6 +102,10 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("Arm", robot.arm.getCurrentPosition());
         telemetry.addData("Claw Position", robot.claw.getPosition());
         telemetry.update();
+    }
+    public void turnRelative(double relativeAngle){
+        double targetAngle = (robot.getAngle()+relativeAngle);
+        turnToAngle(targetAngle);
     }
 
     private void turnToAngle(double targetAngle) {
