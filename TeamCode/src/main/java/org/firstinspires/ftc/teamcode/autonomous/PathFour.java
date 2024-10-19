@@ -19,9 +19,9 @@ public class PathFour extends RI3WAbstractAutonomous {
         robot.init(hardwareMap, telemetry);
         setUp();
         //moveSlides(SlidePosition.base);
-        robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.linearSlides.setTargetPosition(1000);
-        robot.linearSlides.setPower(0.25);
+//        robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        robot.linearSlides.setTargetPosition(1000);
+//        robot.linearSlides.setPower(0.25);
         waitForStart();
         //waitForDelay();
 

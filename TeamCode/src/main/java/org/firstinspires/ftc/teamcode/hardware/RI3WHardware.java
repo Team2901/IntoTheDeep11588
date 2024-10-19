@@ -130,10 +130,10 @@ public class RI3WHardware {
         }
         try {
             linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
-            linearSlides.setPower(linearSlidesPower);
-            linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            linearSlides.setTargetPosition(linearSlidesBase);
+//            linearSlides.setPower(linearSlidesPower);
+//            linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            linearSlides.setTargetPosition(linearSlidesBase);
         } catch (IllegalArgumentException e){
             linearSlides = new MockDcMotor();
         }
@@ -149,14 +149,14 @@ public class RI3WHardware {
         }
 
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
-        linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
+        //linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
         // requesting a reference to the IMU hardware. What chip you have can be determined by
