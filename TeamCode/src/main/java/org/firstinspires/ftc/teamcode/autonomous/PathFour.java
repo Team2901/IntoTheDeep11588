@@ -31,7 +31,7 @@ public class PathFour extends RI3WAbstractAutonomous {
 
         parsePath(
              //12 in originally
-            "Strafe left 18 inches\n" +
+            "Strafe left 21 inches\n" +
             "Move backward 44 inches\n" +
             "Move forward 46 inches\n" +
             "Strafe left 7 inches\n" +

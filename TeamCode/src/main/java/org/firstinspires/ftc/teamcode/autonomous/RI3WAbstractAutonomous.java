@@ -166,6 +166,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     double offset = 0;
                     switch (components[1]) {
                         case "forward":
+                            telemetry.addLine("Planning to move forward");
                             sign = 1;
                             break;
                         case "back":
@@ -180,6 +181,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     double distanceValue = Double.parseDouble(components[2]);
                     switch (components[3]){
                         case "inches":
+                            telemetry.addData("Inches:", distanceValue);
                             break;
                         case "centimeters":
                             distanceValue = distanceValue/2.54;
@@ -200,6 +202,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                                 return;
                         }
                     }
+                    telemetry.addLine("Execute move");
+                    telemetry.update();
                     move((distanceValue*sign)+offset, 0);
                 } break;
                 case "TurnR": {
