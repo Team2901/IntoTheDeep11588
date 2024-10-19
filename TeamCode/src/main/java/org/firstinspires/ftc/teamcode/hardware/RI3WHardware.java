@@ -156,6 +156,8 @@ public class RI3WHardware {
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
 
+        linearSlides.setDirection(DcMotorSimple.Direction.REVERSE);
+
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
         // requesting a reference to the IMU hardware. What chip you have can be determined by
         // using "program and manage" tab on dr iver station, then "manage" on the hamburger menu.
