@@ -112,19 +112,19 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.lowChamber){
-            robot.linearSlides.setTargetPosition(RI3WHardware.lowChamber);
+            robot.PIDLoop(RI3WHardware.lowChamber);
         }
         else if (position == SlidePosition.highChamber) {
-            robot.linearSlides.setTargetPosition(RI3WHardware.highChamber);
+            robot.PIDLoop(RI3WHardware.highChamber);
         }
         else if (position == SlidePosition.lowBasket) {
-            robot.linearSlides.setTargetPosition(RI3WHardware.lowBasket);
+            robot.PIDLoop(RI3WHardware.lowBasket);
         }
         else if (position == SlidePosition.highBasket) {
-            robot.linearSlides.setTargetPosition(RI3WHardware.highBasket);
+            robot.PIDLoop(RI3WHardware.highBasket);
         }
         else if (position == SlidePosition.base) {
-            robot.linearSlides.setTargetPosition(RI3WHardware.linearSlidesBase);
+            robot.PIDLoop(RI3WHardware.linearSlidesBase);
         }else{
             telemetry.addLine("Invalid Position: "+position);
         }

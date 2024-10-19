@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import android.icu.text.MessagePattern;
+
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -8,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,15 +20,23 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
 
 public class RI3WHardware {
+    double integralSum = 0;
+    double derivative = 0;
+    ElapsedTime PIDTimer = new ElapsedTime();
+    public static double Kp = 0;
+    public static double Ki = 0;
+    public static double Kg = 0;
+    public static double Kd = 0;
+    int lastError = 0;
     public static final double TICKS_PER_MOTOR_REV = 537.7;
-    public static final double TICKS_PER_MOTOR_REV_ARM = 2786.2;
+    public static final double TICKS_PER_MOTOR_REV_ARM = 1425.1;
     public static final double DRIVE_GEAR_RATIO = 1.0/1.0;
     public static final double TICKS_PER_DRIVE_REV = TICKS_PER_MOTOR_REV * DRIVE_GEAR_RATIO;
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
     public static double TICKS_PER_MOTOR_REV_SLIDES = 1425.1;
-    public static double DRIVE_GEAR_RATIO_SLIDES = 1; //TODO: Unknown for now
+    public static double DRIVE_GEAR_RATIO_SLIDES = 1.0/1.0;
     public static double TICKS_PER_DRIVE_REV_SLIDES = TICKS_PER_MOTOR_REV_SLIDES * DRIVE_GEAR_RATIO_SLIDES;
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
@@ -81,6 +92,7 @@ public class RI3WHardware {
     }
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
+        PIDTimer.reset();
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -162,6 +174,22 @@ public class RI3WHardware {
         }
     }
 
+    public void PIDLoop(int goal) {
+        int encoderPosition = linearSlides.getCurrentPosition();
+        while (encoderPosition >= goal - 5 && encoderPosition <= goal + 5) {
+            int error = goal - encoderPosition;
+            derivative = (error - lastError) / PIDTimer.seconds();
+
+            // sum of all error over time
+            integralSum = integralSum + (error * PIDTimer.seconds());
+
+            linearSlides.setPower((Kp * error) + (Ki * integralSum) + (Kd * derivative) + Kg);
+
+            lastError = error;
+        }
+        PIDTimer.reset();
+    }
+
     public Double getTurnToAngleSpeed(Double turnAngle) {
 
         if (turnAngle == null) {
@@ -173,12 +201,12 @@ public class RI3WHardware {
         double targetAngle = AngleUnit.normalizeDegrees(turnAngle) + 180;
         double startAngle = getAngle() + 180;
         double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
-            if (turnError >= 0) {
+            if (turnError >= 1) {
                 turnPower = turnError / 90;
                 if (turnPower > speed) {
                     turnPower = speed;
                 }
-            } else if (turnError < 0) {
+            } else if (turnError <= -1) {
                 turnPower = turnError / 90;
                 if (turnPower < -speed) {
                     turnPower = -speed;
