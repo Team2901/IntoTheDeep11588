@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
@@ -17,6 +18,10 @@ public class PathFour extends RI3WAbstractAutonomous {
 
         robot.init(hardwareMap, telemetry);
         setUp();
+        //moveSlides(SlidePosition.base);
+        robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.linearSlides.setTargetPosition(1000);
+        robot.linearSlides.setPower(0.25);
         waitForStart();
         //waitForDelay();
 

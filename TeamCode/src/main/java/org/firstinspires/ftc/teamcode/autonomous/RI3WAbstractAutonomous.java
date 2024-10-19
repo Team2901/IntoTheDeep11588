@@ -47,14 +47,14 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             telemetryLog(robot.frontLeft);
         }
 
-        double end_angle = robot.getAngle();
+        /*double end_angle = robot.getAngle();
 
         if(Math.abs(original_angle - end_angle) > 2){
             turnToAngle(original_angle);
-        }
+        }*/
 
         telemetry.addData("Original Angle", original_angle);
-        telemetry.addData("End Angle", end_angle);
+        //telemetry.addData("End Angle", end_angle);
 
         robot.frontLeft.setPower(0);
         robot.frontRight.setPower(0);

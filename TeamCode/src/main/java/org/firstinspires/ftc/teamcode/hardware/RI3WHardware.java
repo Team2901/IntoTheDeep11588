@@ -65,7 +65,7 @@ public class RI3WHardware {
     }
 
     public DcMotorEx linearSlides;
-    public static int linearSlidesBase = 0;
+    public static int linearSlidesBase = (int) (1*TICKS_PER_INCH_SLIDES);
     public static int highBasket = (int) (44*TICKS_PER_INCH_SLIDES);
     public static int lowBasket = (int) (27*TICKS_PER_INCH_SLIDES);
     public static int lowChamber = (int) (14*TICKS_PER_INCH_SLIDES);
@@ -105,6 +105,7 @@ public class RI3WHardware {
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

@@ -23,6 +23,7 @@ public class RI3WTeleop extends OpMode {
     public void init() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
         robot.init(this.hardwareMap, telemetry);
+
     }
 
     @Override
@@ -62,13 +63,13 @@ public class RI3WTeleop extends OpMode {
         double y = 0.5 * gamepad.left_stick.y.getValue();
         double x = 0.5 * gamepad.left_stick.x.getValue();
 
-        if (gamepad.dpad_up.isInitialPress()) {
+        if (gamepad.dpad_up.isPressed()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad.dpad_down.isInitialPress()) {
+        } else if (gamepad.dpad_down.isPressed()) {
             robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad.dpad_down.isInitialRelease() || gamepad.dpad_up.isInitialRelease()) {
+        } else{
             robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
