@@ -19,8 +19,8 @@ public class motorTest extends OpMode {
     public void init() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
         robot.init(this.hardwareMap, telemetry);
-        motorArray = new DcMotorEx[] {robot.frontLeft, robot.frontRight, robot.backLeft, robot.backRight};
-        motorNames = new String[] {"frontLeft", "frontRight", "backLeft", "backRight"};
+        motorArray = new DcMotorEx[] {robot.frontLeft, robot.frontRight, robot.backLeft, robot.backRight, robot.linearSlides, robot.arm};
+        motorNames = new String[] {"frontLeft", "frontRight", "backLeft", "backRight", "linearSlide", "arm"};
     }
 
     @Override
@@ -33,7 +33,7 @@ public class motorTest extends OpMode {
         if(gamepad.dpad_up.isInitialPress()){
             activeIndex++;
         }
-        if(activeIndex == 4){
+        if(activeIndex == 6){
             activeIndex = 0;
         }
 

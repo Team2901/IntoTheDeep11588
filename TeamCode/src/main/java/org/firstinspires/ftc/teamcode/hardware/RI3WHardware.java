@@ -43,8 +43,8 @@ public class RI3WHardware {
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
     public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
-    public static int CLAW_OPEN_POSITION = 0;
-    public static int CLAW_CLOSED_POSITION = 0;
+    public static double CLAW_OPEN_POSITION = .48;
+    public static double CLAW_CLOSED_POSITION = .2;
     public static double CONT_EXTAKE_POWER = .5;
     public static double CONT_INTAKE_POWER = -.5;
 
