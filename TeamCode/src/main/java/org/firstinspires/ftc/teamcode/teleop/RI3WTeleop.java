@@ -70,9 +70,10 @@ public class RI3WTeleop extends OpMode {
             robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         } else{
-            robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
-            robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
-            robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.linearSlides.setPower(0);
+            //robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
+            //robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
+            //robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         if (gamepad.b.isInitialPress()) {
