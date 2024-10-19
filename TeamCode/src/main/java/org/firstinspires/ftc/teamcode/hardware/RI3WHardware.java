@@ -162,4 +162,30 @@ public class RI3WHardware {
             telemetry.update();
         }
     }
+
+    public Double getTurnToAngleSpeed(Double turnAngle) {
+
+        if (turnAngle == null) {
+            return null;
+        }
+
+        //robot.getAngle is between -180 and 180, starting at 0
+        double turnPower = 0;
+        double targetAngle = AngleUnit.normalizeDegrees(turnAngle) + 180;
+        double startAngle = getAngle() + 180;
+        double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
+            if (turnError >= 0) {
+                turnPower = turnError / 90;
+                if (turnPower > speed) {
+                    turnPower = speed;
+                }
+            } else if (turnError < 0) {
+                turnPower = turnError / 90;
+                if (turnPower < -speed) {
+                    turnPower = -speed;
+                }
+        }
+
+            return turnPower;
+    }
 }

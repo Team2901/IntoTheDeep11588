@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
+import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
 @TeleOp(name = "RI6WTeleop")
@@ -14,6 +15,9 @@ public class RI3WTeleop extends OpMode {
     public RI3WHardware robot = new RI3WHardware();
     double turningPower = 0;
     public ImprovedGamepad gamepad;
+
+
+    Double targetTurnAngle;
 
     @Override
     public void init() {
@@ -25,21 +29,38 @@ public class RI3WTeleop extends OpMode {
     public void loop() {
         gamepad.update();
 
+
+        //This turns the robot relative 180 degrees
+        if (gamepad.x.isInitialPress()) {
+            targetTurnAngle = robot.getAngle() + 180;
+        }
+
+        Double turnToAngleSpeed = robot.getTurnToAngleSpeed(targetTurnAngle);
+
+        if (turnToAngleSpeed != null && turnToAngleSpeed == 0) {
+            targetTurnAngle = null;
+            turnToAngleSpeed = null;
+        }
+
         if (gamepad.right_trigger.getValue() > 0) {
             turningPower = .3 * gamepad.right_trigger.getValue();
+            targetTurnAngle = null;
         } else if (gamepad.left_trigger.getValue() > 0) {
             turningPower = -.3 * gamepad.left_trigger.getValue();
-        } else {
+            targetTurnAngle = null;
+        } else if (gamepad.right_stick.x.getValue() != 0){
             turningPower = .75 * gamepad.right_stick.x.getValue();
+            targetTurnAngle = null;
+        } else {
+            if (turnToAngleSpeed != null) {
+                turningPower = -turnToAngleSpeed;
+            } else {
+                turningPower = 0;
+            }
         }
 
         double y = 0.5 * gamepad.left_stick.y.getValue();
         double x = 0.5 * gamepad.left_stick.x.getValue();
-
-        //This turns the robot relative 180 degrees
-        if (gamepad.x.isInitialPress()) {
-            turnRelative(180);
-        }
 
         if (gamepad.dpad_up.isInitialPress()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
@@ -95,6 +116,11 @@ public class RI3WTeleop extends OpMode {
         robot.backLeft.setPower(y - x + turningPower);
         robot.backRight.setPower(y + x - turningPower);
 
+
+        telemetry.addData("Current Angle", robot.getAngle());
+        telemetry.addData("Target Angle", this.targetTurnAngle);
+        telemetry.addData("Target Turn Speed ", turnToAngleSpeed);
+        telemetry.addLine();
         telemetry.addData("frontLeft", robot.frontLeft.getCurrentPosition());
         telemetry.addData("frontRight", robot.frontRight.getCurrentPosition());
         telemetry.addData("backLeft", robot.backLeft.getCurrentPosition());
@@ -103,12 +129,12 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("Claw Position", robot.claw.getPosition());
         telemetry.update();
     }
-    public void turnRelative(int relativeAngle){
-        int targetAngle = (int) (robot.getAngle()+relativeAngle);
+    public void turnRelative(double relativeAngle){
+        double targetAngle = (robot.getAngle()+relativeAngle);
         turnToAngle(targetAngle);
     }
 
-    private void turnToAngle(int targetAngle) {
+    private void turnToAngle(double targetAngle) {
     }
 
 }

@@ -77,29 +77,14 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     public void turnToAngle(double turnAngle) {
 
         //robot.getAngle is between -180 and 180, starting at 0
-        double turnPower = 0;
-        double targetAngle = AngleUnit.normalizeDegrees(turnAngle) + 180;
-        double startAngle = robot.getAngle() + 180;
-        double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
-        while (opModeIsActive() && !(turnError < robot.turnTolerance && turnError > -robot.turnTolerance)) {
-            if (turnError >= 0) {
-                turnPower = turnError / 90;
-                if (turnPower > robot.speed) {
-                    turnPower = robot.speed;
-                }
-            } else if (turnError < 0) {
-                turnPower = turnError / 90;
-                if (turnPower < -robot.speed) {
-                    turnPower = -robot.speed;
-                }
-            }
+        double turnPower = robot.getTurnToAngleSpeed(turnAngle);
+        while (opModeIsActive() && turnPower != 0) {
             robot.frontLeft.setPower(-turnPower);
             robot.frontRight.setPower(turnPower);
             robot.backLeft.setPower(-turnPower);
             robot.backRight.setPower(turnPower);
 
-            double currentAngle = robot.getAngle() + 180;
-            turnError = AngleUnit.normalizeDegrees(targetAngle - currentAngle);
+            turnPower = robot.getTurnToAngleSpeed(turnAngle);
             telemetryLog(robot.frontLeft);
         }
         robot.frontLeft.setPower(0);
