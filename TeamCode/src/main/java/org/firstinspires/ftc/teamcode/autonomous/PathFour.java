@@ -38,11 +38,11 @@ public class PathFour extends RI3WAbstractAutonomous {
              //12 in originally
             "Strafe left 21 inches\n" +
             "Move backward 44 inches\n" +
-            "Move forward 46 inches\n" +
-            "Strafe left 7 inches\n" +
+            "Move forward 48 inches\n" +
+            "Strafe right 7 inches\n" +
             "Move backward 18 inches\n" +
             "Strafe left 3 inches\n" +
-            "Move forward 20 inches\n" +
+            "Move backward 20 inches\n" +
             "TurnA 0\n"
         );
 
