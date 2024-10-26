@@ -16,6 +16,8 @@ public class motorTest extends OpMode {
     Integer activeIndex = (0);
     public ImprovedGamepad gamepad;
 
+    double y;
+
     public void help() {
         telemetry.addLine("Use Dpad to choose motor");
         telemetry.addLine("Left stick Y");
@@ -25,6 +27,7 @@ public class motorTest extends OpMode {
         telemetry.addData("current motor", motorNames[activeIndex]);
         telemetry.addData("motor power", motorArray[activeIndex].getPower());
         telemetry.addData("encoder value", motorArray[activeIndex].getCurrentPosition());
+        telemetry.addData("y stick", y);
     }
     
     @Override
@@ -48,8 +51,8 @@ public class motorTest extends OpMode {
         if(activeIndex == motorArray.length){
             activeIndex = 0;
         }
-
-        motorArray[activeIndex].setPower(-gamepad.left_stick.y.getValue());
+        y = gamepad.left_stick.y.getValue();
+        motorArray[activeIndex].setPower(y);
 
         help();
     }
