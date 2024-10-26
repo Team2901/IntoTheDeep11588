@@ -15,6 +15,18 @@ public class motorTest extends OpMode {
     String[] motorNames;
     Integer activeIndex = (0);
     public ImprovedGamepad gamepad;
+
+    public void help() {
+        telemetry.addLine("Use Dpad to choose motor");
+        telemetry.addLine("Left stick Y");
+        telemetry.addLine("           up - forward");
+        telemetry.addLine("           dn - backward");
+        telemetry.addLine("");
+        telemetry.addData("current motor", motorNames[activeIndex]);
+        telemetry.addData("motor power", motorArray[activeIndex].getPower());
+        telemetry.addData("encoder value", motorArray[activeIndex].getCurrentPosition());
+    }
+    
     @Override
     public void init() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
@@ -26,7 +38,7 @@ public class motorTest extends OpMode {
     @Override
     public void loop() {
         gamepad.update();
-        //robot.frontRight.getDeviceName();
+
         if(gamepad.dpad_up.isInitialPress()){
             motorArray[activeIndex].setPower(0);
         }
@@ -37,10 +49,8 @@ public class motorTest extends OpMode {
             activeIndex = 0;
         }
 
-        motorArray[activeIndex].setPower(gamepad.left_stick.y.getValue());
+        motorArray[activeIndex].setPower(-gamepad.left_stick.y.getValue());
 
-        telemetry.addData("current motor", motorNames[activeIndex]);
-        telemetry.addData("motor power", motorArray[activeIndex].getPower());
-        telemetry.addData("encoder value", motorArray[activeIndex].getCurrentPosition());
+        help();
     }
 }
