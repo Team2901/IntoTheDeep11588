@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.Utilities.ConfigUtilities;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -87,8 +88,21 @@ public class RI3WHardware {
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
 
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+        String configurationName = ConfigUtilities.getRobotConfigurationName();
+        if (configurationName.equals("coachbot")) {
+            // Robot configuration: coachbot
+            //    0-frontRight  (GoBILDA 5202/3/4 series)  (reverse)
+            //    1-backRight   (GoBILDA 5202/3/4 series)  (reverse)
+            //    2-frontLeft   (GoBILDA 5202/3/4 series)
+            //    3-backLeft    (GoBILDA 5202/3/4 series)
+            frontRight.setDirection(DcMotor.Direction.REVERSE);
+            backRight.setDirection(DcMotor.Direction.REVERSE);
+        } else {
+            frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -150,13 +164,21 @@ public class RI3WHardware {
         imu = hardwareMap.get(IMU.class, "imu");
 
         // Use the new RevHubOrientationOnRobot classes to describe how the control hub is mounted on the robot.
-        // For the coach bot its mounted Bgackward / usb cable on the right (as seen from back of robot)
+        // For the coach bot its mounted Backward / usb cable on the right (as seen from back of robot)
         // Doc: https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Universal-IMU-Interface
+        if (configurationName.equals("coachbot")) {
+            // Use the new RevHubOrientationOnRobot classes to describe how the control hub is mounted on the robot.
+            // For the coach bot its mounted Backward / usb cable on the right (as seen from back of robot)
+            // Doc: https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Universal-IMU-Interface
+            logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
+            usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+        }
 
+        IMU.Parameters parameters;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbFacingDirection);
-        IMU.Parameters parameters = new IMU.Parameters(orientationOnRobot);
-
+        parameters = new IMU.Parameters(orientationOnRobot);
         boolean success = imu.initialize(parameters);
+
         if(success){
             telemetry.addLine("IMU initialized");
             telemetry.update();
