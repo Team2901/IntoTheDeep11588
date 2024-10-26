@@ -129,10 +129,26 @@ public class RI3WHardware {
             arm = hardwareMap.get(DcMotorEx.class, "arm");
         }catch(IllegalArgumentException e){
             arm = new MockDcMotor();
+            telemetry.addLine("Can't find arm: making a mock");
         }
-        linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
-        claw = hardwareMap.get(Servo.class, "claw");
-        contIntake = hardwareMap.get(CRServo.class, "contIntake");
+        try{
+            linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
+        }catch(IllegalArgumentException e) {
+            linearSlides = new MockDcMotor();
+            telemetry.addLine("Can't find linearSlides: making a mock");
+        }
+        try{
+            claw = hardwareMap.get(Servo.class, "claw");
+        }catch(IllegalArgumentException e){
+            claw = new MockServo();
+            telemetry.addLine("Can't find claw: making a mock");
+        }
+        try{
+            contIntake = hardwareMap.get(CRServo.class, "contIntake");
+        }catch(IllegalArgumentException e){
+            contIntake = new MockCRServo();
+            telemetry.addLine("Can't find contIntake: making a mock");
+        }
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
