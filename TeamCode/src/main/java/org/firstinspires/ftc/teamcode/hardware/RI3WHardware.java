@@ -125,7 +125,11 @@ public class RI3WHardware {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        try{
+            arm = hardwareMap.get(DcMotorEx.class, "arm");
+        }catch(IllegalArgumentException e){
+            arm = new MockDcMotor();
+        }
         linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
         claw = hardwareMap.get(Servo.class, "claw");
         contIntake = hardwareMap.get(CRServo.class, "contIntake");
