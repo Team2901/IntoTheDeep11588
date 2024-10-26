@@ -19,14 +19,14 @@ import org.openftc.easyopencv.OpenCvCamera;
 public class RI3WHardware {
 
     public static final double TICKS_PER_MOTOR_REV = 537.7;
-    public static final double TICKS_PER_MOTOR_REV_ARM = 2786.2;
+    public static final double TICKS_PER_MOTOR_REV_ARM = 1425.1;
     public static final double DRIVE_GEAR_RATIO = 1.0/1.0;
     public static final double TICKS_PER_DRIVE_REV = TICKS_PER_MOTOR_REV * DRIVE_GEAR_RATIO;
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
     public static double TICKS_PER_MOTOR_REV_SLIDES = 1425.1;
-    public static double DRIVE_GEAR_RATIO_SLIDES = 1; //TODO: Unknown for now
+    public static double DRIVE_GEAR_RATIO_SLIDES = 1.0/1.0;
     public static double TICKS_PER_DRIVE_REV_SLIDES = TICKS_PER_MOTOR_REV_SLIDES * DRIVE_GEAR_RATIO_SLIDES;
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
@@ -111,31 +111,10 @@ public class RI3WHardware {
         frontRight.setPower(0);
         backLeft.setPower(0);
         backRight.setPower(0);
-        try {
-            arm = hardwareMap.get(DcMotorEx.class, "arm");
-        } catch (IllegalArgumentException e){
-            arm = new MockDcMotor();
-        }
-        try {
-            linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
-            linearSlides.setPower(linearSlidesPower);
-            linearSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            linearSlides.setTargetPosition(linearSlidesBase);
-        } catch (IllegalArgumentException e){
-            linearSlides = new MockDcMotor();
-        }
-        try {
-            claw = hardwareMap.get(Servo.class, "claw");
-        } catch (IllegalArgumentException e){
-            claw = new MockServo();
-        }
-        try {
-            contIntake = hardwareMap.get(CRServo.class, "contIntake");
-        } catch (IllegalArgumentException e){
-            contIntake = new MockCRServo();
-        }
-
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
+        claw = hardwareMap.get(Servo.class, "claw");
+        contIntake = hardwareMap.get(CRServo.class, "contIntake");
         arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

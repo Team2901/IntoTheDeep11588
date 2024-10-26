@@ -62,6 +62,7 @@ public class RI3WTeleop extends OpMode {
         double y = 0.5 * gamepad.left_stick.y.getValue();
         double x = 0.5 * gamepad.left_stick.x.getValue();
 
+        //TODO: isPressed
         if (gamepad.dpad_up.isInitialPress()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
