@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
-@TeleOp(name = "RI6WTeleop")
+@TeleOp(name = "RI6WTeleop v2")
 public class RI3WTeleop extends OpMode {
 
     public RI3WHardware robot = new RI3WHardware();
@@ -49,7 +49,7 @@ public class RI3WTeleop extends OpMode {
             turningPower = -.3 * gamepad.left_trigger.getValue();
             targetTurnAngle = null;
         } else if (gamepad.right_stick.x.getValue() != 0){
-            turningPower = .75 * gamepad.right_stick.x.getValue();
+            turningPower = -.75 * gamepad.right_stick.x.getValue();
             targetTurnAngle = null;
         } else {
             if (turnToAngleSpeed != null) {

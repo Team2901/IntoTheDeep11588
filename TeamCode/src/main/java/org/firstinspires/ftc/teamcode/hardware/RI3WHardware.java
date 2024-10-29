@@ -97,8 +97,8 @@ public class RI3WHardware {
             //    1-backRight   (GoBILDA 5202/3/4 series)  (reverse)
             //    2-frontLeft   (GoBILDA 5202/3/4 series)
             //    3-backLeft    (GoBILDA 5202/3/4 series)
-            frontRight.setDirection(DcMotor.Direction.REVERSE);
-            backRight.setDirection(DcMotor.Direction.REVERSE);
+            frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         } else {
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -170,7 +170,7 @@ public class RI3WHardware {
             // For the coach bot its mounted Backward / usb cable on the right (as seen from back of robot)
             // Doc: https://github.com/FIRST-Tech-Challenge/FtcRobotController/wiki/Universal-IMU-Interface
             logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD;
-            usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.LEFT;
+            usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.RIGHT;
         }
 
         IMU.Parameters parameters;
