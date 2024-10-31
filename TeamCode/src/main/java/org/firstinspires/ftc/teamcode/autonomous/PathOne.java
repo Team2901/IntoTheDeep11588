@@ -7,7 +7,7 @@ public class PathOne extends RI3WAbstractAutonomous {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // 
+        // TODO: Figure out how to make this code compatible with new robot design
         robot.init(hardwareMap, telemetry);
         setUp();
         waitForStart();
@@ -36,24 +36,6 @@ public class PathOne extends RI3WAbstractAutonomous {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        // extends slides to drop height
-        // retract slides to snapHeight
-        // open claw
-
-        // move back 26" - clawOffset
-        // Put this into ParsePath
-        //move(-22 + robot.clawOffset, 0) ;
-        // retract lift to ground height
-
-        // move right 40"
-        //move(0, 52);
-        // TODO park in corner and edge
-
-        // strafe right 64 in.
-        move(0,64);
-        // move back 24 in.
-        move(-24,0);
 
         if (whereToPark == ParkPosition.CORNER){
             //
