@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
 
 @Autonomous (name = "PathFour")
 public class PathFour extends RI3WAbstractAutonomous {
-// Emergency Auto + Push Bot (pushes 1 yellow sample into Net Zone, Park either position)
+// Emergency Auto + Push Bot (pushes 2 yellow samples into Net Zone, Park either position)
     @Override
     public void runOpMode() throws InterruptedException {
         // Initialize FTC Dashboard to show the telemetry
@@ -38,13 +38,13 @@ public class PathFour extends RI3WAbstractAutonomous {
             "Move forward 35 inches\n" +
             "Strafe left 11 inches\n" +
             "Move backward 46 inches\n" +
-            "Move forward 25 inches\n"+
-            "TurnA 0\n"
+            "Move forward 25 inches\n"
+            //"TurnA 0\n" +
+            //telemetry.addData("Has Turned to angle", robot.getAngle())
         );
 
         if (whereToPark == ParkPosition.CORNER){
-            move(0,108);
-            // TODO: some of this moves too far
+            move(0,115);
             move(-22,0);
         } else if (whereToPark == ParkPosition.EDGE){
             move(0,92);
