@@ -15,7 +15,6 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;
-    int delayNumSec = 0;
     public void move(double yInches, double xInches) {
         double original_angle = robot.getAngle();
 
@@ -37,10 +36,10 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.frontLeft.setPower(robot.speed);
-        robot.frontRight.setPower(robot.speed);
-        robot.backLeft.setPower(robot.speed);
-        robot.backRight.setPower(robot.speed);
+        robot.frontLeft.setPower(Autoconfig.speed);
+        robot.frontRight.setPower(Autoconfig.speed);
+        robot.backLeft.setPower(Autoconfig.speed);
+        robot.backRight.setPower(Autoconfig.speed);
 
         while (opModeIsActive() && (robot.frontLeft.isBusy() || robot.frontRight.isBusy() ||
                 robot.backLeft.isBusy() || robot.backRight.isBusy())) {
@@ -289,24 +288,24 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         LEFT,
         RIGHT
     }
-
-    ParkPosition whereToPark = ParkPosition.CORNER;
-    StartingPosition whereToStart = StartingPosition.LEFT;
     public void help(){
         telemetry.addLine("Set Up Mode");
         telemetry.addLine();
-        telemetry.addData("startLocation", whereToStart);
+        telemetry.addData("startLocation", Autoconfig.whereToStart);
         telemetry.addLine("LB: Staring on left");
         telemetry.addLine("RB: Staring on right");
         telemetry.addLine();
-        telemetry.addData("parkValue", whereToPark);
+        telemetry.addData("parkValue", Autoconfig.whereToPark);
         telemetry.addLine("X: Park edge");
         telemetry.addLine("B: Park corner");
         telemetry.addLine();
-        telemetry.addData("Current Speed", robot.speed);
+        telemetry.addData("Current Speed", Autoconfig.speed);
         telemetry.addLine("Y: Increase Speed (0.1)");
         telemetry.addLine("A: Decrease Speed (0.1)");
         telemetry.addLine();
+        telemetry.addData("delayNumSec", Autoconfig.delayNumSec);
+        telemetry.addLine("Dpad Up: Increase delay (1 sec)");
+        telemetry.addLine("Dpad Down: Decrease delay (1 sec)");
 
         telemetry.update();
     }
@@ -318,44 +317,44 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             gamepad.update();
 
             if (gamepad.b.isPressed()){
-                whereToPark = ParkPosition.CORNER;
+                Autoconfig.whereToPark = ParkPosition.CORNER;
             }
 
             if (gamepad.x.isPressed()){
-                whereToPark = ParkPosition.EDGE;
+                Autoconfig.whereToPark = ParkPosition.EDGE;
             }
 
             if (gamepad.y.isInitialPress()){
-                robot.speed = robot.speed + 0.05 ;
+                Autoconfig.speed = Autoconfig.speed + 0.05 ;
             }
 
             if (gamepad.a.isInitialPress()){
-                robot.speed = robot.speed - 0.05 ;
+                Autoconfig.speed = Autoconfig.speed - 0.05 ;
             }
 
             if (gamepad.dpad_up.isInitialPress()){
-                delayNumSec = delayNumSec + 1 ;
+                Autoconfig.delayNumSec = Autoconfig.delayNumSec + 1 ;
             }
 
             if (gamepad.dpad_down.isInitialPress()){
-                delayNumSec = delayNumSec - 1 ;
+                Autoconfig.delayNumSec = Autoconfig.delayNumSec - 1 ;
             }
 
             if (gamepad.left_bumper.isInitialPress()){
-                whereToStart = StartingPosition.LEFT;
+                Autoconfig.whereToStart = StartingPosition.LEFT;
             }
 
             if (gamepad.right_bumper.isInitialPress()){
-                whereToStart = StartingPosition.RIGHT;
+                Autoconfig.whereToStart = StartingPosition.RIGHT;
             }
             telemetry.update();
         }
     }
-    private void waitForDelay() {
+    public void waitForDelay() {
         CountDownTimer cdt = new CountDownTimer(ElapsedTime.Resolution.SECONDS);
-        cdt.setTargetTime(delayNumSec);
-        while(cdt.hasRemainingTime()){
-
+        cdt.setTargetTime(Autoconfig.delayNumSec);
+        while(cdt.hasRemainingTime() && !isStopRequested()){
+            idle();
         }
     }
 }

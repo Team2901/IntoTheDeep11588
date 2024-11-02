@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,10 +14,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Utilities.ConfigUtilities;
+import org.firstinspires.ftc.teamcode.autonomous.Autoconfig;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
-
+@Config
 public class RI3WHardware {
 
     public static final double TICKS_PER_MOTOR_REV = 537.7;
@@ -68,7 +70,6 @@ public class RI3WHardware {
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backRight;
-    public double speed = .55;
     public OpenCvCamera camera;
     public VisionPortal visionPortal;
     public AprilTagProcessor aprilTag;
@@ -197,13 +198,13 @@ public class RI3WHardware {
         double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
             if (turnError >= 0) {
                 turnPower = turnError / 90;
-                if (turnPower > speed) {
-                    turnPower = speed;
+                if (turnPower > Autoconfig.speed) {
+                    turnPower = Autoconfig.speed;
                 }
             } else if (turnError < 0) {
                 turnPower = turnError / 90;
-                if (turnPower < -speed) {
-                    turnPower = -speed;
+                if (turnPower < -Autoconfig.speed) {
+                    turnPower = -Autoconfig.speed;
                 }
         }
 

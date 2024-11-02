@@ -20,10 +20,10 @@ public class PathFour extends RI3WAbstractAutonomous {
         waitForStart();
         //waitForDelay();
 
-        if (whereToStart == StartingPosition.LEFT){
+        if (Autoconfig.whereToStart == StartingPosition.LEFT){
             move(0,-20);
             move(46, 0);
-        } else if (whereToStart == StartingPosition.RIGHT){
+        } else if (Autoconfig.whereToStart == StartingPosition.RIGHT){
             move(23, 0);
             move(0, -51);
             move(23, 0);
@@ -43,10 +43,10 @@ public class PathFour extends RI3WAbstractAutonomous {
             //telemetry.addData("Has Turned to angle", robot.getAngle())
         );
 
-        if (whereToPark == ParkPosition.CORNER){
+        if (Autoconfig.whereToPark == ParkPosition.CORNER){
             move(0,115);
             move(-22,0);
-        } else if (whereToPark == ParkPosition.EDGE){
+        } else if (Autoconfig.whereToPark == ParkPosition.EDGE){
             move(0,92);
             move(-22,0);
         }
