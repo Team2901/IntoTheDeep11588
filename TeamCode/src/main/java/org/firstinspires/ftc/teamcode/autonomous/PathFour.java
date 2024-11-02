@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
+import org.firstinspires.ftc.teamcode.Utilities.FileUtilities;
 
 @Autonomous (name = "PathFour")
 public class PathFour extends RI3WAbstractAutonomous {
@@ -19,11 +18,10 @@ public class PathFour extends RI3WAbstractAutonomous {
         setUp();
         waitForStart();
         //waitForDelay();
-
-        if (Autoconfig.whereToStart == StartingPosition.LEFT){
+        if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             move(0,-20);
             move(46, 0);
-        } else if (Autoconfig.whereToStart == StartingPosition.RIGHT){
+        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
             move(23, 0);
             move(0, -51);
             move(23, 0);
@@ -43,10 +41,10 @@ public class PathFour extends RI3WAbstractAutonomous {
             //telemetry.addData("Has Turned to angle", robot.getAngle())
         );
 
-        if (Autoconfig.whereToPark == ParkPosition.CORNER){
+        if (AutoConfig.getInstance().whereToPark == ParkPosition.CORNER){
             move(0,115);
             move(-22,0);
-        } else if (Autoconfig.whereToPark == ParkPosition.EDGE){
+        } else if (AutoConfig.getInstance().whereToPark == ParkPosition.EDGE){
             move(0,92);
             move(-22,0);
         }

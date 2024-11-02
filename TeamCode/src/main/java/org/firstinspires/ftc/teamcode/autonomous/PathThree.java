@@ -4,15 +4,15 @@ public class PathThree extends RI3WAbstractAutonomous {
     // This program only makes the robot go to park. Needed if robot is not working AT ALL.
     @Override
     public void runOpMode() throws InterruptedException {
-        if (Autoconfig.whereToStart == StartingPosition.LEFT){
+        if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             //
-        } else if (Autoconfig.whereToStart == StartingPosition.RIGHT){
+        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
             //
         }
 
-        if (Autoconfig.whereToPark == ParkPosition.CORNER){
+        if (AutoConfig.getInstance().whereToPark == ParkPosition.CORNER){
             //
-        } else if (Autoconfig.whereToPark == ParkPosition.EDGE){
+        } else if (AutoConfig.getInstance().whereToPark == ParkPosition.EDGE){
             //
         }
     }

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Utilities.ConfigUtilities;
-import org.firstinspires.ftc.teamcode.autonomous.Autoconfig;
+import org.firstinspires.ftc.teamcode.autonomous.AutoConfig;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -198,13 +198,13 @@ public class RI3WHardware {
         double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
             if (turnError >= 0) {
                 turnPower = turnError / 90;
-                if (turnPower > Autoconfig.speed) {
-                    turnPower = Autoconfig.speed;
+                if (turnPower > AutoConfig.getInstance().speed) {
+                    turnPower = AutoConfig.getInstance().speed;
                 }
             } else if (turnError < 0) {
                 turnPower = turnError / 90;
-                if (turnPower < -Autoconfig.speed) {
-                    turnPower = -Autoconfig.speed;
+                if (turnPower < -AutoConfig.getInstance().speed) {
+                    turnPower = -AutoConfig.getInstance().speed;
                 }
         }
 

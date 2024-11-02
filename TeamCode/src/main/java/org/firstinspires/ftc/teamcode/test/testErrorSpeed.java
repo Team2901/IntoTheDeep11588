@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.test;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
-import org.firstinspires.ftc.teamcode.autonomous.Autoconfig;
+import org.firstinspires.ftc.teamcode.autonomous.AutoConfig;
 import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
-import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
+
 @Autonomous(name = "testErrorSpeed", group = "test")
 public class testErrorSpeed extends RI3WAbstractAutonomous {
     double increase_speed = (0.0);
@@ -88,7 +86,7 @@ public class testErrorSpeed extends RI3WAbstractAutonomous {
             telemetry.update();
         }
         waitForStart();
-        Autoconfig.speed = increase_speed;
+        AutoConfig.getInstance().speed = increase_speed;
         move(set_distance_y, set_distance_x);
         while (!isStopRequested()){
             idle();

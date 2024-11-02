@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
+import org.firstinspires.ftc.teamcode.Utilities.FileUtilities;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
@@ -36,10 +36,10 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        robot.frontLeft.setPower(Autoconfig.speed);
-        robot.frontRight.setPower(Autoconfig.speed);
-        robot.backLeft.setPower(Autoconfig.speed);
-        robot.backRight.setPower(Autoconfig.speed);
+        robot.frontLeft.setPower(AutoConfig.getInstance().speed);
+        robot.frontRight.setPower(AutoConfig.getInstance().speed);
+        robot.backLeft.setPower(AutoConfig.getInstance().speed);
+        robot.backRight.setPower(AutoConfig.getInstance().speed);
 
         while (opModeIsActive() && (robot.frontLeft.isBusy() || robot.frontRight.isBusy() ||
                 robot.backLeft.isBusy() || robot.backRight.isBusy())) {
@@ -291,19 +291,19 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     public void help(){
         telemetry.addLine("Set Up Mode");
         telemetry.addLine();
-        telemetry.addData("startLocation", Autoconfig.whereToStart);
+        telemetry.addData("startLocation", AutoConfig.getInstance().whereToStart);
         telemetry.addLine("LB: Staring on left");
         telemetry.addLine("RB: Staring on right");
         telemetry.addLine();
-        telemetry.addData("parkValue", Autoconfig.whereToPark);
+        telemetry.addData("parkValue", AutoConfig.getInstance().whereToPark);
         telemetry.addLine("X: Park edge");
         telemetry.addLine("B: Park corner");
         telemetry.addLine();
-        telemetry.addData("Current Speed", Autoconfig.speed);
+        telemetry.addData("Current Speed", AutoConfig.getInstance().speed);
         telemetry.addLine("Y: Increase Speed (0.1)");
         telemetry.addLine("A: Decrease Speed (0.1)");
         telemetry.addLine();
-        telemetry.addData("delayNumSec", Autoconfig.delayNumSec);
+        telemetry.addData("delayNumSec", AutoConfig.getInstance().delayNumSec);
         telemetry.addLine("Dpad Up: Increase delay (1 sec)");
         telemetry.addLine("Dpad Down: Decrease delay (1 sec)");
 
@@ -311,48 +311,51 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     public void setUp() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
+        FileUtilities.telemetry = telemetry;
+        FileUtilities.readAutoConfig();
 
         while (!isStarted()){
             help();
             gamepad.update();
 
             if (gamepad.b.isPressed()){
-                Autoconfig.whereToPark = ParkPosition.CORNER;
+                AutoConfig.getInstance().whereToPark = ParkPosition.CORNER;
             }
 
             if (gamepad.x.isPressed()){
-                Autoconfig.whereToPark = ParkPosition.EDGE;
+                AutoConfig.getInstance().whereToPark = ParkPosition.EDGE;
             }
 
             if (gamepad.y.isInitialPress()){
-                Autoconfig.speed = Autoconfig.speed + 0.05 ;
+                AutoConfig.getInstance().speed = AutoConfig.getInstance().speed + 0.05 ;
             }
 
             if (gamepad.a.isInitialPress()){
-                Autoconfig.speed = Autoconfig.speed - 0.05 ;
+                AutoConfig.getInstance().speed = AutoConfig.getInstance().speed - 0.05 ;
             }
 
             if (gamepad.dpad_up.isInitialPress()){
-                Autoconfig.delayNumSec = Autoconfig.delayNumSec + 1 ;
+                AutoConfig.getInstance().delayNumSec = AutoConfig.getInstance().delayNumSec + 1 ;
             }
 
             if (gamepad.dpad_down.isInitialPress()){
-                Autoconfig.delayNumSec = Autoconfig.delayNumSec - 1 ;
+                AutoConfig.getInstance().delayNumSec = AutoConfig.getInstance().delayNumSec - 1 ;
             }
 
             if (gamepad.left_bumper.isInitialPress()){
-                Autoconfig.whereToStart = StartingPosition.LEFT;
+                AutoConfig.getInstance().whereToStart = StartingPosition.LEFT;
             }
 
             if (gamepad.right_bumper.isInitialPress()){
-                Autoconfig.whereToStart = StartingPosition.RIGHT;
+                AutoConfig.getInstance().whereToStart = StartingPosition.RIGHT;
             }
             telemetry.update();
         }
+        FileUtilities.writeAutoConfig();
     }
     public void waitForDelay() {
         CountDownTimer cdt = new CountDownTimer(ElapsedTime.Resolution.SECONDS);
-        cdt.setTargetTime(Autoconfig.delayNumSec);
+        cdt.setTargetTime(AutoConfig.getInstance().delayNumSec);
         while(cdt.hasRemainingTime() && !isStopRequested()){
             idle();
         }
