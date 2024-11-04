@@ -19,12 +19,16 @@ public class PathFour extends RI3WAbstractAutonomous {
         waitForStart();
         //waitForDelay();
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
-            move(0,-20);
-            move(46, 0);
+            parsePath(
+               "Strafe left 20 inches\n" +
+               "Move forward 46 inches\n"
+            );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
-            move(23, 0);
-            move(0, -51);
-            move(23, 0);
+            parsePath(
+                "Move forward 23 inches\n" +
+                "Strafe left 51 inches\n" +
+                "Move forward 23 inches\n"
+            );
         }
 
         parsePath(
@@ -42,11 +46,15 @@ public class PathFour extends RI3WAbstractAutonomous {
         );
 
         if (AutoConfig.getInstance().whereToPark == ParkPosition.CORNER){
-            move(0,115);
-            move(-22,0);
+            parsePath(
+                "Strafe right 115 inches\n" +
+                "Move backward 22 inches\n"
+            );
         } else if (AutoConfig.getInstance().whereToPark == ParkPosition.EDGE){
-            move(0,92);
-            move(-22,0);
+            parsePath(
+                "Strafe right 92 inches\n" +
+                "Move backward 22 inches\n"
+            );
         }
     }
 }

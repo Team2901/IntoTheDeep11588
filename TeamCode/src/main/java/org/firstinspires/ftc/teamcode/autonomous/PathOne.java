@@ -13,34 +13,40 @@ public class PathOne extends RI3WAbstractAutonomous {
         waitForStart();
 
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
-            //Robot strafes 3 in. right
-            move(0,3);
-            // move(0,18);
-            // move forward 30" - clawOffset
-            move(30 - robot.clawOffset, 0);
-            //move(20 - robot.clawOffset, 0);
+            parsePath(
+                    "Strafe right 5 inches\n" +
+                    "Move forward 21 inches\n"
+                    //  - robot.clawOffset
+                    // TODO: add claw offset to parse path
+            );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
-            // move forward 30" - clawOffset
-            move(30 - robot.clawOffset, 0);
-            //move(0, -13);
-            //move(20 - robot.clawOffset, 0);
+            parsePath(
+                    "Strafe left 5 inches\n" +
+                    "Move forward 21 inches\n"
+            );
         }
 
-        try {
-            parsePath(
-                    "Strafe right 3 inches\n" +
-                    "Move forward 30 inches clawOffset\n" +
-                    "Strafe right 64 inches\n" +
-                    "Move back 24 inches\n"
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        // Claw code goes after starting positions
 
         if (AutoConfig.getInstance().whereToPark == ParkPosition.CORNER){
-            //
+            parsePath(
+                    "Strafe right 64 inches\n" +
+                    "Move backward 21 inches\n"
+            );
         } else if (AutoConfig.getInstance().whereToPark == ParkPosition.EDGE){
-            // move(0, 30)
+            parsePath(
+                    "Strafe right 58 inches\n" +
+                    "Move backward 21 inches\n"
+            );
         }
     }
+
+    //try {
+        //parsePath(
+                //"Strafe right 64 inches\n" +
+                        //"Move back 24 inches\n"
+       // );
+    //} catch (Exception e) {
+        //throw new RuntimeException(e);
+    //}
 }
