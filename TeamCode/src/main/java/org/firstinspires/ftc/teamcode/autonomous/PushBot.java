@@ -4,10 +4,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.Utilities.FileUtilities;
-
-@Autonomous (name = "PathFour")
-public class PathFour extends RI3WAbstractAutonomous {
+@Autonomous (name = "PushBot")
+public class PushBot extends RI3WAbstractAutonomous {
 // Emergency Auto + Push Bot (pushes 2 yellow samples into Net Zone, Park either position)
     @Override
     public void runOpMode() throws InterruptedException {

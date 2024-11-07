@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "PathOne")
-public class PathOne extends RI3WAbstractAutonomous {
+@Autonomous(name = "HangSpecimen")
+public class HangSpecimen extends RI3WAbstractAutonomous {
 
     @Override
     public void runOpMode() throws InterruptedException {
