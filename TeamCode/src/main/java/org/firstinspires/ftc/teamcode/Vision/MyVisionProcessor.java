@@ -20,7 +20,7 @@ public class MyVisionProcessor implements VisionProcessor
     int frameCount = 0;
 
     Size targetSize;
-    Mat outputFrameRGB = new Mat();
+    Mat outputFrameRGB;
 
     public MyVisionProcessor(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -29,13 +29,23 @@ public class MyVisionProcessor implements VisionProcessor
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
+        resize(width, height);
+
+        // For onDrawFrame
+        paint = new Paint();
+        paint.setAntiAlias(true);
+    }
+
+    public void resize(Size size) {
+        resize((int)size.width, (int)size.height);
+    }
+
+    public void resize(int width, int height) {
         targetSize = new Size(width, height);
         outputFrameRGB = new Mat(targetSize, CvType.CV_8UC3);
 
         // For onDrawFrame
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        paint = new Paint();
-        paint.setAntiAlias(true);
     }
 
     @Override
@@ -48,6 +58,12 @@ public class MyVisionProcessor implements VisionProcessor
         // This is for EOCV-Sim
         if (inputFrameRGB.type() == CvType.CV_8UC4) {
             Imgproc.cvtColor(inputFrameRGB, inputFrameRGB, Imgproc.COLOR_RGBA2RGB);
+        }
+
+        // Re-initialize size if needed
+        // This is for EOCV-Sim only, so that it doesn't crash when testing an input of a different size
+        if (!inputFrameRGB.size().equals(targetSize)) {
+            resize(inputFrameRGB.size());
         }
 
         // Do the processing here
