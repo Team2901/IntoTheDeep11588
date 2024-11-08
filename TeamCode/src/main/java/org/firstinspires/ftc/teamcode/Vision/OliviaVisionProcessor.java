@@ -43,11 +43,13 @@ public class OliviaVisionProcessor implements VisionProcessor
     }
 
     public void resize(int width, int height) {
-        targetSize = new Size(width, height);
-        outputFrameRGB = new Mat(targetSize, CvType.CV_8UC3);
+        synchronized (resizeLock) {
+            targetSize = new Size(width, height);
+            outputFrameRGB = new Mat(targetSize, CvType.CV_8UC3);
 
-        // For onDrawFrame
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            // For onDrawFrame
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        }
     }
 
     @Override
@@ -116,12 +118,14 @@ public class OliviaVisionProcessor implements VisionProcessor
             // Black fill the canvas
             canvas.drawColor(Color.WHITE);
 
-            // Resize to canvas size
-            float scaleFactor = Math.min(1.0f * onscreenWidth / outputFrameRGB.width(), 1.0f * onscreenHeight / outputFrameRGB.height());
-            canvas.scale(scaleFactor, scaleFactor);
+            synchronized (resizeLock) {
+                // Resize to canvas size
+                float scaleFactor = Math.min(1.0f * onscreenWidth / outputFrameRGB.width(), 1.0f * onscreenHeight / outputFrameRGB.height());
+                canvas.scale(scaleFactor, scaleFactor);
 
-            // Convert to Android Bitmap
-            Utils.matToBitmap(outputFrameRGB, bitmap);
+                // Convert to Android Bitmap
+                Utils.matToBitmap(outputFrameRGB, bitmap);
+            }
 
             // Write to the canvas
             canvas.drawBitmap(bitmap, 0, 0, paint);
@@ -129,4 +133,5 @@ public class OliviaVisionProcessor implements VisionProcessor
     }
     Bitmap bitmap;
     Paint paint;
+    Object resizeLock = new Object();
 }
