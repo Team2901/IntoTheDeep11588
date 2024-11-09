@@ -17,11 +17,13 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class MyVisionProcessor implements VisionProcessor
+public class CalvinVisionProcessor implements VisionProcessor
 {
     public static boolean doVisualization = true;
 
@@ -52,7 +54,7 @@ public class MyVisionProcessor implements VisionProcessor
     Mat debugViewRed;
     Mat debugViewYellow;
 
-    public MyVisionProcessor(Telemetry telemetry) {
+    public CalvinVisionProcessor(Telemetry telemetry) {
         this.telemetry = telemetry;
         telemetry.setAutoClear(true); // this is for EOCV-Sim
     }
@@ -122,11 +124,16 @@ public class MyVisionProcessor implements VisionProcessor
         Core.bitwise_or(maskSampleRed1, maskSampleRed2, maskSampleRed);
         Core.inRange(inputFrameHSV, hsvYellowLimitLower, hsvYellowLimitUpper, maskSampleYellow);
 
+        // Median blur the mask to clean up the noise
+        Imgproc.medianBlur(maskSampleRed, maskSampleRed, 7);
+        Imgproc.medianBlur(maskSampleBlue, maskSampleBlue, 7);
+        Imgproc.medianBlur(maskSampleYellow, maskSampleYellow, 7);
+
         // More processing is needed here...
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSampleRed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        hierarchy.release();
+        List<DetectedSample> detectedSamples = findCentroidAndContours(maskSampleRed);
+        List<DetectedSample> detectedSamples2 = findCentroidAndContours(maskSampleBlue);
+        List<DetectedSample> detectedSamples3 = findCentroidAndContours(maskSampleYellow);
+
 
         if (doVisualization) {
             // Fill/initialize the frame
@@ -139,7 +146,19 @@ public class MyVisionProcessor implements VisionProcessor
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
 
             // Draw the contours
-            Imgproc.drawContours(debugViewRed, contours, -1, new Scalar(0, 255, 0));
+            // Show the centroids
+            for (DetectedSample detectedSample : detectedSamples){
+                Imgproc.drawContours(debugViewRed, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
+                Imgproc.circle(debugViewRed, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+            }
+            for (DetectedSample detectedSample : detectedSamples2){
+                Imgproc.drawContours(debugViewBlue, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
+                Imgproc.circle(debugViewBlue, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+            }
+            for (DetectedSample detectedSample : detectedSamples3){
+                Imgproc.drawContours(debugViewYellow, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
+                Imgproc.circle(debugViewYellow, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+            }
 
             // Font Stuff
             double fontScale = targetSize.height / 180.0;
@@ -176,6 +195,40 @@ public class MyVisionProcessor implements VisionProcessor
             // Write to the canvas
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
+    }
+    public class DetectedSample {
+        public MatOfPoint contour;
+        public Point centroid;
+        public Moments moments;
+        public DetectedSample(MatOfPoint _contour, Point _centroid, Moments _moments){
+            contour = _contour;
+            centroid = _centroid;
+            moments = _moments;
+        }
+    }
+    public List<DetectedSample> findCentroidAndContours(Mat maskSampleColor){
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        hierarchy.release();
+        telemetry.addData("Contours", contours.size());
+
+        int idx = 0;
+        List<DetectedSample> detectedSamples = new ArrayList<>(contours.size());
+        for (MatOfPoint contour: contours){
+            // Find the center
+            Moments moments = Imgproc.moments(contour);
+            double totalPixels = moments.m00;
+            double sumX = moments.m10;
+            double sumY = moments.m01;
+            Point centroid = new Point(sumX/totalPixels, sumY / totalPixels);
+            DetectedSample detectedSample = new DetectedSample(contour, centroid, moments);
+            telemetry.addData("contour"+idx+"centroid", centroid);
+            detectedSamples.add(detectedSample);
+            idx++;
+        }
+
+        return detectedSamples;
     }
     Bitmap bitmap;
     Paint paint;
