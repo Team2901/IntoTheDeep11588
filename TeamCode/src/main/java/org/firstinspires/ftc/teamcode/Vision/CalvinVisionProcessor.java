@@ -130,9 +130,9 @@ public class CalvinVisionProcessor implements VisionProcessor
         Imgproc.medianBlur(maskSampleYellow, maskSampleYellow, 7);
 
         // More processing is needed here...
-        List<DetectedSample> detectedSamples = findCentroidAndContours(maskSampleRed);
-        List<DetectedSample> detectedSamples2 = findCentroidAndContours(maskSampleBlue);
-        List<DetectedSample> detectedSamples3 = findCentroidAndContours(maskSampleYellow);
+        List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSampleRed);
+        List<DetectedSample> detectedSamplesBlue = findCentroidAndContours(maskSampleBlue);
+        List<DetectedSample> detectedSamplesYellow = findCentroidAndContours(maskSampleYellow);
 
 
         if (doVisualization) {
@@ -147,15 +147,15 @@ public class CalvinVisionProcessor implements VisionProcessor
 
             // Draw the contours
             // Show the centroids
-            for (DetectedSample detectedSample : detectedSamples){
+            for (DetectedSample detectedSample : detectedSamplesRed){
                 Imgproc.drawContours(debugViewRed, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewRed, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
             }
-            for (DetectedSample detectedSample : detectedSamples2){
+            for (DetectedSample detectedSample : detectedSamplesBlue){
                 Imgproc.drawContours(debugViewBlue, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewBlue, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
             }
-            for (DetectedSample detectedSample : detectedSamples3){
+            for (DetectedSample detectedSample : detectedSamplesYellow){
                 Imgproc.drawContours(debugViewYellow, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewYellow, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
             }
