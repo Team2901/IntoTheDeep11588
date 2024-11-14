@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class OliviaVisionProcessor2 implements VisionProcessor
+public class QualVisionProcessor implements VisionProcessor
 {
     public static boolean doVisualization = true;
 
@@ -56,7 +56,7 @@ public class OliviaVisionProcessor2 implements VisionProcessor
     Mat debugViewRed;
     Mat debugViewYellow;
 
-    public OliviaVisionProcessor2(Telemetry telemetry) {
+    public QualVisionProcessor(Telemetry telemetry) {
         this.telemetry = telemetry;
         telemetry.setAutoClear(true); // this is for EOCV-Sim
     }
@@ -100,6 +100,10 @@ public class OliviaVisionProcessor2 implements VisionProcessor
         telemetry.addData("Capture Time", captureTimeNanos);
         telemetry.addData("Frames Processed", frameCount);
         frameCount++;
+
+        Point imageCenter = new Point();
+        imageCenter.x = inputFrameRGB.width() / 2;
+        imageCenter.y = inputFrameRGB.height() / 2;
 
         // Drop the alpha channel, if it exists
         // This is for EOCV-Sim
@@ -160,26 +164,45 @@ public class OliviaVisionProcessor2 implements VisionProcessor
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
 
             // Draw the contours
-            // Draw the contours
             // Show the centroids
-            for (DetectedSample detectedSample : detectedSamplesRed){
+            for (DetectedSample detectedSample : detectedSamplesRed) {
                 Imgproc.drawContours(debugViewRed, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewRed, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+
+                int inZoneCircleRadius = 26;
+                double dx = (imageCenter.x - detectedSample.centroid.x);
+                double dy = (imageCenter.y - detectedSample.centroid.y);
+                double d = Math.sqrt(
+                        (dx * dx) + (dy * dy)
+                );
+
+                // drawing the circle in the middle - red
+                if (d < inZoneCircleRadius) {
+                    Imgproc.circle(debugViewRed, detectedSample.centroid, inZoneCircleRadius, new Scalar(0, 255, 0), 2);
+                } else {
+                    Imgproc.circle(debugViewRed, detectedSample.centroid, inZoneCircleRadius, new Scalar(128, 128, 128), 2);
+                }
             }
             for (DetectedSample detectedSample : detectedSamplesBlue){
                 Imgproc.drawContours(debugViewBlue, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewBlue, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+
+                // drawing the circle in the middle - blue
+                Imgproc.circle(debugViewBlue, detectedSample.centroid, 25, new Scalar(0, 255, 0), 2);
             }
+
             for (DetectedSample detectedSample : detectedSamplesYellow){
                 Imgproc.drawContours(debugViewYellow, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewYellow, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
-            }
 
+                // drawing the circle in the middle - yellow
+                Imgproc.circle(debugViewYellow, detectedSample.centroid, 25, new Scalar(0, 255, 0), 2);
+            }
 
             // drawing the cross lines for red, blue, yellow
             Imgproc.line(debugViewBlue,
-                    new Point(debugViewBlue.width() / 2, 0),
-                    new Point (debugViewBlue.width() / 2, debugViewBlue.height()),
+                    new Point(imageCenter.x, 0),
+                    new Point (imageCenter.x, debugViewBlue.height()),
                     new Scalar(0, 255, 255));
 
             Imgproc.line(debugViewBlue,
