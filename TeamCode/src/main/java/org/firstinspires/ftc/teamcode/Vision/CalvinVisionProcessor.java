@@ -111,9 +111,6 @@ public class CalvinVisionProcessor implements VisionProcessor
             resize(inputFrameRGB.size());
         }
 
-        //
-        // Do the processing here
-        //
         // Convert to HSV
         Imgproc.cvtColor(inputFrameRGB, inputFrameHSV, Imgproc.COLOR_RGB2HSV);
 
@@ -129,6 +126,20 @@ public class CalvinVisionProcessor implements VisionProcessor
         Imgproc.medianBlur(maskSampleBlue, maskSampleBlue, 7);
         Imgproc.medianBlur(maskSampleYellow, maskSampleYellow, 7);
 
+        // Get edges
+        // We use the Value channel from HSV to find the edges
+        Mat edges = new Mat();
+        Core.extractChannel(inputFrameHSV, edges, 2);
+
+        // We only want the part of the image which matches our color region of interest
+        Core.bitwise_and(edges, maskSampleYellow, edges);
+
+        // We will find the edges using the adaptiveThreshold method, and the inverted threshold.
+        // The parameters may need to change based on resolution, lighting, testing, etc.
+        // Note: Depending on how well this works for other images, we may need to use a different
+        // method of edge detection
+        //Imgproc.adaptiveThreshold(edges, edges, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 15, 10);
+
         // More processing is needed here...
         List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSampleRed);
         List<DetectedSample> detectedSamplesBlue = findCentroidAndContours(maskSampleBlue);
@@ -143,7 +154,8 @@ public class CalvinVisionProcessor implements VisionProcessor
             inputFrameRGB.copyTo(debugViewInput);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
+            //Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
+            Imgproc.cvtColor(edges, debugViewYellow, Imgproc.COLOR_GRAY2RGB);
 
             // Draw the contours
             // Show the centroids
@@ -194,16 +206,6 @@ public class CalvinVisionProcessor implements VisionProcessor
 
             // Write to the canvas
             canvas.drawBitmap(bitmap, 0, 0, paint);
-        }
-    }
-    public class DetectedSample {
-        public MatOfPoint contour;
-        public Point centroid;
-        public Moments moments;
-        public DetectedSample(MatOfPoint _contour, Point _centroid, Moments _moments){
-            contour = _contour;
-            centroid = _centroid;
-            moments = _moments;
         }
     }
     public List<DetectedSample> findCentroidAndContours(Mat maskSampleColor){
