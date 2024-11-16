@@ -259,4 +259,17 @@ public class QualVisionProcessor implements VisionProcessor
     Bitmap bitmap;
     Paint paint;
     Object resizeLock = new Object();
+
+    // Placeholder for move
+    double getXPower(double Rx, double Cx,double Zx){
+        double Dx = Cx - Rx;
+        double m = .5;
+        double Px;
+        if (Math.abs(Dx) > Zx){
+            Px = m * Dx - (Math.signum(Dx) * Zx);
+        } else {
+            Px = 0;
+        }
+        return Px;
+    }
 }

@@ -17,11 +17,12 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyVisionProcessor implements VisionProcessor
+public class VisionProcessorAutumn2 implements VisionProcessor
 {
 
     public static boolean doVisualization = true;
@@ -34,7 +35,8 @@ public class MyVisionProcessor implements VisionProcessor
     public static Scalar hsvRedLimitUpper2 = new Scalar(180,255,255);
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
-
+    public List<MatOfPoint> contours = new ArrayList<>();
+    public List<Point> centroids = new ArrayList<>();
     Telemetry telemetry;
 
     int frameCount = 0;
@@ -53,7 +55,7 @@ public class MyVisionProcessor implements VisionProcessor
     Mat debugViewRed;
     Mat debugViewYellow;
 
-    public MyVisionProcessor(Telemetry telemetry) {
+    public VisionProcessorAutumn2(Telemetry telemetry) {
         this.telemetry = telemetry;
         telemetry.setAutoClear(true); // this is for EOCV-Sim
     }
@@ -67,9 +69,7 @@ public class MyVisionProcessor implements VisionProcessor
         paint.setAntiAlias(true);
     }
 
-    public void resize(Size size) {
-        resize((int)size.width, (int)size.height);
-    }
+    public void resize(Size size) { resize((int)size.width, (int)size.height); }
 
     public void resize(int width, int height) {
         synchronized (resizeLock) {
@@ -123,32 +123,81 @@ public class MyVisionProcessor implements VisionProcessor
         Core.bitwise_or(maskSampleRed1, maskSampleRed2, maskSampleRed);
         Core.inRange(inputFrameHSV, hsvYellowLimitLower, hsvYellowLimitUpper, maskSampleYellow);
 
-        // More processing is needed here...
-        List<MatOfPoint> contours = new ArrayList<>();
+        Imgproc.medianBlur(maskSampleRed, maskSampleRed, 13);
+
         Mat hierarchy = new Mat();
         Imgproc.findContours(maskSampleRed, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         hierarchy.release();
+        telemetry.addData("Contours 1", contours.size());
 
+        int idx = 0;
+        for (MatOfPoint contour : contours) {
+            Moments moments = Imgproc.moments(contour);
+            double totalPixels = moments.m00;
+            double sumX = moments.m10;
+            double sumY = moments.m01;
+            Point centroid = new Point(sumX / totalPixels, sumY / totalPixels);
+            telemetry.addData("contour" + idx + "centroid", centroid);
+            centroids.add(centroid);
+            idx++;
+        }
         if (doVisualization) {
             // Fill/initialize the frame
             Imgproc.rectangle(outputScratchpad, new Point(0, 0), new Point(outputScratchpad.width(), outputScratchpad.height()), new Scalar(0,0,0), -1);
-
-            // For visualization, let' show the part of the image we're seeing that's in color range
-            inputFrameRGB.copyTo(debugViewInput);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
-
-            // Draw the contours
-            Imgproc.drawContours(debugViewRed, contours, -1, new Scalar(0, 255, 0));
-
-            // Font Stuff
             double fontScale = targetSize.height / 180.0;
             Scalar fontColor = new Scalar(255,255,255);
+            // For visualization, let's show the part of the image we're seeing that's in color range
+            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
             Imgproc.putText(debugViewBlue, "Blue", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
+            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
             Imgproc.putText(debugViewRed, "Red", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
+            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
             Imgproc.putText(debugViewYellow, "Yellow", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
+            inputFrameRGB.copyTo(debugViewInput);
+            Imgproc.drawContours(debugViewRed, contours, -1, new Scalar(0, 255, 0));
 
+            contours = new ArrayList<>();
+
+            for(Point centroid : centroids) {
+                Imgproc.circle(debugViewRed, centroid, 2, new Scalar(0, 255, 0), 2);
+            }
+
+            centroids = new ArrayList<>();
+
+            Imgproc.line(debugViewRed,
+                    new Point(debugViewRed.width() / 2, 0),
+                    new Point(debugViewRed.width() / 2, debugViewRed.height()),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.line(debugViewRed,
+                    new Point(0, debugViewRed.height() / 2),
+                    new Point(debugViewRed.width(), debugViewRed.height() / 2),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.line(debugViewBlue,
+                    new Point(debugViewBlue.width() / 2, 0),
+                    new Point(debugViewBlue.width() / 2, debugViewBlue.height()),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.line(debugViewBlue,
+                    new Point(0, debugViewBlue.height() / 2),
+                    new Point(debugViewBlue.width(), debugViewBlue.height() / 2),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.line(debugViewYellow,
+                    new Point(debugViewYellow.width() / 2, 0),
+                    new Point(debugViewYellow.width() / 2, debugViewYellow.height()),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.line(debugViewYellow,
+                    new Point(0, debugViewYellow.height() / 2),
+                    new Point(debugViewYellow.width(), debugViewYellow.height() / 2),
+                    new Scalar (0, 255, 255));
+
+            Imgproc.putText(debugViewYellow, "Yellow", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
+            inputFrameRGB.copyTo(debugViewInput);
+            // (Finally, make the output frame for visualization)
+            Imgproc.resize(outputScratchpad, outputFrameRGB, targetSize);
             // (Finally, make the output frame for visualization)
             Imgproc.resize(outputScratchpad, outputFrameRGB, targetSize);
         }
