@@ -26,13 +26,14 @@ import java.util.List;
 public class QualVisionProcessor implements VisionProcessor
 {
     public static boolean doVisualization = true;
-
+    // Keep these!!!
     public static Scalar hsvBlueLimitLower = new Scalar(80,80,65);
     public static Scalar hsvBlueLimitUpper = new Scalar(130,255,255);
     public static Scalar hsvRedLimitLower1 = new Scalar(0,80,65);
     public static Scalar hsvRedLimitUpper1 = new Scalar(7,255,255);
     public static Scalar hsvRedLimitLower2 = new Scalar(150,80,65);
     public static Scalar hsvRedLimitUpper2 = new Scalar(180,255,255);
+    // Keep these!!!
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
     public List<MatOfPoint> contours = new ArrayList<>();
@@ -45,16 +46,14 @@ public class QualVisionProcessor implements VisionProcessor
     Size targetSize;
     Mat outputFrameRGB;
     Mat inputFrameHSV;
-    Mat maskSampleBlue;
     Mat maskSampleRed1;
     Mat maskSampleRed2;
     Mat maskSampleRed;
-    Mat maskSampleYellow;
     Mat outputScratchpad;
     Mat debugViewInput;
-    Mat debugViewBlue;
+    Mat bottomLeftView;
     Mat debugViewRed;
-    Mat debugViewYellow;
+    Mat topRightView;
 
     public QualVisionProcessor(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -79,16 +78,14 @@ public class QualVisionProcessor implements VisionProcessor
             targetSize = new Size(width, height);
             outputFrameRGB = new Mat(targetSize, CvType.CV_8UC3);
             inputFrameHSV = new Mat(targetSize, CvType.CV_8UC3);
-            maskSampleBlue = new Mat(targetSize, CvType.CV_8UC1);
             maskSampleRed1 = new Mat(targetSize, CvType.CV_8UC1);
             maskSampleRed2 = new Mat(targetSize, CvType.CV_8UC1);
             maskSampleRed = new Mat(targetSize, CvType.CV_8UC1);
-            maskSampleYellow = new Mat(targetSize, CvType.CV_8UC1);
             outputScratchpad = new Mat(height * 2, width * 2, CvType.CV_8UC3);
             debugViewInput = outputScratchpad.submat(0, height, 0, width);
-            debugViewBlue = outputScratchpad.submat(height, height * 2, 0, width);
+            bottomLeftView = outputScratchpad.submat(height, height * 2, 0, width);
             debugViewRed = outputScratchpad.submat(height, height * 2, width, width * 2);
-            debugViewYellow = outputScratchpad.submat(0, height, width, width * 2);
+            topRightView = outputScratchpad.submat(0, height, width, width * 2);
 
             // For onDrawFrame
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -124,21 +121,15 @@ public class QualVisionProcessor implements VisionProcessor
         Imgproc.cvtColor(inputFrameRGB, inputFrameHSV, Imgproc.COLOR_RGB2HSV);
 
         // Color range
-        Core.inRange(inputFrameHSV, hsvBlueLimitLower, hsvBlueLimitUpper, maskSampleBlue);
         Core.inRange(inputFrameHSV, hsvRedLimitLower1, hsvRedLimitUpper1, maskSampleRed1);
         Core.inRange(inputFrameHSV, hsvRedLimitLower2, hsvRedLimitUpper2, maskSampleRed2);
         Core.bitwise_or(maskSampleRed1, maskSampleRed2, maskSampleRed);
-        Core.inRange(inputFrameHSV, hsvYellowLimitLower, hsvYellowLimitUpper, maskSampleYellow);
 
         // Median blur the mask to clean up the noise
         Imgproc.medianBlur(maskSampleRed, maskSampleRed, 7);
-        Imgproc.medianBlur(maskSampleBlue, maskSampleBlue, 7);
-        Imgproc.medianBlur(maskSampleYellow, maskSampleYellow, 7);
 
         // More processing is needed here...
         List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSampleRed);
-        List<DetectedSample> detectedSamplesBlue = findCentroidAndContours(maskSampleBlue);
-        List<DetectedSample> detectedSamplesYellow = findCentroidAndContours(maskSampleYellow);
 
         // Find the contours of our mask
         contours = new ArrayList<>();
@@ -148,9 +139,6 @@ public class QualVisionProcessor implements VisionProcessor
         hierarchy.release();
         telemetry.addData("Contours", contours.size());
 
-        // for each contour -> in pixel coordinates
-        telemetry.addData("Width: ", debugViewBlue.width());
-        telemetry.addData("Height: ", debugViewBlue.height());
 
         if (doVisualization) {
 
@@ -159,9 +147,7 @@ public class QualVisionProcessor implements VisionProcessor
 
             // For visualization, let's show the part of the image we're seeing that's in color range
             inputFrameRGB.copyTo(debugViewInput);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
 
             // Draw the contours
             // Show the centroids
@@ -183,33 +169,8 @@ public class QualVisionProcessor implements VisionProcessor
                     Imgproc.circle(debugViewRed, detectedSample.centroid, inZoneCircleRadius, new Scalar(128, 128, 128), 2);
                 }
             }
-            for (DetectedSample detectedSample : detectedSamplesBlue){
-                Imgproc.drawContours(debugViewBlue, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
-                Imgproc.circle(debugViewBlue, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
-
-                // drawing the circle in the middle - blue
-                Imgproc.circle(debugViewBlue, detectedSample.centroid, 25, new Scalar(0, 255, 0), 2);
-            }
-
-            for (DetectedSample detectedSample : detectedSamplesYellow){
-                Imgproc.drawContours(debugViewYellow, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
-                Imgproc.circle(debugViewYellow, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
-
-                // drawing the circle in the middle - yellow
-                Imgproc.circle(debugViewYellow, detectedSample.centroid, 25, new Scalar(0, 255, 0), 2);
-            }
 
             // drawing the cross lines for red, blue, yellow
-            Imgproc.line(debugViewBlue,
-                    new Point(imageCenter.x, 0),
-                    new Point (imageCenter.x, debugViewBlue.height()),
-                    new Scalar(0, 255, 255));
-
-            Imgproc.line(debugViewBlue,
-                    new Point(0, debugViewBlue.height() / 2),
-                    new Point (debugViewBlue.width(), debugViewBlue.height() / 2),
-                    new Scalar(0, 255, 255));
-
             Imgproc.line(debugViewRed,
                     new Point(debugViewRed.width() / 2, 0),
                     new Point (debugViewRed.width() / 2, debugViewRed.height()),
@@ -219,23 +180,10 @@ public class QualVisionProcessor implements VisionProcessor
                     new Point(0, debugViewRed.height() / 2),
                     new Point (debugViewRed.width(), debugViewRed.height() / 2),
                     new Scalar(0, 255, 255));
-
-            Imgproc.line(debugViewYellow,
-                    new Point(debugViewYellow.width() / 2, 0),
-                    new Point (debugViewYellow.width() / 2, debugViewYellow.height()),
-                    new Scalar(0, 255, 255));
-
-            Imgproc.line(debugViewYellow,
-                    new Point(0, debugViewYellow.height() / 2),
-                    new Point (debugViewYellow.width(), debugViewYellow.height() / 2),
-                    new Scalar(0, 255, 255));
-
             // font stuff
             double fontScale = targetSize.height / 180.0;
             Scalar fontColor = new Scalar(255,255,255);
-            Imgproc.putText(debugViewBlue, "Blue", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
             Imgproc.putText(debugViewRed, "Red", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
-            Imgproc.putText(debugViewYellow, "Yellow", new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
 
             // (Finally, make the output frame for visualization)
             Imgproc.resize(outputScratchpad, outputFrameRGB, targetSize);
