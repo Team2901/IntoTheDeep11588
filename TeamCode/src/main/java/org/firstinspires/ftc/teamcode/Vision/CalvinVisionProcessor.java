@@ -128,11 +128,12 @@ public class CalvinVisionProcessor implements VisionProcessor
 
         // Get edges
         // We use the Value channel from HSV to find the edges
-        Mat edges = new Mat();
-        Core.extractChannel(inputFrameHSV, edges, 2);
+//        TODO: Mat edges = new Mat();
+//        TODO: Core.extractChannel(inputFrameHSV, edges, 2);
 
         // We only want the part of the image which matches our color region of interest
-        Core.bitwise_and(edges, maskSampleYellow, edges);
+
+        // TODO: Core.bitwise_and(edges, maskSampleYellow, edges);
 
         // We will find the edges using the adaptiveThreshold method, and the inverted threshold.
         // The parameters may need to change based on resolution, lighting, testing, etc.
@@ -154,8 +155,8 @@ public class CalvinVisionProcessor implements VisionProcessor
             inputFrameRGB.copyTo(debugViewInput);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
-            //Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
-            Imgproc.cvtColor(edges, debugViewYellow, Imgproc.COLOR_GRAY2RGB);
+            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
+            // TODO: Imgproc.cvtColor(edges, debugViewYellow, Imgproc.COLOR_GRAY2RGB);
 
             // Draw the contours
             // Show the centroids
@@ -211,8 +212,8 @@ public class CalvinVisionProcessor implements VisionProcessor
     public List<DetectedSample> findCentroidAndContours(Mat maskSampleColor){
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        hierarchy.release();
+        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        telemetry.addData("Hierarchy", hierarchy.size());
         telemetry.addData("Contours", contours.size());
 
         int idx = 0;
