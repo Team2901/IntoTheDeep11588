@@ -128,23 +128,35 @@ public class CalvinVisionProcessor implements VisionProcessor
 
         // Get edges
         // We use the Value channel from HSV to find the edges
-//        TODO: Mat edges = new Mat();
-//        TODO: Core.extractChannel(inputFrameHSV, edges, 2);
+        Mat edges = new Mat();
+        Core.extractChannel(inputFrameHSV, edges, 2);
 
         // We only want the part of the image which matches our color region of interest
 
-        // TODO: Core.bitwise_and(edges, maskSampleYellow, edges);
+        Core.bitwise_and(edges, maskSampleYellow, edges);
 
         // We will find the edges using the adaptiveThreshold method, and the inverted threshold.
         // The parameters may need to change based on resolution, lighting, testing, etc.
         // Note: Depending on how well this works for other images, we may need to use a different
         // method of edge detection
-        //Imgproc.adaptiveThreshold(edges, edges, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 15, 10);
+        Imgproc.adaptiveThreshold(edges, edges, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 15, 10);
+        // To clean up the threshold/binary image we will dilate erode
+        // These parameters may need to change as well
+        // Dilation will make the edges thicker. This will combine some edges together
+        int dilationSize = 13;
+        Mat dilateKernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(dilationSize, dilationSize));
+        Imgproc.dilate(edges, edges, dilateKernel);
+
+        // Erosion will make the edges thinner. This will get back closer to the actual edges of the sample
+        // If erosionSize is less than dilationSize, the edges will stay thicker
+        int erosionSize = 13;
+        Mat erodeKernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(erosionSize, erosionSize));
+        Imgproc.erode(edges, edges, erodeKernel);
 
         // More processing is needed here...
         List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSampleRed);
         List<DetectedSample> detectedSamplesBlue = findCentroidAndContours(maskSampleBlue);
-        List<DetectedSample> detectedSamplesYellow = findCentroidAndContours(maskSampleYellow);
+        List<DetectedSample> detectedSamplesYellow = findCentroidAndContours(edges);
 
 
         if (doVisualization) {
@@ -155,8 +167,8 @@ public class CalvinVisionProcessor implements VisionProcessor
             inputFrameRGB.copyTo(debugViewInput);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewBlue, maskSampleBlue);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewRed, maskSampleRed);
-            Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
-            // TODO: Imgproc.cvtColor(edges, debugViewYellow, Imgproc.COLOR_GRAY2RGB);
+            //Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewYellow, maskSampleYellow);
+            Imgproc.cvtColor(edges, debugViewYellow, Imgproc.COLOR_GRAY2RGB);
 
             // Draw the contours
             // Show the centroids
@@ -215,10 +227,12 @@ public class CalvinVisionProcessor implements VisionProcessor
         Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         telemetry.addData("Hierarchy", hierarchy.size());
         telemetry.addData("Contours", contours.size());
-
+        List<Integer> firstChildren = parseHierarchyForFirstChildren(hierarchy, 0);
+        telemetry.addData("First Children", firstChildren.size());
         int idx = 0;
-        List<DetectedSample> detectedSamples = new ArrayList<>(contours.size());
-        for (MatOfPoint contour: contours){
+        List<DetectedSample> detectedSamples = new ArrayList<>(firstChildren.size());
+        for (int contourIndex: firstChildren){
+            MatOfPoint contour = contours.get(contourIndex);
             // Find the center
             Moments moments = Imgproc.moments(contour);
             double totalPixels = moments.m00;
@@ -233,6 +247,30 @@ public class CalvinVisionProcessor implements VisionProcessor
 
         return detectedSamples;
     }
+    // Parse the tree
+// This is a recursive method. We just kick it off here with index 0.
+// The return is the indices of the first-level children of the tree.
+// The way findContours works, these are the biggest "holes" inside of a contour.
+    private List<Integer> parseHierarchyForFirstChildren(Mat hierarchy, int index) {
+        List<Integer> firstChildren = new ArrayList<>();
+        if ((hierarchy == null) || (index < 0)) return firstChildren;
+        double[] n = hierarchy.get(0, index);
+        if (n == null) return firstChildren;
+        int next = (int) n[0];
+        //unused int previous = (int) n[1];
+        int firstChild = (int) n[2];
+        int parent = (int) n[3];
+        if (parent == -1) {
+            firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, firstChild));
+        } else {
+            firstChildren.add(index);
+        }
+        if (next != -1) {
+            firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, next));
+        }
+        return firstChildren;
+    }
+
     Bitmap bitmap;
     Paint paint;
     Object resizeLock = new Object();
