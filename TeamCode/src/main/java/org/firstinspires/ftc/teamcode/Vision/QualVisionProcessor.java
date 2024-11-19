@@ -49,7 +49,7 @@ public class QualVisionProcessor implements VisionProcessor
 
     int frameCount = 0;
 
-    Size targetSize;
+    public Size targetSize;
     Mat outputFrameRGB;
     Mat inputFrameHSV;
     Mat maskSampleRed1;
