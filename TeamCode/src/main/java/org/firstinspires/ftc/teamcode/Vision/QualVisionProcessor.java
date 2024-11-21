@@ -6,6 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+// Note: EOCV-Sim build fails with Continuation and CameraStreamSource, but we need it for FTC Dashboard.
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Continuation;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
@@ -23,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class QualVisionProcessor implements VisionProcessor
+public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
 {
     enum SampleColor{
         RED,
@@ -35,17 +39,16 @@ public class QualVisionProcessor implements VisionProcessor
     // Keep these!!!
     public static Scalar hsvBlueLimitLower = new Scalar(80,80,65);
     public static Scalar hsvBlueLimitUpper = new Scalar(130,255,255);
-    public static Scalar hsvRedLimitLower1 = new Scalar(0,80,65);
+    public static Scalar hsvRedLimitLower1 = new Scalar(0,120,65);
     public static Scalar hsvRedLimitUpper1 = new Scalar(7,255,255);
-    public static Scalar hsvRedLimitLower2 = new Scalar(150,80,65);
+    public static Scalar hsvRedLimitLower2 = new Scalar(150,120,65);
     public static Scalar hsvRedLimitUpper2 = new Scalar(180,255,255);
     // Keep these!!!
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
-    public List<MatOfPoint> contours = new ArrayList<>();
-    public List<Point> centroids = new ArrayList<>();
+    public ArrayList<DetectedSample> detectedSamples = new ArrayList<>();
 
-    Telemetry telemetry;
+    //Telemetry telemetry;
 
     int frameCount = 0;
 
@@ -62,8 +65,8 @@ public class QualVisionProcessor implements VisionProcessor
     Mat topRightView;
 
     public QualVisionProcessor(Telemetry telemetry) {
-        this.telemetry = telemetry;
-        telemetry.setAutoClear(true); // this is for EOCV-Sim
+        //this.telemetry = telemetry;
+        //telemetry.setAutoClear(true); // this is for EOCV-Sim
     }
 
     @Override
@@ -94,14 +97,32 @@ public class QualVisionProcessor implements VisionProcessor
             topRightView = outputScratchpad.submat(0, height, width, width * 2);
 
             // For onDrawFrame
-            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888); // RGB_565?
         }
     }
 
+    // Since the VisionProcessor runs in a separate thread from the OpMode, we don't want to print
+    // any telemetry during the call to processFrame(). This was useful for using EOCV-Sim in the
+    // Pipeline mode, but causes problems from OpMode or in real use on the Control Hub.
+    public void doTelemetry(Telemetry telemetry) {
+        synchronized (detectedSampleLock) {
+            telemetry.addData("Detected Sample Count", detectedSamples.size());
+        }
+    }
+
+    public DetectedSample getDetectedSample() {
+        DetectedSample detectedSample = null;
+        synchronized (detectedSampleLock) {
+            if (!detectedSamples.isEmpty()) detectedSample = detectedSamples.get(0);
+        }
+        return detectedSample;
+    }
+    Object detectedSampleLock = new Object();
+
     @Override
     public Object processFrame(Mat inputFrameRGB, long captureTimeNanos) {
-        telemetry.addData("Capture Time", captureTimeNanos);
-        telemetry.addData("Frames Processed", frameCount);
+        //telemetry.addData("Capture Time", captureTimeNanos);
+        //telemetry.addData("Frames Processed", frameCount);
         frameCount++;
 
         Point imageCenter = new Point();
@@ -145,16 +166,12 @@ public class QualVisionProcessor implements VisionProcessor
         Imgproc.medianBlur(maskSample, maskSample, 7);
 
         // More processing is needed here...
-        List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSample);
-
-        // Find the contours of our mask
-        contours = new ArrayList<>();
-        centroids = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSample, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        hierarchy.release();
-        telemetry.addData("Contours", contours.size());
-
+        List<DetectedSample> thisFrameDetectedSamples = findCentroidAndContours(maskSample);
+        synchronized (detectedSampleLock) {
+            detectedSamples.clear();
+            detectedSamples.addAll(thisFrameDetectedSamples);
+            detectedSamples.sort((thing1, thing2) -> Double.compare(thing2.moments.m00, thing1.moments.m00));
+        }
 
         if (doVisualization) {
 
@@ -167,7 +184,7 @@ public class QualVisionProcessor implements VisionProcessor
 
             // Draw the contours
             // Show the centroids
-            for (DetectedSample detectedSample : detectedSamplesRed) {
+            for (DetectedSample detectedSample : detectedSamples) {
                 Imgproc.drawContours(debugViewOutput, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewOutput, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
 
@@ -206,7 +223,7 @@ public class QualVisionProcessor implements VisionProcessor
 
         }
 
-        telemetry.update(); // this is for EOCV-Sim
+        //telemetry.update(); // this is for EOCV-Sim
         return null; // Return value from VisionProcess is passed to onDrawFrame as userContext
     }
 
@@ -237,7 +254,7 @@ public class QualVisionProcessor implements VisionProcessor
         Mat hierarchy = new Mat();
         Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         hierarchy.release();
-        telemetry.addData("Contours", contours.size());
+        //telemetry.addData("Contours", contours.size());
 
         int idx = 0;
         List<DetectedSample> detectedSamples = new ArrayList<>(contours.size());
@@ -245,11 +262,15 @@ public class QualVisionProcessor implements VisionProcessor
             // Find the center
             Moments moments = Imgproc.moments(contour);
             double totalPixels = moments.m00;
+            // If the area for this contour is too small, don't include it in the list
+            if (totalPixels < 100) {
+                continue;
+            }
             double sumX = moments.m10;
             double sumY = moments.m01;
             Point centroid = new Point(sumX/totalPixels, sumY / totalPixels);
             DetectedSample detectedSample = new DetectedSample(contour, centroid, moments);
-            telemetry.addData("contour"+idx+"centroid", centroid);
+            //telemetry.addData("contour"+idx+"centroid", centroid);
             detectedSamples.add(detectedSample);
             idx++;
         }
@@ -259,6 +280,14 @@ public class QualVisionProcessor implements VisionProcessor
     Bitmap bitmap;
     Paint paint;
     Object resizeLock = new Object();
+
+    // FTC Dashboard usage
+    @Override
+    public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
+        synchronized (resizeLock) {
+            continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(bitmap));
+        }
+    }
 
     // Placeholder for move
     double getXPower(double Rx, double Cx,double Zx){
