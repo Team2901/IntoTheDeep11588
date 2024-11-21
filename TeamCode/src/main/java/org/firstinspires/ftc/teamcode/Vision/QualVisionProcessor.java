@@ -120,6 +120,7 @@ public class QualVisionProcessor implements VisionProcessor
             resize(inputFrameRGB.size());
         }
 
+
         //
         // Do the processing here
         //
@@ -144,17 +145,33 @@ public class QualVisionProcessor implements VisionProcessor
         // Median blur the mask to clean up the noise
         Imgproc.medianBlur(maskSample, maskSample, 7);
 
+        Mat edges = new Mat();
+        Core.extractChannel(inputFrameHSV, edges, 2);
+
+        Core.bitwise_and(edges, maskSample, edges);
+
+        // We will find the edges using the adaptiveThreshold method, and the inverted threshold.
+        // The parameters may need to change based on resolution, lighting, testing, etc.
+        // Note: Depending on how well this works for other images, we may need to use a different
+        // method of edge detection
+        Imgproc.adaptiveThreshold(edges, edges, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY_INV, 15, 10);
+        // To clean up the threshold/binary image we will dilate erode
+        // These parameters may need to change as well
+        // Dilation will make the edges thicker. This will combine some edges together
+        int dilationSize = 13;
+        Mat dilateKernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(dilationSize, dilationSize));
+        Imgproc.dilate(edges, edges, dilateKernel);
+
+        // Erosion will make the edges thinner. This will get back closer to the actual edges of the sample
+        // If erosionSize is less than dilationSize, the edges will stay thicker
+        int erosionSize = 13;
+        Mat erodeKernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(erosionSize, erosionSize));
+        Imgproc.erode(edges, edges, erodeKernel);
+
         // More processing is needed here...
-        List<DetectedSample> detectedSamplesRed = findCentroidAndContours(maskSample);
+        List<DetectedSample> detectedSamples = findCentroidAndContours(edges);
 
         // Find the contours of our mask
-        contours = new ArrayList<>();
-        centroids = new ArrayList<>();
-        Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSample, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        hierarchy.release();
-        telemetry.addData("Contours", contours.size());
-
 
         if (doVisualization) {
 
@@ -164,10 +181,11 @@ public class QualVisionProcessor implements VisionProcessor
             // For visualization, let's show the part of the image we're seeing that's in color range
             inputFrameRGB.copyTo(debugViewInput);
             Core.bitwise_and(inputFrameRGB, inputFrameRGB, debugViewOutput, maskSample);
+            Imgproc.cvtColor(edges, bottomLeftView, Imgproc.COLOR_GRAY2RGB);
 
             // Draw the contours
             // Show the centroids
-            for (DetectedSample detectedSample : detectedSamplesRed) {
+            for (DetectedSample detectedSample : detectedSamples) {
                 Imgproc.drawContours(debugViewOutput, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
                 Imgproc.circle(debugViewOutput, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
 
@@ -200,6 +218,7 @@ public class QualVisionProcessor implements VisionProcessor
             double fontScale = targetSize.height / 180.0;
             Scalar fontColor = new Scalar(255,255,255);
             Imgproc.putText(debugViewOutput, interestColor.name(), new Point(10,10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
+            Imgproc.putText(bottomLeftView, "Edges", new Point(10, 10*fontScale), Imgproc.FONT_HERSHEY_PLAIN, fontScale, fontColor);
 
             // (Finally, make the output frame for visualization)
             Imgproc.resize(outputScratchpad, outputFrameRGB, targetSize);
@@ -231,17 +250,41 @@ public class QualVisionProcessor implements VisionProcessor
             canvas.drawBitmap(bitmap, 0, 0, paint);
         }
     }
-
+    // Parse the tree
+    // This is a recursive method. We just kick it off here with index 0.
+    // The return is the indices of the first-level children of the tree.
+    // The way findContours works, these are the biggest "holes" inside of a contour.
+    private List<Integer> parseHierarchyForFirstChildren(Mat hierarchy, int index) {
+        List<Integer> firstChildren = new ArrayList<>();
+        if ((hierarchy == null) || (index < 0)) return firstChildren;
+        double[] n = hierarchy.get(0, index);
+        if (n == null) return firstChildren;
+        int next = (int) n[0];
+        //unused int previous = (int) n[1];
+        int firstChild = (int) n[2];
+        int parent = (int) n[3];
+        if (parent == -1) {
+            firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, firstChild));
+        } else {
+            firstChildren.add(index);
+        }
+        if (next != -1) {
+            firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, next));
+        }
+        return firstChildren;
+    }
     public List<DetectedSample> findCentroidAndContours(Mat maskSampleColor){
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        hierarchy.release();
+        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        telemetry.addData("Hierarchy", hierarchy.size());
         telemetry.addData("Contours", contours.size());
-
+        List<Integer> firstChildren = parseHierarchyForFirstChildren(hierarchy, 0);
+        telemetry.addData("First Children", firstChildren.size());
         int idx = 0;
-        List<DetectedSample> detectedSamples = new ArrayList<>(contours.size());
-        for (MatOfPoint contour: contours){
+        List<DetectedSample> detectedSamples = new ArrayList<>(firstChildren.size());
+        for (int contourIndex: firstChildren){
+            MatOfPoint contour = contours.get(contourIndex);
             // Find the center
             Moments moments = Imgproc.moments(contour);
             double totalPixels = moments.m00;
