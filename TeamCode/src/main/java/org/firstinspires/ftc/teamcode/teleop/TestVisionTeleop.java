@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.teleop;
 import android.graphics.Bitmap;
 import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -25,27 +27,35 @@ public class TestVisionTeleop extends OpMode {
     public RI3WHardware robot = new RI3WHardware();
     @Override
     public void init() {
+        // Update our telemetry to use FTC Dashboard
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+
         testProcessor = new QualVisionProcessor(this.telemetry);
         portal = new VisionPortal.Builder()
                 .addProcessor(testProcessor)
                 .setCameraResolution(new Size(320, 240))
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .build();
+
+        // Hook up the camera to FTC Dashboard
+        FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
+
+        // Initialize our robot
         robot.init(hardwareMap, telemetry);
     }
 
     @Override
     public void loop() {
         double power = 0;
-        telemetry.addData("centroid Count", testProcessor.centroids.size());
+        telemetry.addData("centroid Count", testProcessor.detectedSample);
 
-        if(testProcessor.centroids.size()> 0){
-            Point centroid = testProcessor.centroids.get(0);
+        if(testProcessor.detectedSample != null){
+            Point centroid = testProcessor.detectedSample.centroid;
             double cx = centroid.x / testProcessor.targetSize.width;
             double rx = 0.5;
             double zx = 0.10;
             double dx = 2 * (cx - rx); // value between -.5 -> .5
-            double speedMod = 0.1;
+            double speedMod = 0.25;
 
             telemetry.addData("centroid", cx);
             telemetry.addData("direction", dx);
@@ -58,7 +68,7 @@ public class TestVisionTeleop extends OpMode {
             robot.frontLeft.setPower(power);
             robot.frontRight.setPower(-power);
             robot.backLeft.setPower(-power);
-            robot.backLeft.setPower(power);
+            robot.backRight.setPower(power);
         } else {
             power = 0;
         }
