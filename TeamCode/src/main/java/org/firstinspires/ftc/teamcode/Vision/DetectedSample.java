@@ -13,4 +13,8 @@ public class DetectedSample {
         centroid = _centroid;
         moments = _moments;
     }
+
+    public String toString() {
+        return centroid.toString() + ", " + moments.m00;
+    }
 }

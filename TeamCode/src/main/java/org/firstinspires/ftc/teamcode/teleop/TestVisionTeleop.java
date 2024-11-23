@@ -38,7 +38,7 @@ public class TestVisionTeleop extends OpMode {
                 .build();
 
         // Hook up the camera to FTC Dashboard
-        FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
+        //FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
 
         // Initialize our robot
         robot.init(hardwareMap, telemetry);

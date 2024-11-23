@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
+/*import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;*/
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
@@ -26,14 +26,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
+public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSource */
 {
-    @Override
+    /*@Override
     public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
         synchronized  (resizeLock) {
             continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(bitmap));
         }
-    }
+    }*/
 
     enum SampleColor {
         RED,
@@ -53,7 +53,8 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
     // Keep these!!!
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
-   public DetectedSample detectedSample;
+    public DetectedSample detectedSample;
+    double rx = 0.5;
 
 
     Telemetry telemetry;
@@ -71,6 +72,7 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
     Mat bottomLeftView;
     Mat debugViewOutput;
     Mat topRightView;
+    Mat edges;
 
     public QualVisionProcessor(Telemetry telemetry) {
         this.telemetry = telemetry;
@@ -98,6 +100,7 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
             maskSampleRed1 = new Mat(targetSize, CvType.CV_8UC1);
             maskSampleRed2 = new Mat(targetSize, CvType.CV_8UC1);
             maskSample = new Mat(targetSize, CvType.CV_8UC1);
+            edges = new Mat(targetSize, CvType.CV_8UC1);
             outputScratchpad = new Mat(height * 2, width * 2, CvType.CV_8UC3);
             debugViewInput = outputScratchpad.submat(0, height, 0, width);
             bottomLeftView = outputScratchpad.submat(height, height * 2, 0, width);
@@ -157,10 +160,9 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
         }
         // Median blur the mask to clean up the noise
         Imgproc.medianBlur(maskSample, maskSample, 7);
-
-        Mat edges = new Mat();
+        // turning it to grayscale
         Core.extractChannel(inputFrameHSV, edges, 2);
-
+        // only want the parts of the grayscale image that matches the color of interest
         Core.bitwise_and(edges, maskSample, edges);
 
         // We will find the edges using the adaptiveThreshold method, and the inverted threshold.
@@ -186,12 +188,18 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
 
         // pick one sample from list
 
-        // Getting the first in the list
-        if(detectedSamples.size() != 0) {
-            detectedSample = detectedSamples.get(0);
-        }else{
-            detectedSample = null;
+        // Getting the sample closest to the center
+        DetectedSample bestSample = null;
+        Double bestDx = null;
+        for (DetectedSample candidate : detectedSamples) {
+            double cx = candidate.centroid.x;
+            double dx = Math.abs(cx - rx);
+            if ((bestDx == null) || (dx < bestDx)) {
+                bestDx = dx;
+                bestSample = candidate;
+            }
         }
+        detectedSample = bestSample;
 
         //draw stuff on the screen
         if (doVisualization) {
@@ -294,10 +302,10 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
         }
         return firstChildren;
     }
-    public List<DetectedSample> findCentroidAndContours(Mat maskSampleColor){
+    public List<DetectedSample> findCentroidAndContours(Mat edges){
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
-        Imgproc.findContours(maskSampleColor, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         //telemetry.addData("Hierarchy", hierarchy.size());
         //telemetry.addData("Contours", contours.size());
         List<Integer> firstChildren = parseHierarchyForFirstChildren(hierarchy, 0);
@@ -310,6 +318,10 @@ public class QualVisionProcessor implements VisionProcessor, CameraStreamSource
             // Find the center
             Moments moments = Imgproc.moments(contour);
             double totalPixels = moments.m00;
+            // 900 pixels
+            if (totalPixels < 900) {
+                continue;
+            }
             double sumX = moments.m10;
             double sumY = moments.m01;
             Point centroid = new Point(sumX/totalPixels, sumY / totalPixels);
