@@ -1,30 +1,28 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import android.graphics.Bitmap;
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.function.Consumer;
-import org.firstinspires.ftc.robotcore.external.function.Continuation;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.CameraControl;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Point;
 
 @TeleOp(name = "TestVisionTeleop", group = "test")
+@Config
 public class TestVisionTeleop extends OpMode {
 
     QualVisionProcessor testProcessor;
     VisionPortal portal;
     public RI3WHardware robot = new RI3WHardware();
+    // Slows down or speeds up based on distance from target
+    public static double speedMod = 0.25;
     @Override
     public void init() {
         // Update our telemetry to use FTC Dashboard
@@ -47,36 +45,41 @@ public class TestVisionTeleop extends OpMode {
     @Override
     public void loop() {
         double power = 0;
-        telemetry.addData("centroid Count", testProcessor.detectedSample);
+        telemetry.addData("Best Sample", testProcessor.detectedSample);
 
+        // Tests if there is a sample present
         if(testProcessor.detectedSample != null){
             Point centroid = testProcessor.detectedSample.centroid;
+            // Converts centroid x position from pixels to screen percentage
             double cx = centroid.x / testProcessor.targetSize.width;
-            double rx = 0.5;
-            double zx = 0.10;
-            double dx = 2 * (cx - rx); // value between -.5 -> .5
-            double speedMod = 0.25;
+            // Target center for the sample
+            double tx = QualVisionProcessor.tx;
+            // Percent error allowed when approaching target
+            double tolerance = 0.10;
+            // Distance from centroid x position to target center
+            double dx = cx - tx;
 
-            telemetry.addData("centroid", cx);
-            telemetry.addData("direction", dx);
-            if (Math.abs(dx) <= zx){
+            telemetry.addData("cx", cx);
+            telemetry.addData("distance", dx);
+
+            // Stop moving if in accepted range
+            if (Math.abs(dx) <= tolerance){
                 power = 0;
-            } else {
-                power = speedMod * (dx - (Math.signum(dx) * zx));
+            }
+            // Set power proportional to how far from accepted range
+            else {
+                power = speedMod * (dx - (Math.signum(dx) * tolerance));
             }
 
-            robot.frontLeft.setPower(power);
-            robot.frontRight.setPower(-power);
-            robot.backLeft.setPower(-power);
-            robot.backRight.setPower(power);
         } else {
             power = 0;
         }
 
+        // Strafe left or right
         robot.frontLeft.setPower(power);
         robot.frontRight.setPower(-power);
         robot.backLeft.setPower(-power);
-        robot.backLeft.setPower(power);
+        robot.backRight.setPower(power);
 
         telemetry.addData("power", power);
         telemetry.update();

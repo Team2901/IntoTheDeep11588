@@ -54,7 +54,7 @@ public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSour
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
     public DetectedSample detectedSample;
-    double rx = 0.5;
+    public static double tx = 0.5;
 
 
     Telemetry telemetry;
@@ -193,7 +193,7 @@ public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSour
         Double bestDx = null;
         for (DetectedSample candidate : detectedSamples) {
             double cx = candidate.centroid.x;
-            double dx = Math.abs(cx - rx);
+            double dx = Math.abs(cx - tx);
             if ((bestDx == null) || (dx < bestDx)) {
                 bestDx = dx;
                 bestSample = candidate;
@@ -337,16 +337,4 @@ public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSour
     Paint paint;
     Object resizeLock = new Object();
 
-    // Placeholder for move
-    double getXPower(double Rx, double Cx,double Zx){
-        double Dx = Cx - Rx;
-        double m = .5;
-        double Px;
-        if (Math.abs(Dx) > Zx){
-            Px = m * Dx - (Math.signum(Dx) * Zx);
-        } else {
-            Px = 0;
-        }
-        return Px;
-    }
 }
