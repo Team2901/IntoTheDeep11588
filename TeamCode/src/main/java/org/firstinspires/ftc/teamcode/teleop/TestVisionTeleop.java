@@ -23,8 +23,8 @@ public class TestVisionTeleop extends OpMode {
     VisionPortal portal;
     public RI3WHardware robot = new RI3WHardware();
     // Slows down or speeds up based on distance from target
-    public static double speedMod = 0.25;
-    public static double Ki = 0;
+    public static double speedMod = 1;
+    public static double Ki = 1;
     ElapsedTime timer = new ElapsedTime();
     double errorSum = 0;
     @Override
@@ -47,8 +47,20 @@ public class TestVisionTeleop extends OpMode {
     }
 
     @Override
+    public void init_loop() {
+        super.init_loop();
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        timer.reset();
+    }
+
+    @Override
     public void loop() {
         double power = 0;
+        double error = 0;
         telemetry.addData("Best Sample", testProcessor.detectedSample);
 
         // Tests if there is a sample present
@@ -63,22 +75,23 @@ public class TestVisionTeleop extends OpMode {
             // Distance from centroid x position to target center
             double dx = cx - tx;
 
-            double error = dx - (Math.signum(dx) * tolerance);
-
+            // If error withing the accepted range stop
+            if(Math.abs(dx) <= tolerance){
+                error = 0;
+                errorSum = 0;
+            }
+            // Error is based on how far from accepted range
+            else{
+                error = dx - (Math.signum(dx) * tolerance);
+            }
+            // Integrate the error
             errorSum += error*timer.seconds();
-
 
             telemetry.addData("cx", cx);
             telemetry.addData("distance", dx);
 
-            // Stop moving if in accepted range
-            if (Math.abs(dx) <= tolerance){
-                power = 0;
-            }
-            // Set power proportional to how far from accepted range
-            else {
-                power = (speedMod * error) + (Ki * errorSum);
-            }
+            // Use PID to set power
+            power = (speedMod * error) + (Ki * errorSum);
 
         } else {
             power = 0;
@@ -91,7 +104,8 @@ public class TestVisionTeleop extends OpMode {
         robot.backRight.setPower(power);
 
         telemetry.addData("power", power);
-        telemetry.update();
+        telemetry.addData("error", error);
+        telemetry.addData("errorSum", errorSum);
         timer.reset();
     }
 }
