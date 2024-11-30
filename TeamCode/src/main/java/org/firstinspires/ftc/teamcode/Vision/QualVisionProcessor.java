@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-/*import org.firstinspires.ftc.robotcore.external.function.Consumer;
+import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;*/
+import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.android.Utils;
@@ -25,15 +25,18 @@ import org.opencv.imgproc.Moments;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
-public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSource */
+public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 {
-    /*@Override
+    @Override
     public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
         synchronized  (resizeLock) {
-            continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(bitmap));
+            continuation.dispatch(bitmapConsumer -> bitmapConsumer.accept(lastFrame.get()));
         }
-    }*/
+    }
+    private final AtomicReference<Bitmap> lastFrame =
+            new AtomicReference<>(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565));
 
     enum SampleColor {
         RED,
@@ -109,6 +112,7 @@ public class QualVisionProcessor implements VisionProcessor /*, CameraStreamSour
 
             // For onDrawFrame
             bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            lastFrame.set(bitmap);
         }
     }
 

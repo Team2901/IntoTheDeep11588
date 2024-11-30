@@ -7,6 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
@@ -23,6 +24,9 @@ public class TestVisionTeleop extends OpMode {
     public RI3WHardware robot = new RI3WHardware();
     // Slows down or speeds up based on distance from target
     public static double speedMod = 0.25;
+    public static double Ki = 0;
+    ElapsedTime timer = new ElapsedTime();
+    double errorSum = 0;
     @Override
     public void init() {
         // Update our telemetry to use FTC Dashboard
@@ -36,7 +40,7 @@ public class TestVisionTeleop extends OpMode {
                 .build();
 
         // Hook up the camera to FTC Dashboard
-        //FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
+        FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
 
         // Initialize our robot
         robot.init(hardwareMap, telemetry);
@@ -59,6 +63,11 @@ public class TestVisionTeleop extends OpMode {
             // Distance from centroid x position to target center
             double dx = cx - tx;
 
+            double error = dx - (Math.signum(dx) * tolerance);
+
+            errorSum += error*timer.seconds();
+
+
             telemetry.addData("cx", cx);
             telemetry.addData("distance", dx);
 
@@ -68,7 +77,7 @@ public class TestVisionTeleop extends OpMode {
             }
             // Set power proportional to how far from accepted range
             else {
-                power = speedMod * (dx - (Math.signum(dx) * tolerance));
+                power = (speedMod * error) + (Ki * errorSum);
             }
 
         } else {
@@ -83,5 +92,6 @@ public class TestVisionTeleop extends OpMode {
 
         telemetry.addData("power", power);
         telemetry.update();
+        timer.reset();
     }
 }
