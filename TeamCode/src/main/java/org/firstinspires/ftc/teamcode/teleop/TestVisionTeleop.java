@@ -19,12 +19,15 @@ import org.opencv.core.Point;
 @Config
 public class TestVisionTeleop extends OpMode {
 
+
     QualVisionProcessor testProcessor;
     VisionPortal portal;
     public RI3WHardware robot = new RI3WHardware();
     // Slows down or speeds up based on distance from target
     public static double speedMod = 1;
     public static double Ki = 1;
+    // Percent error allowed when approaching target
+    public static double tolerance = 0.10;
     ElapsedTime timer = new ElapsedTime();
     double errorSum = 0;
     @Override
@@ -70,8 +73,6 @@ public class TestVisionTeleop extends OpMode {
             double cx = centroid.x / testProcessor.targetSize.width;
             // Target center for the sample
             double tx = QualVisionProcessor.tx;
-            // Percent error allowed when approaching target
-            double tolerance = 0.10;
             // Distance from centroid x position to target center
             double dx = cx - tx;
 

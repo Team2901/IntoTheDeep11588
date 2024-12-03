@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
 import org.firstinspires.ftc.robotcore.external.function.Continuation;
@@ -27,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+@Config
 public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 {
     @Override
@@ -44,7 +47,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         BLUE
     }
 
-    public SampleColor interestColor = SampleColor.RED;
+    public static SampleColor interestColor = SampleColor.RED;
     public static boolean doVisualization = true;
     // Keep these!!!
     public static Scalar hsvBlueLimitLower = new Scalar(80,80,65);
