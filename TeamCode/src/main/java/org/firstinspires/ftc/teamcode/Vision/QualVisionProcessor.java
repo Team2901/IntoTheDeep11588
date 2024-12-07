@@ -32,6 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
 @Config
 public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 {
+    public List<TrackedSample> trackedSamples;
+
     @Override
     public void getFrameBitmap(Continuation<? extends Consumer<Bitmap>> continuation) {
         synchronized  (resizeLock) {
@@ -92,6 +94,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         // For onDrawFrame
         paint = new Paint();
         paint.setAntiAlias(true);
+        trackedSamples = new ArrayList<TrackedSample>();
     }
 
     public void resize(Size size) {
@@ -194,7 +197,6 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         List<DetectedSample> detectedSamples = findCentroidAndContours(edges);
 
         // pick one sample from list
-
         // Getting the sample closest to the center
         DetectedSample bestSample = null;
         Double bestDx = null;
@@ -207,6 +209,34 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
             }
         }
         detectedSample = bestSample;
+        // Every sample seen and tracked
+        for (TrackedSample trackedSample: trackedSamples){
+            Double closestDistance = null;
+            DetectedSample closestSample = null;
+            for (DetectedSample detectedSample: detectedSamples){
+                if(trackedSample.isThisMe(detectedSample)){
+                    double distCentroid = trackedSample.distance(trackedSample.sample.centroid, detectedSample.centroid);
+                    if (closestDistance == null || distCentroid<closestDistance){
+                        closestDistance = distCentroid;
+                        closestSample = detectedSample;
+                    }
+                }
+            }
+            if(closestSample != null){
+                trackedSample.update(closestSample);
+                detectedSamples.remove(closestSample);
+            }
+            else{
+                // Every sample tracked but not seen
+                trackedSample.unseen();
+            }
+        }
+
+        // Every sample seen but not tracked yet
+        for (DetectedSample candidate: detectedSamples){
+            TrackedSample newCandidate = new TrackedSample(candidate);
+            trackedSamples.add(newCandidate);
+        }
 
         //draw stuff on the screen
         if (doVisualization) {
