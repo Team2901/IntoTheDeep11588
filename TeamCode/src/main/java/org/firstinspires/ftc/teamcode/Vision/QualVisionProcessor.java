@@ -61,7 +61,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
     // Keep these!!!
     public static Scalar hsvYellowLimitLower = new Scalar(8,80,65);
     public static Scalar hsvYellowLimitUpper = new Scalar(45,255,255);
-    public DetectedSample detectedSample;
+    public TrackedSample detectedSample;
     public static double tx = 0.5;
 
 
@@ -69,7 +69,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 
     int frameCount = 0;
 
-    public Size targetSize;
+    public static Size targetSize;
     Mat outputFrameRGB;
     Mat inputFrameHSV;
     Mat maskSampleRed1;
@@ -195,20 +195,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 
         // detecting the samples and finding the centers
         List<DetectedSample> detectedSamples = findCentroidAndContours(edges);
-
-        // pick one sample from list
-        // Getting the sample closest to the center
-        DetectedSample bestSample = null;
-        Double bestDx = null;
-        for (DetectedSample candidate : detectedSamples) {
-            double cx = candidate.centroid.x;
-            double dx = Math.abs(cx - tx);
-            if ((bestDx == null) || (dx < bestDx)) {
-                bestDx = dx;
-                bestSample = candidate;
-            }
-        }
-        detectedSample = bestSample;
+        List<TrackedSample> lostSamples = new ArrayList<>();
         // Every sample seen and tracked
         for (TrackedSample trackedSample: trackedSamples){
             Double closestDistance = null;
@@ -228,15 +215,32 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
             }
             else{
                 // Every sample tracked but not seen
-                trackedSample.unseen();
+                if(trackedSample.unseen()){
+                    lostSamples.add(trackedSample);
+                }
             }
         }
-
+        trackedSamples.removeAll(lostSamples);
         // Every sample seen but not tracked yet
         for (DetectedSample candidate: detectedSamples){
             TrackedSample newCandidate = new TrackedSample(candidate);
             trackedSamples.add(newCandidate);
         }
+
+        // pick one sample from list
+        // Getting the sample closest to the center
+        TrackedSample bestSample = null;
+        Double bestDx = null;
+        for (TrackedSample candidate : trackedSamples) {
+            if (!candidate.confirmed) continue;
+            double cx = candidate.sample.centroid.x;
+            double dx = Math.abs(cx - tx);
+            if ((bestDx == null) || (dx < bestDx)) {
+                bestDx = dx;
+                bestSample = candidate;
+            }
+        }
+        detectedSample = bestSample;
 
         //draw stuff on the screen
         if (doVisualization) {
@@ -251,22 +255,22 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
 
             // Draw the contours
             // Show the centroids
-            for (DetectedSample detectedSample : detectedSamples) {
-                Imgproc.drawContours(debugViewOutput, Arrays.asList(detectedSample.contour), -1, new Scalar(0, 255, 0));
-                Imgproc.circle(debugViewOutput, detectedSample.centroid, 2, new Scalar(0, 255, 0), 2);
+            for (TrackedSample trackedSample : trackedSamples) {
+                Imgproc.drawContours(debugViewOutput, Arrays.asList(trackedSample.sample.contour), -1, new Scalar(0, 255, 0));
+                Imgproc.circle(debugViewOutput, trackedSample.sample.centroid, 2, new Scalar(0, 255, 0), 2);
 
                 int inZoneCircleRadius = 26;
-                double dx = (imageCenter.x - detectedSample.centroid.x);
-                double dy = (imageCenter.y - detectedSample.centroid.y);
+                double dx = (imageCenter.x - trackedSample.sample.centroid.x);
+                double dy = (imageCenter.y - trackedSample.sample.centroid.y);
                 double d = Math.sqrt(
                         (dx * dx) + (dy * dy)
                 );
 
                 // drawing the circle in the middle - red
                 if (d < inZoneCircleRadius) {
-                    Imgproc.circle(debugViewOutput, detectedSample.centroid, inZoneCircleRadius, new Scalar(0, 255, 0), 2);
+                    Imgproc.circle(debugViewOutput, trackedSample.sample.centroid, inZoneCircleRadius, new Scalar(0, 255, 0), 2);
                 } else {
-                    Imgproc.circle(debugViewOutput, detectedSample.centroid, inZoneCircleRadius, new Scalar(128, 128, 128), 2);
+                    Imgproc.circle(debugViewOutput, trackedSample.sample.centroid, inZoneCircleRadius, new Scalar(128, 128, 128), 2);
                 }
             }
 

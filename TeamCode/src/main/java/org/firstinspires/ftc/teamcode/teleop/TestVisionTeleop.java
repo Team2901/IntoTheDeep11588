@@ -68,7 +68,7 @@ public class TestVisionTeleop extends OpMode {
 
         // Tests if there is a sample present
         if(testProcessor.detectedSample != null){
-            Point centroid = testProcessor.detectedSample.centroid;
+            Point centroid = testProcessor.detectedSample.sample.centroid;
             // Converts centroid x position from pixels to screen percentage
             double cx = centroid.x / testProcessor.targetSize.width;
             // Target center for the sample

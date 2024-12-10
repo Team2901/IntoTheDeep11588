@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.Vision;
 
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -12,11 +15,12 @@ import org.opencv.imgproc.Moments;
 
 import java.util.Arrays;
 
+@Config
 public class TrackedSample{
-    private static final int UNSEEN_THRESHOLD = 1;
-    private static final int SEEN_THRESHOLD = 1;
-    private static final double OVERLAP_THRESHOLD = 1;
-    private static final double NEAR_THRESHOLD = 1;
+    public static int UNSEEN_THRESHOLD = 30;
+    public static int SEEN_THRESHOLD = 5;
+    public static double OVERLAP_THRESHOLD = 0.1;
+    public static double NEAR_THRESHOLD = 60;
     public DetectedSample sample;
     public DetectedSample previousSample;
     public double nearest = 0;
@@ -25,13 +29,19 @@ public class TrackedSample{
     private Mat nearestSampleMask;
     private Mat intersection;
     private Mat union;
-    private Rect fullFrameRect = new Rect();
-    private boolean confirmed = false;
+    private Rect fullFrameRect;
+    public boolean confirmed = false;
     private int hysteresisCounter = 0;
     private Scalar BLACK = new Scalar(0,0,0);
 
     public TrackedSample(DetectedSample candidate) {
         this.sample = candidate;
+
+        fullFrameRect = new Rect(new Point(0, 0), QualVisionProcessor.targetSize);
+        previousSampleMask = new Mat(fullFrameRect.size(), CvType.CV_8UC1);
+        nearestSampleMask = new Mat(fullFrameRect.size(), CvType.CV_8UC1);
+        intersection = new Mat(fullFrameRect.size(), CvType.CV_8UC1);
+        union = new Mat(fullFrameRect.size(), CvType.CV_8UC1);
     }
 
     public double distance(Point p1, Point p2){
@@ -40,13 +50,6 @@ public class TrackedSample{
         double dist = Math.pow(xDist, 2) + Math.pow(yDist, 2);
         dist = Math.sqrt(dist);
         return dist;
-    }
-
-    public TrackedSample() {
-        previousSampleMask = new Mat();
-        nearestSampleMask = new Mat();
-        intersection = new Mat();
-        union = new Mat();
     }
     public boolean isThisMe(DetectedSample candidate){
         if (candidate == null) return false;
