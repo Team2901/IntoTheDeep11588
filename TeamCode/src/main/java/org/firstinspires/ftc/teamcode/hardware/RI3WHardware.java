@@ -28,7 +28,6 @@ import org.openftc.easyopencv.OpenCvCamera;
 public class RI3WHardware {
 
     public static final double TICKS_PER_MOTOR_REV = 537.7;
-    public static final double TICKS_PER_MOTOR_REV_ARM = 1425.1;
     public static final double DRIVE_GEAR_RATIO = 1.0/1.0;
     public static final double TICKS_PER_DRIVE_REV = TICKS_PER_MOTOR_REV * DRIVE_GEAR_RATIO;
     public static final double WHEEL_DIAMETER = 3.78;
@@ -42,25 +41,14 @@ public class RI3WHardware {
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
     public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
-    public static int CLAW_OPEN_POSITION = 0;
-    public static int CLAW_CLOSED_POSITION = 0;
-    public static double CONT_EXTAKE_POWER = .5;
-    public static double CONT_INTAKE_POWER = -.5;
+    public static double CLAW_OPEN_POSITION = 0.25;
+    public static double CLAW_CLOSED_POSITION = 0;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
     }
     public void openClaw() {
         claw.setPosition(CLAW_OPEN_POSITION);
-    }
-    public void runContExtake() {
-        contIntake.setPower(CONT_EXTAKE_POWER);
-    }
-    public void runContIntake() {
-        contIntake.setPower(CONT_INTAKE_POWER);
-    }
-    public void stopContIntake() {
-        contIntake.setPower(0);
     }
 
     public DcMotorEx linearSlides;
@@ -70,8 +58,6 @@ public class RI3WHardware {
     public static int lowChamber = (int) (14*TICKS_PER_INCH_SLIDES);
     public static int highChamber = (int) (27*TICKS_PER_INCH_SLIDES);
     public Servo claw;
-    public DcMotorEx arm; // this is an arm
-    public CRServo contIntake;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
@@ -140,12 +126,6 @@ public class RI3WHardware {
         backLeft.setPower(0);
         backRight.setPower(0);
         try{
-            arm = hardwareMap.get(DcMotorEx.class, "arm");
-        }catch(IllegalArgumentException e){
-            arm = new MockDcMotor();
-            telemetry.addLine("Can't find arm: making a mock");
-        }
-        try{
             linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
         }catch(IllegalArgumentException e) {
             linearSlides = new MockDcMotor();
@@ -157,15 +137,7 @@ public class RI3WHardware {
             claw = new MockServo();
             telemetry.addLine("Can't find claw: making a mock");
         }
-        try{
-            contIntake = hardwareMap.get(CRServo.class, "contIntake");
-        }catch(IllegalArgumentException e){
-            contIntake = new MockCRServo();
-            telemetry.addLine("Can't find contIntake: making a mock");
-        }
-        arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;

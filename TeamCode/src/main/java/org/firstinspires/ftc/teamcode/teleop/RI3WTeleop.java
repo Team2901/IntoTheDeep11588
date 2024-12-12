@@ -81,18 +81,6 @@ public class RI3WTeleop extends OpMode {
             robot.closeClaw();
         }
 
-        if (gamepad.left_bumper.isInitialPress()) {
-            robot.runContExtake();
-        } else if (gamepad.left_bumper.isInitialRelease()) {
-            robot.stopContIntake();
-        }
-
-        if (gamepad.right_bumper.isInitialPress()) {
-            robot.runContIntake();
-        } else if (gamepad.right_bumper.isInitialRelease()) {
-            robot.stopContIntake();
-        }
-
         if (gamepad.a.isPressed()) {
             robot.arm.setPower(-.5);
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
