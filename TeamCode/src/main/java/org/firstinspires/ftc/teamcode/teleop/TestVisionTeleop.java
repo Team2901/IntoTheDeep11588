@@ -10,7 +10,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Vision.DetectedSample;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
+import org.firstinspires.ftc.teamcode.Vision.TrackedSample;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.opencv.core.Point;
@@ -19,9 +21,6 @@ import org.opencv.core.Point;
 @Config
 public class TestVisionTeleop extends OpMode {
 
-
-    QualVisionProcessor testProcessor;
-    VisionPortal portal;
     public RI3WHardware robot = new RI3WHardware();
     // Slows down or speeds up based on distance from target
     public static double speedMod = 1;
@@ -35,18 +34,8 @@ public class TestVisionTeleop extends OpMode {
         // Update our telemetry to use FTC Dashboard
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
-        testProcessor = new QualVisionProcessor(this.telemetry);
-        portal = new VisionPortal.Builder()
-                .addProcessor(testProcessor)
-                .setCameraResolution(new Size(320, 240))
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .build();
-
-        // Hook up the camera to FTC Dashboard
-        FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
-
         // Initialize our robot
-        robot.init(hardwareMap, telemetry);
+        robot.init(hardwareMap, telemetry, true);
     }
 
     @Override
@@ -64,13 +53,13 @@ public class TestVisionTeleop extends OpMode {
     public void loop() {
         double power = 0;
         double error = 0;
-        telemetry.addData("Best Sample", testProcessor.detectedSample);
-
+        TrackedSample detectedSample = robot.getDetectedSample();
+        telemetry.addData("Best Sample", detectedSample);
         // Tests if there is a sample present
-        if(testProcessor.detectedSample != null){
-            Point centroid = testProcessor.detectedSample.sample.centroid;
+        if(detectedSample != null){
+            Point centroid = detectedSample.sample.centroid;
             // Converts centroid x position from pixels to screen percentage
-            double cx = centroid.x / testProcessor.targetSize.width;
+            double cx = centroid.x / robot.getVisionPortalWidth();
             // Target center for the sample
             double tx = QualVisionProcessor.tx;
             // Distance from centroid x position to target center

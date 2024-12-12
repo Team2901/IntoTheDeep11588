@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import android.util.Size;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,9 +14,12 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Utilities.ConfigUtilities;
+import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
+import org.firstinspires.ftc.teamcode.Vision.TrackedSample;
 import org.firstinspires.ftc.teamcode.autonomous.AutoConfig;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -72,6 +78,8 @@ public class RI3WHardware {
     public DcMotorEx backRight;
     public OpenCvCamera camera;
     public VisionPortal visionPortal;
+    QualVisionProcessor testProcessor;
+    VisionPortal portal;
     public AprilTagProcessor aprilTag;
     public double turnTolerance = 0.5;
     RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection;
@@ -84,6 +92,10 @@ public class RI3WHardware {
     }
 
     public void init(HardwareMap hardwareMap, Telemetry telemetry){
+        init(hardwareMap, telemetry, false);
+    }
+
+    public void init(HardwareMap hardwareMap, Telemetry telemetry, boolean useCamera){
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
@@ -184,6 +196,18 @@ public class RI3WHardware {
             telemetry.addLine("IMU initialized");
             telemetry.update();
         }
+
+        if(useCamera){
+            testProcessor = new QualVisionProcessor(telemetry);
+            portal = new VisionPortal.Builder()
+                    .addProcessor(testProcessor)
+                    .setCameraResolution(new Size(320, 240))
+                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .build();
+
+            // Hook up the camera to FTC Dashboard
+            FtcDashboard.getInstance().startCameraStream(testProcessor, 0);
+        }
     }
 
     public Double getTurnToAngleSpeed(Double turnAngle) {
@@ -210,5 +234,13 @@ public class RI3WHardware {
         }
 
             return turnPower;
+    }
+
+    public TrackedSample getDetectedSample() {
+        return testProcessor.detectedSample;
+    }
+
+    public double getVisionPortalWidth() {
+        return testProcessor.targetSize.width;
     }
 }
