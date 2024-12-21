@@ -215,4 +215,13 @@ public class RI3WHardware {
     public double getVisionPortalWidth() {
         return testProcessor.targetSize.width;
     }
+
+    public void setTeamColor(QualVisionProcessor.SampleColor color) {
+        QualVisionProcessor.interestColor = color;
+
+    }
+
+    public QualVisionProcessor.SampleColor getTeamColor() {
+        return QualVisionProcessor.interestColor;
+    }
 }

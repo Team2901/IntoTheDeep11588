@@ -34,8 +34,8 @@ public class motorTest extends OpMode {
     public void init() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
         robot.init(this.hardwareMap, telemetry);
-        motorArray = new DcMotorEx[] {robot.frontLeft, robot.frontRight, robot.backLeft, robot.backRight, robot.linearSlides, robot.arm};
-        motorNames = new String[] {"frontLeft", "frontRight", "backLeft", "backRight", "linearSlides", "arm"};
+        motorArray = new DcMotorEx[] {robot.frontLeft, robot.frontRight, robot.backLeft, robot.backRight, robot.linearSlides};
+        motorNames = new String[] {"frontLeft", "frontRight", "backLeft", "backRight", "linearSlides"};
     }
 
     @Override
