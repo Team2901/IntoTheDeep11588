@@ -81,6 +81,26 @@ public class RI3WTeleop extends OpMode {
             robot.closeClaw();
         }
 
+        if (gamepad.start.isInitialPress()) {
+            // Start centering (initializing it)
+            //
+        } else if (gamepad.start.isPressed()) {
+            // if slides lowering, do __
+               // retract then lower
+            // if centering, do:
+               // set y = 0, turning power = 0, x = results from new routine (l84 - TVT) call
+               // if power = 0 then change state to lowering
+            // if extending, do __
+               // 
+            // if grabbing, do __
+            // if retracting, do __
+            // if done, do __
+        } else if (gamepad.start.isInitialRelease()) {
+            // cancels all auto centering/sample pick up
+        } else
+
+
+        /*
         if (gamepad.a.isPressed()) {
             robot.arm.setPower(-.5);
             robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -100,6 +120,8 @@ public class RI3WTeleop extends OpMode {
             robot.arm.setTargetPosition(-8400);
         }
 
+         */
+
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
         robot.backLeft.setPower(y - x + turningPower);
@@ -114,7 +136,7 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("frontRight", robot.frontRight.getCurrentPosition());
         telemetry.addData("backLeft", robot.backLeft.getCurrentPosition());
         telemetry.addData("backRight", robot.backRight.getCurrentPosition());
-        telemetry.addData("Arm", robot.arm.getCurrentPosition());
+        //telemetry.addData("Arm", robot.arm.getCurrentPosition());
         telemetry.addData("Claw Position", robot.claw.getPosition());
         telemetry.update();
     }
