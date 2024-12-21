@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,13 +19,21 @@ public class RI3WTeleop extends OpMode {
     public ImprovedGamepad gamepad_1;
     private ImprovedGamepad gamepad_2;
 
+    enum TeleopState{
+        DRIVER_CONTROL,
+        CENTERING
+    }
     Double targetTurnAngle;
-
+    TeleopState currentState = TeleopState.DRIVER_CONTROL;
     @Override
     public void init() {
         gamepad_1 = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad1");
         gamepad_2 = new ImprovedGamepad(gamepad2, new ElapsedTime(), "Gamepad2");
-        robot.init(this.hardwareMap, telemetry);
+
+        // Update our telemetry to use FTC Dashboard
+        telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
+
+        robot.init(this.hardwareMap, telemetry, true);
     }
 
     @Override
@@ -92,8 +102,7 @@ public class RI3WTeleop extends OpMode {
         }
 
         if (gamepad_1.start.isInitialPress()) {
-            // Start centering (initializing it)
-            //
+            currentState = TeleopState.CENTERING;
         } else if (gamepad_1.start.isPressed()) {
             // if slides lowering, do __
                // retract then lower
@@ -106,7 +115,7 @@ public class RI3WTeleop extends OpMode {
             // if retracting, do __
             // if done, do __
         } else if (gamepad_1.start.isInitialRelease()) {
-            // cancels all auto centering/sample pick up
+            currentState = TeleopState.DRIVER_CONTROL;
         } else
 
 
@@ -131,13 +140,18 @@ public class RI3WTeleop extends OpMode {
         }
 
          */
+        if (currentState == TeleopState.DRIVER_CONTROL){
+            robot.frontLeft.setPower(y + x + turningPower);
+            robot.frontRight.setPower(y - x - turningPower);
+            robot.backLeft.setPower(y - x + turningPower);
+            robot.backRight.setPower(y + x - turningPower);
+        } else if (currentState == TeleopState.CENTERING){
+            robot.updatePos();
+        }
 
-        robot.frontLeft.setPower(y + x + turningPower);
-        robot.frontRight.setPower(y - x - turningPower);
-        robot.backLeft.setPower(y - x + turningPower);
-        robot.backRight.setPower(y + x - turningPower);
 
         telemetry.addData("Team Color", robot.getTeamColor());
+        telemetry.addData("Teleop State", currentState);
         telemetry.addData("Current Angle", robot.getAngle());
         telemetry.addData("Target Angle", this.targetTurnAngle);
         telemetry.addData("Target Turn Speed ", turnToAngleSpeed);
@@ -148,6 +162,17 @@ public class RI3WTeleop extends OpMode {
         telemetry.addData("backRight", robot.backRight.getCurrentPosition());
         //telemetry.addData("Arm", robot.arm.getCurrentPosition());
         telemetry.addData("Claw Position", robot.claw.getPosition());
+
+        // This doesn't work rn
+        if (robot.getDetectedSample() != null){
+            telemetry.addData("Best Sample", robot.getDetectedSample().toString());
+        } else {
+            telemetry.addLine("No detected sample.");
+        }
+
+        telemetry.addData("power", robot.power);
+        telemetry.addData("error", robot.error);
+        telemetry.addData("errorSum", robot.errorSum);
         telemetry.update();
     }
     public void turnRelative(double relativeAngle){

@@ -50,6 +50,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
     }
 
     public static SampleColor interestColor = SampleColor.RED;
+
     public static boolean doVisualization = true;
     // Keep these!!!
     public static Scalar hsvBlueLimitLower = new Scalar(80,80,65);

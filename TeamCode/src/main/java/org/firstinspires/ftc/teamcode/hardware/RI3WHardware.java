@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import static org.firstinspires.ftc.teamcode.teleop.TestVisionTeleop.Ki;
+import static org.firstinspires.ftc.teamcode.teleop.TestVisionTeleop.speedMod;
+
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -12,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -23,6 +27,7 @@ import org.firstinspires.ftc.teamcode.Vision.TrackedSample;
 import org.firstinspires.ftc.teamcode.autonomous.AutoConfig;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Point;
 import org.openftc.easyopencv.OpenCvCamera;
 @Config
 public class RI3WHardware {
@@ -71,6 +76,16 @@ public class RI3WHardware {
     RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection;
     RevHubOrientationOnRobot.LogoFacingDirection logoDirection;
     public IMU imu;
+    public static double speedMod = 1;
+    public static double Ki = 1;
+    // Percent error allowed when approaching target
+    public static double tolerance = 0.10;
+    ElapsedTime timer = new ElapsedTime();
+    public double errorSum = 0;
+    public double power = 0;
+    public double error = 0;
+
+    public Telemetry telemetry;
 
     public double getAngle(){
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
@@ -81,12 +96,12 @@ public class RI3WHardware {
         init(hardwareMap, telemetry, false);
     }
 
-    public void init(HardwareMap hardwareMap, Telemetry telemetry, boolean useCamera){
+    public void init(HardwareMap hardwareMap, Telemetry _telemetry, boolean useCamera){
         frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
         backLeft = hardwareMap.get(DcMotorEx.class, "backLeft");
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
-
+        telemetry = _telemetry;
 
 
         String configurationName = ConfigUtilities.getRobotConfigurationName();
@@ -223,5 +238,51 @@ public class RI3WHardware {
 
     public QualVisionProcessor.SampleColor getTeamColor() {
         return QualVisionProcessor.interestColor;
+    }
+
+    public void updatePos(){
+        power = 0;
+        error = 0;
+        TrackedSample detectedSample = getDetectedSample();
+
+        // Tests if there is a sample present
+        if(detectedSample != null){
+            Point centroid = detectedSample.sample.centroid;
+            // Converts centroid x position from pixels to screen percentage
+            double cx = centroid.x / getVisionPortalWidth();
+            // Target center for the sample
+            double tx = QualVisionProcessor.tx;
+            // Distance from centroid x position to target center
+            double dx = cx - tx;
+
+            // If error withing the accepted range stop
+            if(Math.abs(dx) <= tolerance){
+                error = 0;
+                errorSum = 0;
+            }
+            // Error is based on how far from accepted range
+            else{
+                error = dx - (Math.signum(dx) * tolerance);
+            }
+            // Integrate the error
+            errorSum += error*timer.seconds();
+
+            telemetry.addData("cx", cx);
+            telemetry.addData("distance", dx);
+
+            // Use PID to set power
+            power = (speedMod * error) + (Ki * errorSum);
+
+        } else {
+            power = 0;
+        }
+
+        // Strafe left or right
+        frontLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
+        backRight.setPower(power);
+
+        timer.reset();
     }
 }
