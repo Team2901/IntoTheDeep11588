@@ -88,10 +88,10 @@ public class TestVisionTeleop extends OpMode {
         }
 
         // Strafe left or right
-        robot.frontLeft.setPower(power);
+        /* robot.frontLeft.setPower(power);
         robot.frontRight.setPower(-power);
         robot.backLeft.setPower(-power);
-        robot.backRight.setPower(power);
+        robot.backRight.setPower(power);*/
 
         telemetry.addData("power", power);
         telemetry.addData("error", error);
