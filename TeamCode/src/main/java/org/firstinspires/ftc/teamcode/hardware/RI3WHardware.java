@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
-import static org.firstinspires.ftc.teamcode.teleop.TestVisionTeleop.Ki;
-import static org.firstinspires.ftc.teamcode.teleop.TestVisionTeleop.speedMod;
-
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -80,7 +76,7 @@ public class RI3WHardware {
     public static double Ki = 1;
     // Percent error allowed when approaching target
     public static double tolerance = 0.10;
-    ElapsedTime timer = new ElapsedTime();
+    public ElapsedTime timer = new ElapsedTime();
     public double errorSum = 0;
     public double power = 0;
     public double error = 0;
@@ -240,7 +236,7 @@ public class RI3WHardware {
         return QualVisionProcessor.interestColor;
     }
 
-    public void updatePos(){
+    public double getPos(){
         power = 0;
         error = 0;
         TrackedSample detectedSample = getDetectedSample();
@@ -277,12 +273,7 @@ public class RI3WHardware {
             power = 0;
         }
 
-        // Strafe left or right
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(-power);
-        backRight.setPower(power);
-
         timer.reset();
+        return power;
     }
 }

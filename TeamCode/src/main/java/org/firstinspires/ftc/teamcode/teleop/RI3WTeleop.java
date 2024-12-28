@@ -103,6 +103,7 @@ public class RI3WTeleop extends OpMode {
 
         if (gamepad_1.start.isInitialPress()) {
             currentState = TeleopState.CENTERING;
+            robot.timer.reset();
         } else if (gamepad_1.start.isPressed()) {
             // if slides lowering, do __
                // retract then lower
@@ -116,39 +117,17 @@ public class RI3WTeleop extends OpMode {
             // if done, do __
         } else if (gamepad_1.start.isInitialRelease()) {
             currentState = TeleopState.DRIVER_CONTROL;
-        } else
-
-
-        /*
-        if (gamepad.a.isPressed()) {
-            robot.arm.setPower(-.5);
-            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad.y.isPressed()) {
-            robot.arm.setPower(.5);
-            robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad.a.isInitialRelease() || gamepad.y.isInitialRelease()) {
-            robot.arm.setTargetPosition(robot.arm.getCurrentPosition());
-            robot.arm.setPower(.5);
-            robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        //This is a soft-stop for the arm
-        if (robot.arm.getCurrentPosition() > 0) {
-            robot.arm.setTargetPosition(-10);
-        } else if (robot.arm.getCurrentPosition() < -8500) {
-            robot.arm.setTargetPosition(-8400);
-        }
-
-         */
-        if (currentState == TeleopState.DRIVER_CONTROL){
-            robot.frontLeft.setPower(y + x + turningPower);
-            robot.frontRight.setPower(y - x - turningPower);
-            robot.backLeft.setPower(y - x + turningPower);
-            robot.backRight.setPower(y + x - turningPower);
+        if (currentState == TeleopState.DRIVER_CONTROL || (x > 0) || (y > 0) || (turningPower > 0)){
+            ;
         } else if (currentState == TeleopState.CENTERING){
-            robot.updatePos();
+            x = robot.getPos();
         }
-
+        robot.frontLeft.setPower(y + x + turningPower);
+        robot.frontRight.setPower(y - x - turningPower);
+        robot.backLeft.setPower(y - x + turningPower);
+        robot.backRight.setPower(y + x - turningPower);
 
         telemetry.addData("Team Color", robot.getTeamColor());
         telemetry.addData("Teleop State", currentState);

@@ -330,12 +330,16 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         if ((hierarchy == null) || (index < 0)) return firstChildren;
         double[] n = hierarchy.get(0, index);
         if (n == null) return firstChildren;
-        int next = (int) n[0];
+        int next = (int) n[0]; // gets next sibling
         //unused int previous = (int) n[1];
         int firstChild = (int) n[2];
         int parent = (int) n[3];
         if (parent == -1) {
-            firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, firstChild));
+            if (firstChild == -1){
+                firstChildren.add(index);
+            } else {
+                firstChildren.addAll(parseHierarchyForFirstChildren(hierarchy, firstChild));
+            }
         } else {
             firstChildren.add(index);
         }
@@ -352,7 +356,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         //telemetry.addData("Contours", contours.size());
         List<Integer> firstChildren = parseHierarchyForFirstChildren(hierarchy, 0);
         hierarchy.release();
-        //telemetry.addData("First Children", firstChildren.size());
+        telemetry.addData("First Children", firstChildren.size());
         int idx = 0;
         List<DetectedSample> detectedSamples = new ArrayList<>(firstChildren.size());
         for (int contourIndex: firstChildren){
@@ -361,7 +365,8 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
             Moments moments = Imgproc.moments(contour);
             double totalPixels = moments.m00;
             // 900 pixels
-            if (totalPixels < 900) {
+            // Controls edges and how far the block can be off the screen
+            if (totalPixels < 1100) {
                 continue;
             }
             double sumX = moments.m10;
