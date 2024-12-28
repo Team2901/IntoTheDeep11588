@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
+//tests servo
 @TeleOp(name = "servoTest", group = "test")
 public class servoTest extends RI3WAbstractAutonomous {
     public RI3WHardware robot = new RI3WHardware();
