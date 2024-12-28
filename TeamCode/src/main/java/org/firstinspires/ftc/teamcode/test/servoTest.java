@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
+@TeleOp(name = "servoTest", group = "test")
 public class servoTest extends RI3WAbstractAutonomous {
     public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;

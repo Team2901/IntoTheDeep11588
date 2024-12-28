@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
-@TeleOp(name = "RI6WTeleop v2")
-public class RI3WTeleop extends OpMode {
+@TeleOp(name = "QualTeleop")
+public class QualTeleop extends OpMode {
 
     public RI3WHardware robot = new RI3WHardware();
     double turningPower = 0;
