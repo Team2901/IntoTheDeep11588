@@ -140,11 +140,18 @@ public class RI3WHardware {
         backLeft.setPower(0);
         backRight.setPower(0);
         try{
-            linearSlides = hardwareMap.get(DcMotorEx.class, "linearSlides");
+            linearSlides = hardwareMap.get(DcMotorEx.class, "slidesV");
         }catch(IllegalArgumentException e) {
             linearSlides = new MockDcMotor();
             telemetry.addLine("Can't find linearSlides: making a mock");
         }
+        try{
+            linearSlides = hardwareMap.get(DcMotorEx.class, "slidesH");
+        }catch(IllegalArgumentException e) {
+            linearSlides = new MockDcMotor();
+            telemetry.addLine("Can't find linearSlides: making a mock");
+        }
+
         try{
             claw = hardwareMap.get(Servo.class, "claw");
         }catch(IllegalArgumentException e){
