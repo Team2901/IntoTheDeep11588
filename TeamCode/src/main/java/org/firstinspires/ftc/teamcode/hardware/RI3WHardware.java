@@ -83,8 +83,8 @@ public class RI3WHardware {
     public double error = 0;
 
     public Telemetry telemetry;
-    public TouchSensor touchSensorRight;  // Touch sensor Object
-    public TouchSensor touchSensorLeft;
+    public TouchSensor touchRight;  // Touch sensor Object
+    public TouchSensor touchLeft;
 
     public double getAngle(){
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
@@ -154,8 +154,8 @@ public class RI3WHardware {
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        touchSensorRight = hardwareMap.get(TouchSensor.class, "sensorTouchRight");
-        touchSensorLeft = hardwareMap.get(TouchSensor.class, "sensorTouchLeft");
+        touchRight = hardwareMap.get(TouchSensor.class, "touchRight");
+        touchLeft = hardwareMap.get(TouchSensor.class, "touchLeft");
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
