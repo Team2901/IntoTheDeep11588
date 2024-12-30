@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
-@TeleOp(name = "motorTest", group = "test")
-public class motorTest extends OpMode {
+@TeleOp(name = "MotorTest", group = "test")
+public class MotorTest extends OpMode {
     public RI3WHardware robot = new RI3WHardware();
     DcMotorEx[] motorArray;
     String[] motorNames;
