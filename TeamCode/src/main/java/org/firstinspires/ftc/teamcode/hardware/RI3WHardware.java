@@ -151,6 +151,7 @@ public class RI3WHardware {
             linearSlides = new MockDcMotor();
             telemetry.addLine("Can't find linearSlides: making a mock");
         }
+
         try{
             claw = hardwareMap.get(Servo.class, "claw");
         }catch(IllegalArgumentException e){
