@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -82,6 +83,7 @@ public class RI3WHardware {
     public double error = 0;
 
     public Telemetry telemetry;
+    public TouchSensor touchSensor;  // Touch sensor Object
 
     public double getAngle(){
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
@@ -150,6 +152,8 @@ public class RI3WHardware {
         }
         linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        touchSensor = hardwareMap.get(TouchSensor.class, "sensor_touch");
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;

@@ -83,13 +83,14 @@ public class QualTeleop extends OpMode {
         double x = 0.5 * gamepad_1.left_stick.x.getValue();
 
         //TODO: isPressed
-        if (gamepad_1.dpad_up.isInitialPress()) {
+        if (gamepad_1.dpad_up.isPressed()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad_1.dpad_down.isInitialPress()) {
+            // Does not need touch sensor
+        } else if (gamepad_1.dpad_down.isPressed() && !robot.touchSensor.isPressed()) {
             robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else if (gamepad_1.dpad_down.isInitialRelease() || gamepad_1.dpad_up.isInitialRelease()) {
+        } else {
             robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
