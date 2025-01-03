@@ -74,16 +74,10 @@ public class QualTeleop extends OpMode {
             turnToAngleSpeed = null;
         }
 
-        if (gamepad_1.right_trigger.getValue() > 0) {
-            turningPower = .3 * gamepad_1.right_trigger.getValue();
-            targetTurnAngle = null;
-        } else if (gamepad_1.left_trigger.getValue() > 0) {
-            turningPower = -.3 * gamepad_1.left_trigger.getValue();
-            targetTurnAngle = null;
-        } else if (gamepad_1.right_stick.x.getValue() != 0){
+        if(gamepad_1.right_stick.x.getValue() != 0){
             turningPower = -.75 * gamepad_1.right_stick.x.getValue();
             targetTurnAngle = null;
-        } else {
+        }else {
             if (turnToAngleSpeed != null) {
                 turningPower = -turnToAngleSpeed;
             } else {
