@@ -25,6 +25,7 @@ public class QualTeleop extends OpMode {
     }
     Double targetTurnAngle;
     TeleopState currentState = TeleopState.DRIVER_CONTROL;
+    int slidesH_position = 0;
     @Override
     public void init() {
         gamepad_1 = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad1");
@@ -35,12 +36,11 @@ public class QualTeleop extends OpMode {
 
         robot.init(this.hardwareMap, telemetry, true);
     }
-
-    @Override
-    public void loop() {
+    // for config
+    public void init_loop() {
         gamepad_1.update();
         gamepad_2.update();
-
+        init_help();
 
         if (gamepad_1.x.isInitialRelease()) {
             robot.setTeamColor(QualVisionProcessor.SampleColor.BLUE);
@@ -49,6 +49,18 @@ public class QualTeleop extends OpMode {
         if (gamepad_1.b.isInitialRelease()) {
             robot.setTeamColor(QualVisionProcessor.SampleColor.RED);
         }
+    }
+
+    private void init_help() {
+        telemetry.addData("Team Color", robot.getTeamColor());
+        telemetry.addLine("Team color: x for blue, y for red");
+        telemetry.update();
+    }
+
+    @Override
+    public void loop() {
+        gamepad_1.update();
+        gamepad_2.update();
 
         //This turns the robot relative 180 degrees
         if (gamepad_2.x.isInitialPress()) {
@@ -83,7 +95,8 @@ public class QualTeleop extends OpMode {
         double x = 0.5 * gamepad_1.left_stick.x.getValue();
 
         //TODO: isPressed
-        if (gamepad_1.dpad_up.isPressed()) {
+
+        /* if (gamepad_1.dpad_up.isPressed()) {
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             // Does not need touch sensor
@@ -94,12 +107,23 @@ public class QualTeleop extends OpMode {
             robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
             robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
             robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }*/
+
+        if (gamepad_1.b.isInitialPress()) {
+            robot.openClaw();
+        } else if (gamepad_1.a.isInitialPress()) {
+            robot.closeClaw();
         }
 
-        if (gamepad_2.b.isInitialPress()) {
-            robot.openClaw();
-        } else if (gamepad_2.b.isInitialRelease()) {
-            robot.closeClaw();
+        if(gamepad_1.right_trigger.isPressed() && slidesH_position >= robot.SLIDESH_MIN){
+            // retract
+            slidesH_position -= 0.01;
+            robot.slidesH.setPosition(slidesH_position);
+        }
+        if(gamepad_1.right_bumper.isPressed() && slidesH_position <= robot.SLIDESH_MAX){
+            //extend
+            slidesH_position += 0.01;
+            robot.slidesH.setPosition(slidesH_position);
         }
 
         if (gamepad_1.start.isInitialPress()) {

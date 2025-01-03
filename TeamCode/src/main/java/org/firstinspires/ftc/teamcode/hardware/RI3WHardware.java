@@ -45,6 +45,8 @@ public class RI3WHardware {
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.4;
     public static double CLAW_CLOSED_POSITION = 0.2;
+    public final double SLIDESH_MAX = 0.6;
+    public final double SLIDESH_MIN = 0;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
@@ -53,7 +55,8 @@ public class RI3WHardware {
         claw.setPosition(CLAW_OPEN_POSITION);
     }
 
-    public DcMotorEx linearSlides;
+    public DcMotorEx slidesV;
+    public Servo slidesH;
     public static int linearSlidesBase = 0;
     public static int highBasket = (int) (44*TICKS_PER_INCH_SLIDES);
     public static int lowBasket = (int) (27*TICKS_PER_INCH_SLIDES);
@@ -140,16 +143,16 @@ public class RI3WHardware {
         backLeft.setPower(0);
         backRight.setPower(0);
         try{
-            linearSlides = hardwareMap.get(DcMotorEx.class, "slidesV");
+            slidesV = hardwareMap.get(DcMotorEx.class, "slidesV");
         }catch(IllegalArgumentException e) {
-            linearSlides = new MockDcMotor();
-            telemetry.addLine("Can't find linearSlides: making a mock");
+            slidesV = new MockDcMotor();
+            telemetry.addLine("Can't find slide V: making a mock");
         }
         try{
-            linearSlides = hardwareMap.get(DcMotorEx.class, "slidesH");
+            slidesH = hardwareMap.get(Servo.class, "slidesH");
         }catch(IllegalArgumentException e) {
-            linearSlides = new MockDcMotor();
-            telemetry.addLine("Can't find linearSlides: making a mock");
+            slidesH = new MockServo();
+            telemetry.addLine("Can't find slide H: making a mock");
         }
 
         try{
@@ -158,8 +161,8 @@ public class RI3WHardware {
             claw = new MockServo();
             telemetry.addLine("Can't find claw: making a mock");
         }
-        linearSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidesV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         touchRight = hardwareMap.get(TouchSensor.class, "touchRight");
         touchLeft = hardwareMap.get(TouchSensor.class, "touchLeft");

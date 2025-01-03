@@ -22,7 +22,7 @@ public class ServoTest extends OpMode {
     List<Map.Entry<String, Servo>> servoList = new ArrayList<>();
     Integer activeIndex = (0);
     double set_position = 0.2;
-    double position_max = 1.0;
+    double position_max = 0.6;
     double position_min = 0;
 
     public void help(){
@@ -30,8 +30,8 @@ public class ServoTest extends OpMode {
         telemetry.addLine("dpad.up = next servo");
         telemetry.addData("current motor", servoList.get(activeIndex).getKey());
         telemetry.addData("Position of Servo: ", set_position);
-        telemetry.addLine("a = open");
-        telemetry.addLine("y = close");
+        telemetry.addLine("y = open");
+        telemetry.addLine("a = close");
         telemetry.addLine("x = slowly open");
         telemetry.addLine("b = slowly close");
         telemetry.update();
@@ -48,6 +48,7 @@ public class ServoTest extends OpMode {
     public void loop() {
         gamepad.update();
         help();
+        // Change to isPressed but need to do later
         if (gamepad.y.isInitialPress()) {
             set_position = set_position+0.1;
         }
