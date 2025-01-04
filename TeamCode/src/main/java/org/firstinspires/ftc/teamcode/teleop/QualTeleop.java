@@ -94,15 +94,17 @@ public class QualTeleop extends OpMode {
 
         if(gamepad_1.left_trigger.isInitialPress() && slidesV_position_current > 0){
             //down
-            robot.slidesV.setTargetPosition(slidesV_position[slidesV_position_current-1]);
-            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setTargetPosition(slidesV_position[--slidesV_position_current]);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
         }
-        if(gamepad_1.left_bumper.isInitialPress() && slidesV_position_current < 4){
+        if(gamepad_1.left_bumper.isInitialPress() && slidesV_position_current < slidesV_position.length-1){
             //up
-            robot.slidesV.setTargetPosition(slidesV_position[slidesV_position_current+1]);
-            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setTargetPosition(slidesV_position[++slidesV_position_current]);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        }
+        if(gamepad_1.y.isInitialPress()){
+            robot.slidesV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         if (gamepad_1.b.isInitialPress()) {

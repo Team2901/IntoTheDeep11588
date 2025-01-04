@@ -125,7 +125,6 @@ public class RI3WHardware {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -161,8 +160,10 @@ public class RI3WHardware {
             claw = new MockServo();
             telemetry.addLine("Can't find claw: making a mock");
         }
+        slidesV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         slidesV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slidesV.setTargetPosition(linearSlidesBase);
+        slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         touchRight = hardwareMap.get(TouchSensor.class, "touchRight");
         touchLeft = hardwareMap.get(TouchSensor.class, "touchLeft");
