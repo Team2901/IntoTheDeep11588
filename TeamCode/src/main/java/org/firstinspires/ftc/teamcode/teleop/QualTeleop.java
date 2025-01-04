@@ -24,7 +24,9 @@ public class QualTeleop extends OpMode {
         CENTERING
     }
     Double targetTurnAngle;
+    int[] slidesV_position = {RI3WHardware.linearSlidesBase, RI3WHardware.lowChamber, RI3WHardware.highChamber, RI3WHardware.lowBasket, RI3WHardware.highBasket};
     TeleopState currentState = TeleopState.DRIVER_CONTROL;
+    int slidesV_position_current = 0;
     int slidesH_position = 0;
     @Override
     public void init() {
@@ -90,18 +92,18 @@ public class QualTeleop extends OpMode {
 
         //TODO: isPressed
 
-        /* if (gamepad_1.dpad_up.isPressed()) {
-            robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
-            robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            // Does not need touch sensor
-        } else if (gamepad_1.dpad_down.isPressed() && (!robot.touchRight.isPressed() && !robot.touchLeft.isPressed())) {
-            robot.linearSlides.setPower(-RI3WHardware.linearSlidesPower);
-            robot.linearSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else {
-            robot.linearSlides.setTargetPosition(robot.linearSlides.getCurrentPosition());
-            robot.linearSlides.setPower(RI3WHardware.linearSlidesPower);
-            robot.linearSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }*/
+        if(gamepad_1.left_trigger.isInitialPress() && slidesV_position_current > 0){
+            //down
+            robot.slidesV.setTargetPosition(slidesV_position[slidesV_position_current-1]);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        }
+        if(gamepad_1.left_bumper.isInitialPress() && slidesV_position_current < 4){
+            //up
+            robot.slidesV.setTargetPosition(slidesV_position[slidesV_position_current+1]);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        }
 
         if (gamepad_1.b.isInitialPress()) {
             robot.openClaw();
@@ -139,7 +141,6 @@ public class QualTeleop extends OpMode {
         }
 
         if (currentState == TeleopState.DRIVER_CONTROL || (x > 0) || (y > 0) || (turningPower > 0)){
-            ;
         } else if (currentState == TeleopState.CENTERING){
             x = robot.getPos();
         }
