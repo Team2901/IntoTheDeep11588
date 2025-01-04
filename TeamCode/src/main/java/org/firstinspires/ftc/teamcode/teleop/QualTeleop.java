@@ -23,9 +23,14 @@ public class QualTeleop extends OpMode {
         DRIVER_CONTROL,
         CENTERING
     }
+    enum ClawState{
+        CLOSED,
+        PRE_ClOSED
+    }
     Double targetTurnAngle;
     int[] slidesV_position = {RI3WHardware.linearSlidesBase, RI3WHardware.lowChamber, RI3WHardware.highChamber, RI3WHardware.lowBasket, RI3WHardware.highBasket};
     TeleopState currentState = TeleopState.DRIVER_CONTROL;
+    ClawState currentClawState = ClawState.CLOSED;
     int slidesV_position_current = 0;
     double slidesH_position = 0;
     @Override
@@ -118,7 +123,14 @@ public class QualTeleop extends OpMode {
         if (gamepad_1.b.isInitialPress()) {
             robot.openClaw();
         } else if (gamepad_1.a.isInitialPress()) {
+            currentClawState = ClawState.PRE_ClOSED;
+            robot.slidesV.setTargetPosition(0);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        }
+        if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == ClawState.PRE_ClOSED){
+            currentClawState = ClawState.CLOSED;
             robot.closeClaw();
+            robot.slidesV.setTargetPosition(slidesV_position[0]);
         }
 
         if(gamepad_1.right_trigger.isPressed()){
