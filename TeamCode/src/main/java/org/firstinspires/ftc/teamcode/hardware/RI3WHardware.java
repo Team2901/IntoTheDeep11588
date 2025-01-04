@@ -41,12 +41,12 @@ public class RI3WHardware {
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
-    public static double linearSlidesPower = .25; // Constant speed the linear slides will move at.
+    public static double linearSlidesPower = .1; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.4;
     public static double CLAW_CLOSED_POSITION = 0.2;
-    public final double SLIDESH_MAX = 0.6;
-    public final double SLIDESH_MIN = 0;
+    public final double SLIDESH_MAX = 0.46;
+    public final double SLIDESH_MIN = 0.2;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
@@ -166,8 +166,19 @@ public class RI3WHardware {
         slidesV.setTargetPosition(linearSlidesBase);
         slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        touchRight = hardwareMap.get(TouchSensor.class, "touchRight");
-        touchLeft = hardwareMap.get(TouchSensor.class, "touchLeft");
+        try{
+            touchLeft = hardwareMap.get(TouchSensor.class, "touchLeft");
+        }catch(IllegalArgumentException e){
+            touchLeft = new MockTouchSensor();
+            telemetry.addLine("Can't find touchLeft: making a mock");
+        }
+
+        try{
+            touchRight = hardwareMap.get(TouchSensor.class, "touchRight");
+        }catch(IllegalArgumentException e){
+            touchRight = new MockTouchSensor();
+            telemetry.addLine("Can't find touchRight: making a mock");
+        }
 
         logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;

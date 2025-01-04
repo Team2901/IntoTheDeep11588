@@ -356,7 +356,7 @@ public class QualVisionProcessor implements VisionProcessor , CameraStreamSource
         //telemetry.addData("Contours", contours.size());
         List<Integer> firstChildren = parseHierarchyForFirstChildren(hierarchy, 0);
         hierarchy.release();
-        telemetry.addData("First Children", firstChildren.size());
+        //telemetry.addData("First Children", firstChildren.size());
         int idx = 0;
         List<DetectedSample> detectedSamples = new ArrayList<>(firstChildren.size());
         for (int contourIndex: firstChildren){

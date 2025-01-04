@@ -27,7 +27,7 @@ public class QualTeleop extends OpMode {
     int[] slidesV_position = {RI3WHardware.linearSlidesBase, RI3WHardware.lowChamber, RI3WHardware.highChamber, RI3WHardware.lowBasket, RI3WHardware.highBasket};
     TeleopState currentState = TeleopState.DRIVER_CONTROL;
     int slidesV_position_current = 0;
-    int slidesH_position = 0;
+    double slidesH_position = 0;
     @Override
     public void init() {
         gamepad_1 = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad1");
@@ -55,8 +55,16 @@ public class QualTeleop extends OpMode {
 
     private void init_help() {
         telemetry.addData("Team Color", robot.getTeamColor());
-        telemetry.addLine("Team color: x for blue, y for red");
+        telemetry.addLine("Team color: X=blue, Y=red");
+        help();
         telemetry.update();
+    }
+    private void help() {
+        telemetry.addLine("Claw: A=close, B=open");
+        telemetry.addLine("slideH: RT=retract, RB=extend");
+        telemetry.addLine("slideV: LT=lower, LB=raise");
+        telemetry.addLine("------------------");
+
     }
 
     @Override
@@ -113,15 +121,21 @@ public class QualTeleop extends OpMode {
             robot.closeClaw();
         }
 
-        if(gamepad_1.right_trigger.isPressed() && slidesH_position >= robot.SLIDESH_MIN){
-            // retract
-            slidesH_position -= 0.01;
-            robot.slidesH.setPosition(slidesH_position);
+        if(gamepad_1.right_trigger.isPressed()){
+            telemetry.addLine("right trigger pushed");
+            if (slidesH_position > robot.SLIDESH_MIN) {
+                // retract
+                slidesH_position -= 0.007;
+                robot.slidesH.setPosition(slidesH_position);
+            }
         }
-        if(gamepad_1.right_bumper.isPressed() && slidesH_position <= robot.SLIDESH_MAX){
-            //extend
-            slidesH_position += 0.01;
-            robot.slidesH.setPosition(slidesH_position);
+        if(gamepad_1.right_bumper.isPressed()){
+            telemetry.addLine("right bumper pushed");
+            if (slidesH_position < robot.SLIDESH_MAX) {
+                //extend
+                slidesH_position += 0.007;
+                robot.slidesH.setPosition(slidesH_position);
+            }
         }
 
         if (gamepad_1.start.isInitialPress()) {
@@ -151,6 +165,7 @@ public class QualTeleop extends OpMode {
         robot.backLeft.setPower(y - x + turningPower);
         robot.backRight.setPower(y + x - turningPower);
 
+        help();
         telemetry.addData("Team Color", robot.getTeamColor());
         telemetry.addData("Teleop State", currentState);
         telemetry.addData("Current Angle", robot.getAngle());
@@ -163,6 +178,7 @@ public class QualTeleop extends OpMode {
         telemetry.addData("backRight", robot.backRight.getCurrentPosition());
         //telemetry.addData("Arm", robot.arm.getCurrentPosition());
         telemetry.addData("Claw Position", robot.claw.getPosition());
+        telemetry.addData("slideH Position", slidesH_position);
 
         // This doesn't work rn
         if (robot.getDetectedSample() != null){
