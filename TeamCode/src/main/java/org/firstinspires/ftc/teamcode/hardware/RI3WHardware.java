@@ -161,6 +161,7 @@ public class RI3WHardware {
             telemetry.addLine("Can't find claw: making a mock");
         }
         slidesV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slidesV.setDirection(DcMotorSimple.Direction.REVERSE);
         slidesV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slidesV.setTargetPosition(linearSlidesBase);
         slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
