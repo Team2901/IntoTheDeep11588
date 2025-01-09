@@ -115,6 +115,10 @@ public class QualTeleop extends OpMode {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
+        if (gamepad_2.dpad_left.isInitialPress()) {
+            robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        }
         if(gamepad_1.left_trigger.isInitialPress() && slidesVPositionCurrent > 0){
             //down
             robot.slidesV.setTargetPosition(slidesV_position[--slidesVPositionCurrent]);
