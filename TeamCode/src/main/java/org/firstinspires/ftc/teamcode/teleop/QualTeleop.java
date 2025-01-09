@@ -65,9 +65,16 @@ public class QualTeleop extends OpMode {
         telemetry.update();
     }
     private void help() {
-        telemetry.addLine("Claw: A=close, B=open");
-        telemetry.addLine("slideV: RT=lower, RB=raise");
-        telemetry.addLine("slideH: LT=retract, LB=extend");
+        telemetry.addLine("Gamepad 1 Controls");
+        telemetry.addLine("- Left stick= Direction of robot");
+        telemetry.addLine("- Right stick= Turns robot");
+        telemetry.addLine("- X = turn R +180");
+        telemetry.addLine("Gamepad 2 Controls");
+        telemetry.addLine("- Claw: A=close, B=open");
+        telemetry.addLine("- slideV: RT=lower, RB=raise");
+        telemetry.addLine("- slideH: LT=retract, LB=extend");
+        telemetry.addLine("- Y= reset v slides encoders");
+        telemetry.addLine("- dpad up/dn= moves v slides up/dn");
         telemetry.addLine("------------------");
 
     }
@@ -78,7 +85,7 @@ public class QualTeleop extends OpMode {
         gamepad_2.update();
 
         //This turns the robot relative 180 degrees
-        if (gamepad_2.x.isInitialPress()) {
+        if (gamepad_1.x.isInitialPress()) {
             targetTurnAngle = robot.getAngle() + 180;
         }
 
@@ -107,36 +114,36 @@ public class QualTeleop extends OpMode {
         if (gamepad_2.dpad_up.isPressed()) {
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
             // Does not need touch sensor
         } else if (gamepad_2.dpad_down.isPressed() && (!robot.touchRight.isPressed() && !robot.touchLeft.isPressed())) {
             robot.slidesV.setPower(-RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        } else {
-            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        if (gamepad_2.dpad_left.isInitialPress()) {
             robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-        }
-        if(gamepad_1.left_trigger.isInitialPress() && slidesVPositionCurrent > 0){
+        } else if(gamepad_2.left_trigger.isInitialPress() && slidesVPositionCurrent > 0){
             //down
             robot.slidesV.setTargetPosition(slidesV_position[--slidesVPositionCurrent]);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-        }
-        if(gamepad_1.left_bumper.isInitialPress() && slidesVPositionCurrent < slidesV_position.length-1){
+        } else if(gamepad_2.left_bumper.isInitialPress() && slidesVPositionCurrent < slidesV_position.length-1){
             //up
             robot.slidesV.setTargetPosition(slidesV_position[++slidesVPositionCurrent]);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+        } else {
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
         }
-        if(gamepad_1.y.isInitialPress()){
+
+
+        if(gamepad_2.y.isInitialPress()){
             robot.slidesV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        if (gamepad_1.b.isInitialPress()) {
+        if (gamepad_2.b.isInitialPress()) {
             robot.openClaw();
-        } else if (gamepad_1.a.isInitialPress()) {
+        } else if (gamepad_2.a.isInitialPress()) {
             currentClawState = ClawState.PRE_ClOSED;
             robot.slidesV.setTargetPosition(0);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
@@ -147,7 +154,7 @@ public class QualTeleop extends OpMode {
             robot.slidesV.setTargetPosition(slidesV_position[0]);
         }
 
-        if(gamepad_1.right_trigger.isPressed()){
+        if(gamepad_2.right_trigger.isPressed()){
 
             telemetry.addLine("right trigger pushed");
             if (slidesH_position > robot.SLIDESH_MIN) {
@@ -156,7 +163,7 @@ public class QualTeleop extends OpMode {
                 robot.slidesH.setPosition(slidesH_position);
             }
         }
-        if(gamepad_1.right_bumper.isPressed()){
+        if(gamepad_2.right_bumper.isPressed()){
             telemetry.addLine("right bumper pushed");
             if (slidesH_position < robot.SLIDESH_MAX) {
                 //extend
