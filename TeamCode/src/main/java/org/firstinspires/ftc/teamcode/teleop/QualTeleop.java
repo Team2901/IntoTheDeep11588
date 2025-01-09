@@ -66,8 +66,8 @@ public class QualTeleop extends OpMode {
     }
     private void help() {
         telemetry.addLine("Claw: A=close, B=open");
-        telemetry.addLine("slideH: RT=retract, RB=extend");
-        telemetry.addLine("slideV: LT=lower, LB=raise");
+        telemetry.addLine("slideV: RT=lower, RB=raise");
+        telemetry.addLine("slideH: LT=retract, LB=extend");
         telemetry.addLine("------------------");
 
     }

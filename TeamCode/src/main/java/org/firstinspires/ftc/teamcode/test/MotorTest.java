@@ -46,6 +46,8 @@ public class MotorTest extends OpMode {
     public void loop() {
         gamepad.update();
 
+        dcMotorList.get(activeIndex).getValue().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         if(gamepad.dpad_up.isInitialPress()){
             dcMotorList.get(activeIndex).getValue().setPower(0);
         }
