@@ -58,9 +58,9 @@ public class RI3WHardware {
     public DcMotorEx slidesV;
     public Servo slidesH;
     public static int linearSlidesBase = (int) (1*TICKS_PER_INCH_SLIDES);
-    public static int highBasket = (int) (44*TICKS_PER_INCH_SLIDES);
-    public static int lowBasket = (int) (27*TICKS_PER_INCH_SLIDES);
-    public static int lowChamber = (int) (14*TICKS_PER_INCH_SLIDES);
+    public static int highBasket = (int) 5917; // in ticks; 45 inches from ground to claw
+    public static int lowBasket = (int) 3909; // in ticks; 28.25 inches from ground to claw
+    public static int lowChamber = (int) (14*TICKS_PER_INCH_SLIDES); //
     public static int highChamber = (int) (27*TICKS_PER_INCH_SLIDES);
     public Servo claw;
     public DcMotorEx frontLeft;
