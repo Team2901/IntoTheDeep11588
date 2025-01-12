@@ -23,7 +23,7 @@ public class QualTeleop extends OpMode {
         DRIVER_CONTROL,
         CENTERING
     }
-    enum ClawState{
+    public enum ClawState{
         CLOSED,
         PRE_ClOSED
     }

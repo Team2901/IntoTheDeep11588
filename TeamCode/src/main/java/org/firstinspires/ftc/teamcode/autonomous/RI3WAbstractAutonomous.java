@@ -9,12 +9,14 @@ import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
 import org.firstinspires.ftc.teamcode.Utilities.FileUtilities;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
+import org.firstinspires.ftc.teamcode.teleop.QualTeleop;
 
 public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;
+    QualTeleop.ClawState currentClawState = QualTeleop.ClawState.CLOSED;
     public void move(double yInches, double xInches) {
         double original_angle = robot.getAngle();
 
@@ -272,6 +274,39 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             break;
                         default:
                             telemetry.addLine("Invalid Path: unexpected position " + components[1]);
+                            break;
+                    }
+                } break;
+                case "Slide":{
+                    double slidesH_position = 0;
+                    switch(components[1]){
+                        case "extend":
+                            if (Double.parseDouble(components[2]) < robot.SLIDESH_MAX) {
+                                slidesH_position = Double.parseDouble(components[2]);
+                            }
+                            break;
+                        case "retract":
+                            if (Double.parseDouble(components[2]) > robot.SLIDESH_MIN){
+                                slidesH_position = Double.parseDouble(components[2]);
+                            }
+                            break;
+                    }
+                    robot.slidesH.setPosition(slidesH_position);
+                } break;
+                case "Claw":{
+                    switch (components[1]){
+                        case "open":
+                            robot.openClaw();
+                            break;
+                        case "close":
+                            currentClawState = QualTeleop.ClawState.PRE_ClOSED;
+                            robot.slidesV.setTargetPosition(0);
+                            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+                            if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == QualTeleop.ClawState.PRE_ClOSED){
+                                currentClawState = QualTeleop.ClawState.CLOSED;
+                                robot.closeClaw();
+                                moveSlides(SlidePosition.base);
+                            }
                             break;
                     }
                 } break;
