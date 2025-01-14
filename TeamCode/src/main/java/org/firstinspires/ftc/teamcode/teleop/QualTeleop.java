@@ -112,27 +112,27 @@ public class QualTeleop extends OpMode {
 
         //Override in case set positions aren't working/ are set incorrectly
         if (gamepad_2.dpad_up.isPressed()) {
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
             // Does not need touch sensor
         } else if (gamepad_2.dpad_down.isPressed() && (!robot.touchRight.isPressed() && !robot.touchLeft.isPressed())) {
-            robot.slidesV.setPower(-RI3WHardware.linearSlidesPower);
+            robot.slidesV.setPower(-RI3WHardware.linearSlidesPower - 0.2);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
         } else if(gamepad_2.left_trigger.isInitialPress() && slidesVPositionCurrent > 0){
             //down
             robot.slidesV.setTargetPosition(slidesV_position[--slidesVPositionCurrent]);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
         } else if(gamepad_2.left_bumper.isInitialPress() && slidesVPositionCurrent < slidesV_position.length-1){
             //up
             robot.slidesV.setTargetPosition(slidesV_position[++slidesVPositionCurrent]);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
         } else {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
         }
 
 
