@@ -71,8 +71,8 @@ public class QualTeleop extends OpMode {
         telemetry.addLine("- X = turn R +180");
         telemetry.addLine("Gamepad 2 Controls");
         telemetry.addLine("- Claw: A=close, B=open");
-        telemetry.addLine("- slideV: RT=lower, RB=raise");
-        telemetry.addLine("- slideH: LT=retract, LB=extend");
+        telemetry.addLine("- slideH: RT=retract, RB=extend");
+        telemetry.addLine("- slideV: LT=lower, LB=raise");
         telemetry.addLine("- Y= reset v slides encoders");
         telemetry.addLine("- dpad up/dn= moves v slides up/dn");
         telemetry.addLine("------------------");
