@@ -35,7 +35,7 @@ public class RI3WHardware {
     public static final double WHEEL_DIAMETER = 3.78;
     public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER;
     public static final double TICKS_PER_INCH = TICKS_PER_DRIVE_REV / WHEEL_CIRCUMFERENCE;
-    public static double TICKS_PER_MOTOR_REV_SLIDES = 1425.1;
+    public static double TICKS_PER_MOTOR_REV_SLIDES = 2786.2; //1425.1
     public static double DRIVE_GEAR_RATIO_SLIDES = 1.0/1.0;
     public static double TICKS_PER_DRIVE_REV_SLIDES = TICKS_PER_MOTOR_REV_SLIDES * DRIVE_GEAR_RATIO_SLIDES;
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
