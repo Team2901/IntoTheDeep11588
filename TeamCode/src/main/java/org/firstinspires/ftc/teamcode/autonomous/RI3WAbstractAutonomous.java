@@ -278,7 +278,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                 } break;
                 case "Slide":{
-                    double slidesH_position = 0;
+                    double slidesH_position = robot.SLIDESH_MIN;
                     switch(components[1]){
                         case "extend":
                             if (Double.parseDouble(components[2]) < robot.SLIDESH_MAX) {
