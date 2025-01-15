@@ -109,22 +109,27 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         highChamber,
         lowBasket,
         highBasket,
-        base
+        linearSlidesBase
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.lowChamber){
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setTargetPosition(RI3WHardware.lowChamber);
         }
         else if (position == SlidePosition.highChamber) {
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setTargetPosition(RI3WHardware.highChamber);
         }
         else if (position == SlidePosition.lowBasket) {
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setTargetPosition(RI3WHardware.lowBasket);
         }
         else if (position == SlidePosition.highBasket) {
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setTargetPosition(RI3WHardware.highBasket);
         }
-        else if (position == SlidePosition.base) {
+        else if (position == SlidePosition.linearSlidesBase) {
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setTargetPosition(RI3WHardware.linearSlidesBase);
         }else{
             telemetry.addLine("Invalid Position: "+position);
@@ -189,7 +194,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             telemetry.addLine("Invalid path: unexpected unit " + components[3]);
                             return;
                     }
-                    if(components.length >= 5){
+                    /*if(components.length >= 5){
                         switch (components[4]){
                             case "clawOffset":
                                 offset = RI3WHardware.clawOffset;
@@ -200,7 +205,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                                 telemetry.addLine("Invalid path: unexpected offset"+ components[4]);
                                 return;
                         }
-                    }
+                    }*/
                     move((distanceValue*sign)+offset, 0);
                 } break;
                 case "TurnR": {
@@ -270,7 +275,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             moveSlides(SlidePosition.highChamber);
                             break;
                         case "base":
-                            moveSlides(SlidePosition.base);
+                            moveSlides(SlidePosition.linearSlidesBase);
                             break;
                         default:
                             telemetry.addLine("Invalid Path: unexpected position " + components[1]);
@@ -305,7 +310,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == QualTeleop.ClawState.PRE_ClOSED){
                                 currentClawState = QualTeleop.ClawState.CLOSED;
                                 robot.closeClaw();
-                                moveSlides(SlidePosition.base);
+                                moveSlides(SlidePosition.linearSlidesBase);
                             }
                             break;
                     }
