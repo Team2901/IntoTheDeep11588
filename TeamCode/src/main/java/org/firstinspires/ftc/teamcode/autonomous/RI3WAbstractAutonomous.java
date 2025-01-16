@@ -43,16 +43,16 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         robot.backLeft.setPower(AutoConfig.getInstance().speed);
         robot.backRight.setPower(AutoConfig.getInstance().speed);
 
-        while (opModeIsActive() && (robot.frontLeft.isBusy() || robot.frontRight.isBusy() ||
-                robot.backLeft.isBusy() || robot.backRight.isBusy())) {
+        while (opModeIsActive() && (robot.frontLeft.isBusy() && robot.frontRight.isBusy() &&
+                robot.backLeft.isBusy() && robot.backRight.isBusy())) {
             telemetryLog(robot.frontLeft);
         }
 
         double end_angle = robot.getAngle();
 
-        if(Math.abs(original_angle - end_angle) > 2){
-            turnToAngle(original_angle);
-        }
+//        if(Math.abs(original_angle - end_angle) > 2){
+//            turnToAngle(original_angle);
+//        }
 
         telemetry.addData("Original Angle", original_angle);
         telemetry.addData("End Angle", end_angle);
@@ -194,7 +194,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             telemetry.addLine("Invalid path: unexpected unit " + components[3]);
                             return;
                     }
-                    /*if(components.length >= 5){
+                    if(components.length >= 5){
                         switch (components[4]){
                             case "clawOffset":
                                 offset = RI3WHardware.clawOffset;
@@ -205,7 +205,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                                 telemetry.addLine("Invalid path: unexpected offset"+ components[4]);
                                 return;
                         }
-                    }*/
+                    }
                     move((distanceValue*sign)+offset, 0);
                 } break;
                 case "TurnR": {
