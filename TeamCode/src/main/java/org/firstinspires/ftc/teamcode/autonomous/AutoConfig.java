@@ -9,6 +9,7 @@ public class AutoConfig {
     public RI3WAbstractAutonomous.StartingPosition whereToStart = RI3WAbstractAutonomous.StartingPosition.LEFT;
     public double speed = .55;
     public int delayNumSec = 0;
+    public boolean debugMode = false;
     public static AutoConfig getInstance(){
         if (instance == null){
             instance = new AutoConfig();
@@ -24,6 +25,6 @@ public class AutoConfig {
             instance.delayNumSec = newInstance.delayNumSec;
             instance.whereToStart = newInstance.whereToStart;
         }
-
+        instance.debugMode = false;
     }
 }

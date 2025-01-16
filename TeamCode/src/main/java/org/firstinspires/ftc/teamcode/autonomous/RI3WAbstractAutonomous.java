@@ -316,6 +316,15 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                 } break;
             }
+            if (AutoConfig.getInstance().debugMode){
+                while(opModeIsActive()){
+                    idle();
+                    telemetry.addLine("Press a to continue.");
+                    if (gamepad.a.isInitialPress()){
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -346,6 +355,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addData("delayNumSec", AutoConfig.getInstance().delayNumSec);
         telemetry.addLine("Dpad Up: Increase delay (1 sec)");
         telemetry.addLine("Dpad Down: Decrease delay (1 sec)");
+        telemetry.addLine();
+        telemetry.addData("Debug", AutoConfig.getInstance().debugMode);
+        telemetry.addLine("Start: Enter debugMode");
 
         telemetry.update();
     }
@@ -390,6 +402,10 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 AutoConfig.getInstance().whereToStart = StartingPosition.RIGHT;
             }
             telemetry.update();
+            if (gamepad.start.isInitialPress()){
+                AutoConfig x = AutoConfig.getInstance();
+                x.debugMode = !x.debugMode;
+            }
         }
         FileUtilities.writeAutoConfig();
     }
