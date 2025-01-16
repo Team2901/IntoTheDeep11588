@@ -21,19 +21,26 @@ public class PushBot extends RI3WAbstractAutonomous {
         //waitForDelay();
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             parsePath(
-                    "Strafe right 24 inches\n" +
-                    "Move forward 57 inches\n" +
-                    "Strafe right 18 inches\n" +
-                    "Move backwards 47 inches\n" +
-                    "Move forward 57 inches\n" +
-                    "Strafe right 10 inches\n" +
-                    "Move backwards 47 inches\n" +
-                    "Move forward 57 inches\n" +
-                    "Strafe right 7 inches\n" +
-                    "Move backwards 57 inches\n"
+                    "Strafe left 29 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe left 18 inches\n" +
+                            "Move backwards 52 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe left 10 inches\n"
             );
-        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
-
+        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
+            parsePath(
+                    "Strafe right 29 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe right 18 inches\n" +
+                            "Move backwards 52 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe right 10 inches\n" +
+                            "Move backwards 47 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe right 7 inches\n" +
+                            "Move backwards 57 inches\n"
+            );
         }
 
         /*if (AutoConfig.getInstance().whereToPark == ParkPosition.CORNER){
