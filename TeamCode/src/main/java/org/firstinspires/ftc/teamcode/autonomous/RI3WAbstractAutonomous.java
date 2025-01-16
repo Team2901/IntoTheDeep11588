@@ -46,6 +46,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         while (opModeIsActive() && (robot.frontLeft.isBusy() && robot.frontRight.isBusy() &&
                 robot.backLeft.isBusy() && robot.backRight.isBusy())) {
             telemetryLog(robot.frontLeft);
+            telemetryLog(robot.frontRight);
+            telemetryLog(robot.backLeft);
+            telemetryLog(robot.backRight);
         }
 
         double end_angle = robot.getAngle();
@@ -72,6 +75,14 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addData("PIDFCoefficients", dcMotorEx.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
         telemetry.addData("Target Position", dcMotorEx.getTargetPosition());
         telemetry.addData("Current Position", dcMotorEx.getCurrentPosition());
+        telemetry.addData("Target Position - fL", robot.frontLeft.getTargetPosition());
+        telemetry.addData("Target Position - fR", robot.frontRight.getTargetPosition());
+        telemetry.addData("Target Position - bL", robot.backLeft.getTargetPosition());
+        telemetry.addData("Target Position - bR", robot.backRight.getTargetPosition());
+        telemetry.addData("Current Position - fL", robot.frontLeft.getCurrentPosition());
+        telemetry.addData("Current Position - fR", robot.frontRight.getCurrentPosition());
+        telemetry.addData("Current Position - bL", robot.backLeft.getCurrentPosition());
+        telemetry.addData("Current Position - bR", robot.backRight.getCurrentPosition());
         telemetry.update();
     }
 
@@ -98,10 +109,11 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         turnToAngle(targetAngle);
     }
     public void waitForContinue() {
-        while (!gamepad1.x) {
+        telemetry.addLine("Press X to continue.");
+        telemetry.update();
+        while(opModeIsActive() && !gamepad1.x){
 
         }
-
     }
     public enum SlidePosition
     {
@@ -317,13 +329,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 } break;
             }
             if (AutoConfig.getInstance().debugMode){
-                while(opModeIsActive()){
-                    idle();
-                    telemetry.addLine("Press a to continue.");
-                    if (gamepad.a.isInitialPress()){
-                        break;
-                    }
-                }
+                waitForContinue();
             }
         }
     }
