@@ -85,9 +85,9 @@ public class QualTeleop extends OpMode {
         gamepad_2.update();
 
         //This turns the robot relative 180 degrees
-        if (gamepad_1.x.isInitialPress()) {
+        /*if (gamepad_1.x.isInitialPress()) {
             targetTurnAngle = robot.getAngle() + 180;
-        }
+        }*/
 
         Double turnToAngleSpeed = robot.getTurnToAngleSpeed(targetTurnAngle);
 
