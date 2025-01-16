@@ -46,7 +46,7 @@ public class RI3WHardware {
     public static double CLAW_OPEN_POSITION = 0.6;
     public static double CLAW_CLOSED_POSITION = 0.2;
     public final double SLIDESH_MAX = 0.56;
-    public final double SLIDESH_MIN = 0.2;
+    public final double SLIDESH_MIN = 0.16;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
