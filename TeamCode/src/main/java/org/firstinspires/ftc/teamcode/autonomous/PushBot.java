@@ -26,7 +26,11 @@ public class PushBot extends RI3WAbstractAutonomous {
                             "Strafe left 18 inches\n" +
                             "Move backwards 52 inches\n" +
                             "Move forward 57 inches\n" +
-                            "Strafe left 10 inches\n"
+                            "Strafe left 10 inches\n" +
+                            "Move backwards 47 inches\n" +
+                            "Move forward 57 inches\n" +
+                            "Strafe right 7 inches\n" +
+                            "Move backwards 57 inches\n"
             );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
