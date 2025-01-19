@@ -22,28 +22,30 @@ public class PushBot extends RI3WAbstractAutonomous {
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             parsePath(
                     "Strafe left 29 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe left 18 inches\n" +
-                            "Move backwards 52 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe left 10 inches\n" +
+                            "Move forward 52 inches\n" +
+                            "Strafe left 6 inches\n" +
                             "Move backwards 47 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe right 7 inches\n" +
-                            "Move backwards 57 inches\n"
+                            "Move forward 49 inches\n" +
+                            "Strafe left 8 inches\n"+
+                            "Move backwards 45 inches\n"+
+                            "Move forward 49 inches\n" +
+                            "Strafe left 5 inches\n" +
+                            "Move backwards 47 inches\n" +
+                            "Move forward 50 inches\n"+
+                            "Strafe right 12 inches\n"
             );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
                     "Strafe right 29 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe right 18 inches\n" +
-                            "Move backwards 52 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe right 10 inches\n" +
+                            "Move forward 52 inches\n" +
+                            "Strafe right 8 inches\n" +
                             "Move backwards 47 inches\n" +
-                            "Move forward 57 inches\n" +
-                            "Strafe right 7 inches\n" +
-                            "Move backwards 57 inches\n"
+                            "Move forward 49 inches\n" +
+                            "Strafe right 8 inches\n" +
+                            "Move backwards 45 inches\n" +
+                            "Move forward 49 inches\n" +
+                            "Strafe right 4 inches\n" +
+                            "Move backwards 51 inches\n"
             );
         }
 
