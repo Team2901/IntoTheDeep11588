@@ -121,27 +121,33 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         highChamber,
         lowBasket,
         highBasket,
-        linearSlidesBase
+        linearSlidesBase,
+        lower
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.lowChamber){
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.lowChamber);
         }
         else if (position == SlidePosition.highChamber) {
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.highChamber);
         }
         else if (position == SlidePosition.lowBasket) {
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.lowBasket);
         }
         else if (position == SlidePosition.highBasket) {
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.highBasket);
         }
         else if (position == SlidePosition.linearSlidesBase) {
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.linearSlidesBase);
         }else{
             telemetry.addLine("Invalid Position: "+position);
@@ -316,17 +322,24 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             robot.openClaw();
                             break;
                         case "close":
-                            currentClawState = QualTeleop.ClawState.PRE_ClOSED;
-                            robot.slidesV.setTargetPosition(0);
-                            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-                            if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == QualTeleop.ClawState.PRE_ClOSED){
-                                currentClawState = QualTeleop.ClawState.CLOSED;
-                                robot.closeClaw();
-                                moveSlides(SlidePosition.linearSlidesBase);
-                            }
+//                            currentClawState = QualTeleop.ClawState.PRE_ClOSED;
+//                            robot.slidesV.setTargetPosition(0);
+//                            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+//                            if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == QualTeleop.ClawState.PRE_ClOSED){
+//                                currentClawState = QualTeleop.ClawState.CLOSED;
+//                                robot.closeClaw();
+//                                moveSlides(SlidePosition.linearSlidesBase);
+//                            }
+                            robot.closeClaw();
                             break;
                     }
                 } break;
+                case "Lower" :{
+                    int lowerValue = Integer.parseInt(components[1]);
+                    robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+                    robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition() - lowerValue);
+                }break;
             }
             if (AutoConfig.getInstance().debugMode){
                 waitForContinue();

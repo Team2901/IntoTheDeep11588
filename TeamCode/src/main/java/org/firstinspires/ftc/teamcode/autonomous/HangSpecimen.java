@@ -14,15 +14,34 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
 
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             parsePath(
-                    "Strafe right 5 inches\n" +
-                    "Move forward 21 inches\n"
-                    //  - robot.clawOffset
-                    // TODO: add claw offset to parse path
+                    "Strafe left 29 inches\n" +
+                            "Move forward 52 inches\n" +
+                            "Strafe left 6 inches\n" +
+                            "Move backwards 47 inches\n" +
+                            "Move forward 49 inches\n" +
+                            "Strafe left 8 inches\n"+
+                            "Move backwards 47 inches\n"+
+                            "Move forward 50 inches\n"+
+                            "Strafe right 12 inches\n"
             );
-        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT){
+        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
-                    "Strafe left 5 inches\n" +
-                    "Move forward 21 inches\n"
+                            "Claw close\n" +
+                            "Move forward 30 inches\n"+
+                            "Lift highChamber\n"+
+                            "Slide extend 0.5\n"+
+                            "Lower 100\n"+
+                            "Claw open\n"+
+                            "Slide retract 0.28\n"+
+                            "Lift base\n"+
+                            "Move backward 30 inches\n"+
+                            "Strafe right 29 inches\n" +
+                            "Move forward 52 inches\n" +
+                            "Strafe right 6 inches\n" +
+                            "Move backwards 47 inches\n" +
+                            "Move forward 49 inches\n" +
+                            "Strafe right 8 inches\n" +
+                            "Move backwards 47 inches\n"
             );
         }
 
