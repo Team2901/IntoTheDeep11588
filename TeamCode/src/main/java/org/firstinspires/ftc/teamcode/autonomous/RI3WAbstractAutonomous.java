@@ -126,29 +126,48 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.lowChamber){
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.lowChamber);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.lowChamber) > 100)){
+                idle();
+            }
         }
         else if (position == SlidePosition.highChamber) {
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.highChamber);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.highChamber) > 100)){
+                telemetry.addData("Distance from target3:", Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.highChamber));
+                telemetry.update();
+                idle();
+            }
         }
         else if (position == SlidePosition.lowBasket) {
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.lowBasket);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.lowBasket) > 100)){
+                idle();
+            }
         }
         else if (position == SlidePosition.highBasket) {
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.highBasket);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.highBasket) > 100)){
+                idle();
+            }
         }
         else if (position == SlidePosition.linearSlidesBase) {
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(RI3WHardware.linearSlidesBase);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.linearSlidesBase) > 100)){
+                telemetry.addData("Distance from target:", Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.linearSlidesPower));
+                telemetry.update();
+                idle();
+            }
         }else{
             telemetry.addLine("Invalid Position: "+position);
         }
@@ -315,22 +334,18 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             break;
                     }
                     robot.slidesH.setPosition(slidesH_position);
+                    waitUntil(1000);
+
                 } break;
                 case "Claw":{
                     switch (components[1]){
                         case "open":
                             robot.openClaw();
+                            waitUntil(500);
                             break;
                         case "close":
-//                            currentClawState = QualTeleop.ClawState.PRE_ClOSED;
-//                            robot.slidesV.setTargetPosition(0);
-//                            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-//                            if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == QualTeleop.ClawState.PRE_ClOSED){
-//                                currentClawState = QualTeleop.ClawState.CLOSED;
-//                                robot.closeClaw();
-//                                moveSlides(SlidePosition.linearSlidesBase);
-//                            }
                             robot.closeClaw();
+                            waitUntil(500);
                             break;
                     }
                 } break;
@@ -431,6 +446,13 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     public void waitForDelay() {
         CountDownTimer cdt = new CountDownTimer(ElapsedTime.Resolution.SECONDS);
         cdt.setTargetTime(AutoConfig.getInstance().delayNumSec);
+        while(cdt.hasRemainingTime() && !isStopRequested()){
+            idle();
+        }
+    }
+    public void waitUntil(int milliseconds) {
+        CountDownTimer cdt = new CountDownTimer(ElapsedTime.Resolution.MILLISECONDS);
+        cdt.setTargetTime(milliseconds);
         while(cdt.hasRemainingTime() && !isStopRequested()){
             idle();
         }

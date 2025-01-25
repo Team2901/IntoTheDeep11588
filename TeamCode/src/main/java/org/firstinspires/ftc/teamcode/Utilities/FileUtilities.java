@@ -50,7 +50,9 @@ public class FileUtilities {
 
             ObjectMapper mapper = new ObjectMapper();
             AutoConfig.setInstance(mapper.readValue(file, AutoConfig.class));
-
+            AutoConfig settings = mapper.readValue(file, AutoConfig.class);
+            settings.debugMode = false;
+            AutoConfig.setInstance(settings);
         }catch(IOException e){
             e.printStackTrace();
         }
