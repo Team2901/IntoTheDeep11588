@@ -351,9 +351,12 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 } break;
                 case "Lower" :{
                     int lowerValue = Integer.parseInt(components[1]);
-                    robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
                     robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition() - lowerValue);
+                    robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+                    while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-robot.slidesV.getTargetPosition()) > 50)){
+                        idle();
+                    }
                 }break;
             }
             if (AutoConfig.getInstance().debugMode){

@@ -27,10 +27,15 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
                     "Claw close\n"+
-                            "Slide extend 0.5\n"+
-                            "Move forward 10 inches\n"+
+                            "Lift base\n"+
+                            "Move forward 27 inches\n"+
                             "Lift highChamber\n"+
-                            "Lift linearSlideBase\n"
+                            "Slide extend 0.5\n"+
+                            "Lower 300\n"+
+                            "Slide retract 0.2\n"+
+                            "Move backward 2 inches\n"+
+                            "Claw open\n"+
+                            "Lift base\n"
 //                            "Claw close\n" +
 //                            "Move forward 30 inches\n"+
 //                            "Lift highChamber\n"+

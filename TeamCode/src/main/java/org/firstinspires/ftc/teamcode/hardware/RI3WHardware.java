@@ -41,7 +41,7 @@ public class RI3WHardware {
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
-    public static double linearSlidesPower = .1; // Constant speed the linear slides will move at.
+    public static double linearSlidesPower = .4; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.6;
     public static double CLAW_CLOSED_POSITION = 0.2;
@@ -57,11 +57,11 @@ public class RI3WHardware {
 
     public DcMotorEx slidesV;
     public Servo slidesH;
-    public static int linearSlidesBase = (int) (1*TICKS_PER_INCH_SLIDES);
-    public static int highBasket = (int) 5917; // in ticks; 45 inches from ground to claw
-    public static int lowBasket = (int) 3909; // in ticks; 28.25 inches from ground to claw
-    public static int lowChamber = (int) 2000; // 15 inches
-    public static int highChamber = (int) 3781; // 26 inches from ground to claw
+    public static int linearSlidesBase = (int) (2*TICKS_PER_INCH_SLIDES);
+    public static int highBasket = 5917; // in ticks; 45 inches from ground to claw
+    public static int lowBasket = 3909; // in ticks; 28.25 inches from ground to claw
+    public static int lowChamber = 2000; // 15 inches
+    public static int highChamber = 4020; // original 3781 ticks // 26 inches from ground to claw
     public Servo claw;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
