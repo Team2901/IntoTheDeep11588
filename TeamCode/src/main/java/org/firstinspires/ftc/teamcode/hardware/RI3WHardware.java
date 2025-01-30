@@ -41,7 +41,7 @@ public class RI3WHardware {
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
-    public static double linearSlidesPower = .4; // Constant speed the linear slides will move at.
+    public static double linearSlidesPower = .5; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.6;
     public static double CLAW_CLOSED_POSITION = 0.2;
@@ -180,8 +180,8 @@ public class RI3WHardware {
             telemetry.addLine("Can't find touchRight: making a mock");
         }
 
-        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
         // requesting a reference to the IMU hardware. What chip you have can be determined by

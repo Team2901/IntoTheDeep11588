@@ -122,7 +122,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         lowBasket,
         highBasket,
         linearSlidesBase,
-        lower
+        ground
     }
     public void moveSlides(SlidePosition position){
         if(position == SlidePosition.lowChamber){
@@ -168,7 +168,17 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }else{
+        }
+        else if (position == SlidePosition.ground){
+            robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.slidesV.setTargetPosition(0);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-0) > 100)){
+                telemetry.addData("Distance from target:", Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.linearSlidesPower));
+                telemetry.update();
+                idle();
+            }
+        } else{
             telemetry.addLine("Invalid Position: "+position);
         }
     }
@@ -313,6 +323,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                             break;
                         case "base":
                             moveSlides(SlidePosition.linearSlidesBase);
+                            break;
+                        case "ground":
+                            moveSlides(SlidePosition.ground);
                             break;
                         default:
                             telemetry.addLine("Invalid Path: unexpected position " + components[1]);

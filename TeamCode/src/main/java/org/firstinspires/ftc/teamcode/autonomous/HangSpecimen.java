@@ -28,30 +28,24 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
             parsePath(
                     "Claw close\n"+
                             "Lift base\n"+
-                            "Move forward 27 inches\n"+
+                            "Move forward 26.5 inches\n"+
                             "Lift highChamber\n"+
                             "Slide extend 0.5\n"+
-                            "Lower 300\n"+
+                            "Move forward 0.5 inches\n"+
+                            "Lower 500\n"+
                             "Slide retract 0.2\n"+
-                            "Move backward 2 inches\n"+
+                            "Move backward 3 inches\n"+
                             "Claw open\n"+
-                            "Lift base\n"
-//                            "Claw close\n" +
-//                            "Move forward 30 inches\n"+
-//                            "Lift highChamber\n"+
-//                            "Slide extend 0.5\n"+
-//                            "Lower 100\n"+
-//                            "Claw open\n"+
-//                            "Slide retract 0.28\n"+
-//                            "Lift base\n"+
-//                            "Move backward 30 inches\n"+
-//                            "Strafe right 29 inches\n" +
-//                            "Move forward 52 inches\n" +
-//                            "Strafe right 6 inches\n" +
-//                            "Move backwards 47 inches\n" +
-//                            "Move forward 49 inches\n" +
-//                            "Strafe right 8 inches\n" +
-//                            "Move backwards 47 inches\n"
+                            "Lift base\n"+
+                            "Strafe right 31 inches\n"+
+                            "Move forward 22 inches\n"+
+                            "Strafe right 11 inches\n"+
+                            "Move backward 44 inches\n"+
+                            "Move forward 20 inches\n"+
+                            "TurnR clockwise 180 degrees\n"+
+                            "Move forward 23 inches\n"+
+                            "Lift ground\n"+
+                            "Claw close\n"
             );
         }
 
