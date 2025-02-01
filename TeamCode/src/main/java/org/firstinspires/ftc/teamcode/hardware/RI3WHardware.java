@@ -61,7 +61,7 @@ public class RI3WHardware {
     public static int highBasket = 5917; // in ticks; 45 inches from ground to claw
     public static int lowBasket = 3909; // in ticks; 28.25 inches from ground to claw
     public static int lowChamber = 2000; // 15 inches
-    public static int highChamber = 4020; // original 3781 ticks // 26 inches from ground to claw
+    public static int highChamber = 4200; // original 3781 ticks // 26 inches from ground to claw // 4020
     public Servo claw;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
@@ -88,6 +88,10 @@ public class RI3WHardware {
     public Telemetry telemetry;
     public TouchSensor touchRight;  // Touch sensor Object
     public TouchSensor touchLeft;
+    public double TOLORANCE = 1; // degrees
+    public double robotTargetAngle;
+    public double robotTurnError;
+    public double robotTurnPower;
 
     public double getAngle(){
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
@@ -233,6 +237,9 @@ public class RI3WHardware {
         double targetAngle = AngleUnit.normalizeDegrees(turnAngle) + 180;
         double startAngle = getAngle() + 180;
         double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
+        if (Math.abs(turnError) <= TOLORANCE) {
+            return 0.0;
+        }
             if (turnError >= 0) {
                 turnPower = turnError / 90;
                 if (turnPower > AutoConfig.getInstance().speed) {
@@ -244,7 +251,9 @@ public class RI3WHardware {
                     turnPower = -AutoConfig.getInstance().speed;
                 }
         }
-
+            robotTargetAngle = turnAngle;
+            robotTurnError = turnError;
+            robotTurnPower = turnPower;
             return turnPower;
     }
 

@@ -16,6 +16,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;
+    public String currentStep = "none";
     QualTeleop.ClawState currentClawState = QualTeleop.ClawState.CLOSED;
     public void move(double yInches, double xInches) {
         double original_angle = robot.getAngle();
@@ -72,6 +73,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     private void telemetryLog(DcMotorEx dcMotorEx) {
         telemetry.addData("angle", robot.getAngle());
+        telemetry.addData("target angle", robot.robotTargetAngle);
+        telemetry.addData("turn error", robot.robotTurnError);
+        telemetry.addData("turn power", robot.robotTurnPower);
         telemetry.addData("PIDFCoefficients", dcMotorEx.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
         telemetry.addData("Target Position", dcMotorEx.getTargetPosition());
         telemetry.addData("Current Position", dcMotorEx.getCurrentPosition());
@@ -83,6 +87,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addData("Current Position - fR", robot.frontRight.getCurrentPosition());
         telemetry.addData("Current Position - bL", robot.backLeft.getCurrentPosition());
         telemetry.addData("Current Position - bR", robot.backRight.getCurrentPosition());
+        telemetry.addData("ParsePath step:", currentStep);
         telemetry.update();
     }
 
@@ -184,8 +189,13 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
     }
     //TODO Claw close and open, other things????
     public void parsePath(String path) {
+        internalParsePath(path);
+        currentStep = "none";
+    }
+    public void internalParsePath(String path) {
         String[] pathSteps = path.split("\n");
         for (String step : pathSteps) {
+            currentStep = step;
             String[] components = step.split(" ");
             switch (components[0]) {
                 case "Strafe": {
@@ -214,6 +224,15 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                     }
                     move(0, distanceValue*sign);
                 } break;
+                case "Wait": {
+                    int waitValue = Integer.parseInt(components[1]);
+                    CountDownTimer timer = new CountDownTimer(ElapsedTime.Resolution.MILLISECONDS);
+                    timer.setTargetTime(waitValue);
+                    while (timer.hasRemainingTime()) {
+                        idle();
+                    }
+                    break;
+                }
                 case "Move": {
                     int sign;
                     double offset = 0;
@@ -376,7 +395,10 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 waitForContinue();
             }
         }
+
+        currentStep = "none";
     }
+
 
     enum ParkPosition {
         CORNER,
