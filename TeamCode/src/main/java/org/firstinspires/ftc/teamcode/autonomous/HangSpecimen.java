@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name = "HangSpecimen")
@@ -8,6 +10,7 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
     @Override
     public void runOpMode() throws InterruptedException {
         // TODO: Figure out how to make this code compatible with new robot design
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         robot.init(hardwareMap, telemetry);
         setUp();
         waitForStart();
@@ -28,11 +31,11 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
             parsePath(
                     "Claw close\n"+
                             "Lift base\n"+
-                            "Move forward 26.5 inches\n"+
+                            "Move forward 25 inches\n"+
                             "Lift highChamber\n"+
                             "Slide extend 0.5\n"+
-                            "Move forward 0.5 inches\n"+
-                            "Lower 500\n"+
+                            "Move forward 1.5 inches\n"+
+                            "Lower 580\n"+
                             "Slide retract 0.2\n"+
                             "Move backward 3 inches\n"+
                             "Claw open\n"+
@@ -41,11 +44,13 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                             "Move forward 22 inches\n"+
                             "Strafe right 11 inches\n"+
                             "Move backward 44 inches\n"+
-                            "Move forward 20 inches\n"+
+                            "Move forward 16 inches\n"+
                             "TurnR clockwise 180 degrees\n"+
-                            "Move forward 23 inches\n"+
+                            "Wait 1000 ms\n" +
+                            "Move forward 14 inches\n"+
                             "Lift ground\n"+
-                            "Claw close\n"
+                            "Claw close\n" +
+                            "Lift base\n"
             );
         }
 
