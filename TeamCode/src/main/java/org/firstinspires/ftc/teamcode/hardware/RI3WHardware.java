@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -143,6 +145,9 @@ public class RI3WHardware {
         backRight.setPower(0);
         try{
             slidesV = hardwareMap.get(DcMotorEx.class, "slidesV");
+            //telemetry.addData("PID coefficients RTP", slidesV.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
+            //telemetry.addData("PID coefficients RUE", slidesV.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
+            slidesV.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(10, 3, 0, 50, MotorControlAlgorithm.PIDF));
         }catch(IllegalArgumentException e) {
             slidesV = new MockDcMotor();
             telemetry.addLine("Can't find slide V: making a mock");
