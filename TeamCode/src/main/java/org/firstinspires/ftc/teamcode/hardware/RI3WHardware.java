@@ -41,12 +41,12 @@ public class RI3WHardware {
     public static double WHEEL_DIAMETER_SLIDES = 1.42;
     public static double WHEEL_CIRCUMFERENCE_SLIDES = Math.PI * WHEEL_DIAMETER_SLIDES;
     public static double TICKS_PER_INCH_SLIDES = TICKS_PER_DRIVE_REV_SLIDES/WHEEL_CIRCUMFERENCE_SLIDES;
-    public static double linearSlidesPower = .1; // Constant speed the linear slides will move at.
+    public static double linearSlidesPower = .5; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.6;
     public static double CLAW_CLOSED_POSITION = 0.2;
     public final double SLIDESH_MAX = 0.56;
-    public final double SLIDESH_MIN = 0.2;
+    public final double SLIDESH_MIN = 0.16;
 
     public void closeClaw() {
         claw.setPosition(CLAW_CLOSED_POSITION);
@@ -57,11 +57,11 @@ public class RI3WHardware {
 
     public DcMotorEx slidesV;
     public Servo slidesH;
-    public static int linearSlidesBase = (int) (1*TICKS_PER_INCH_SLIDES);
-    public static int highBasket = (int) 5917; // in ticks; 45 inches from ground to claw
-    public static int lowBasket = (int) 3909; // in ticks; 28.25 inches from ground to claw
-    public static int lowChamber = (int) 2000; // 15 inches
-    public static int highChamber = (int) 3781; // 26 inches from ground to claw
+    public static int linearSlidesBase = (int) (2*TICKS_PER_INCH_SLIDES);
+    public static int highBasket = 5917; // in ticks; 45 inches from ground to claw
+    public static int lowBasket = 3909; // in ticks; 28.25 inches from ground to claw
+    public static int lowChamber = 2000; // 15 inches
+    public static int highChamber = 4200; // original 3781 ticks // 26 inches from ground to claw // 4020
     public Servo claw;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
@@ -88,6 +88,10 @@ public class RI3WHardware {
     public Telemetry telemetry;
     public TouchSensor touchRight;  // Touch sensor Object
     public TouchSensor touchLeft;
+    public double TOLORANCE = 1; // degrees
+    public double robotTargetAngle;
+    public double robotTurnError;
+    public double robotTurnPower;
 
     public double getAngle(){
         YawPitchRollAngles angles = imu.getRobotYawPitchRollAngles();
@@ -180,8 +184,8 @@ public class RI3WHardware {
             telemetry.addLine("Can't find touchRight: making a mock");
         }
 
-        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+        logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        usbFacingDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // Our Control Hub has the new IMU chip (BHI260AP). Use the new generic IMU class when
         // requesting a reference to the IMU hardware. What chip you have can be determined by
@@ -233,6 +237,9 @@ public class RI3WHardware {
         double targetAngle = AngleUnit.normalizeDegrees(turnAngle) + 180;
         double startAngle = getAngle() + 180;
         double turnError = AngleUnit.normalizeDegrees(targetAngle - startAngle);
+        if (Math.abs(turnError) <= TOLORANCE) {
+            return 0.0;
+        }
             if (turnError >= 0) {
                 turnPower = turnError / 90;
                 if (turnPower > AutoConfig.getInstance().speed) {
@@ -244,7 +251,9 @@ public class RI3WHardware {
                     turnPower = -AutoConfig.getInstance().speed;
                 }
         }
-
+            robotTargetAngle = turnAngle;
+            robotTurnError = turnError;
+            robotTurnPower = turnPower;
             return turnPower;
     }
 
