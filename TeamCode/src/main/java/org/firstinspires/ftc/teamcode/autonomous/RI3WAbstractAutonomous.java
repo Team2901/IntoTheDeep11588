@@ -391,6 +391,29 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                         idle();
                     }
                 }break;
+                case "MoveToWithin":{
+                    double distanceValueUntil = Double.parseDouble(components[1]);
+                    switch (components[2]){
+                        case "inches":
+                            break;
+                        case "centimeters":
+                            distanceValueUntil = distanceValueUntil/2.54;
+                            break;
+                        default:
+                            telemetry.addLine("Invalid path: unexpected unit " + components[3]);
+                            return;
+                    }
+                    moveUntil(distanceValueUntil);
+                }
+                case "Clap":{
+                    int clapTimes = Integer.parseInt(components[1]);
+                    for(int i = 0; i < clapTimes; i++){
+                        robot.openClaw();
+                        waitUntil(500);
+                        robot.closeClaw();
+                        waitUntil(500);
+                    }
+                }
             }
             if (AutoConfig.getInstance().debugMode){
                 waitForContinue();
@@ -497,7 +520,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
     }
 
-    public void move_until(double target_dist_in) {
+    public void moveUntil(double target_dist_in) {
         double current_dist = robot.dSensor.getDistance(DistanceUnit.INCH);
 
         robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
