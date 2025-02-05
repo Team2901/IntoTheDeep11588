@@ -14,11 +14,13 @@ import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.Utilities.ConfigUtilities;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
@@ -69,6 +71,7 @@ public class RI3WHardware {
     public DcMotorEx backLeft;
     public DcMotorEx frontRight;
     public DcMotorEx backRight;
+    public DistanceSensor dSensor;
     public OpenCvCamera camera;
     public VisionPortal visionPortal;
     QualVisionProcessor testProcessor;
@@ -111,6 +114,7 @@ public class RI3WHardware {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
         telemetry = _telemetry;
 
+        dSensor = hardwareMap.get(DistanceSensor.class, "dSensor");
 
         String configurationName = ConfigUtilities.getRobotConfigurationName();
         if (configurationName.equals("coachbot")) {

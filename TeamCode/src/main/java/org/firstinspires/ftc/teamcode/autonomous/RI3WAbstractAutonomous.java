@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Utilities.CountDownTimer;
 import org.firstinspires.ftc.teamcode.Utilities.FileUtilities;
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
@@ -494,5 +495,37 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         while(cdt.hasRemainingTime() && !isStopRequested()){
             idle();
         }
+    }
+
+    public void move_until(double target_dist_in) {
+        double current_dist = robot.dSensor.getDistance(DistanceUnit.INCH);
+
+        robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        while (opModeIsActive() && (robot.frontLeft.isBusy() && robot.frontRight.isBusy() &&
+                robot.backLeft.isBusy() && robot.backRight.isBusy())) {
+            if (current_dist <= target_dist_in){
+                break;
+            }
+            robot.frontLeft.setPower(AutoConfig.getInstance().speed);
+            robot.frontRight.setPower(AutoConfig.getInstance().speed);
+            robot.backLeft.setPower(AutoConfig.getInstance().speed);
+            robot.backRight.setPower(AutoConfig.getInstance().speed);
+            telemetryLog(robot.frontLeft);
+            telemetryLog(robot.frontRight);
+            telemetryLog(robot.backLeft);
+            telemetryLog(robot.backRight);
+        }
+        robot.frontLeft.setPower(0);
+        robot.frontRight.setPower(0);
+        robot.backLeft.setPower(0);
+        robot.backRight.setPower(0);
+        telemetryLog(robot.frontLeft);
+        telemetryLog(robot.frontRight);
+        telemetryLog(robot.backLeft);
+        telemetryLog(robot.backRight);
     }
 }
