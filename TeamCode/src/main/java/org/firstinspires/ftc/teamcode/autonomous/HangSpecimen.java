@@ -45,12 +45,24 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                             "Strafe right 11 inches\n"+
                             "Move backward 44 inches\n"+
                             "Move forward 16 inches\n"+
-                            "TurnR clockwise 180 degrees\n"+
+                            "TurnA clockwise 180 degrees\n"+
                             "Wait 1000 ms\n" +
                             "Move forward 14 inches\n"+
                             "Lift ground\n"+
                             "Claw close\n" +
+                            "Lift base\n"+
+                            "Strafe right 50 inches\n"+
+                            "TurnA clockwise 0 degrees\n"+
+                            "Move forward 22 inches\n"+
+                            "Lift highChamber\n"+
+                            "Slide extend 0.5\n"+
+                            "Move forward 1.5 inches\n"+
+                            "Lower 580\n"+
+                            "Slide retract 0.2\n"+
+                            "Move backward 3 inches\n"+
+                            "Claw open\n"+
                             "Lift base\n"
+
             );
         }
 
