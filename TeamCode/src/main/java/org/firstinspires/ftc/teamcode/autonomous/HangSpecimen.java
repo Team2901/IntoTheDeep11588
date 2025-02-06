@@ -17,15 +17,26 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
 
         if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT){
             parsePath(
-                    "Strafe left 29 inches\n" +
-                            "Move forward 52 inches\n" +
-                            "Strafe left 6 inches\n" +
-                            "Move backwards 47 inches\n" +
-                            "Move forward 49 inches\n" +
-                            "Strafe left 8 inches\n"+
-                            "Move backwards 47 inches\n"+
-                            "Move forward 50 inches\n"+
-                            "Strafe right 12 inches\n"
+                    "Claw close\n"+
+                            "Lift base\n"+
+                            "Move forward 25 inches\n"+
+                            "Lift highChamber\n"+
+                            "Slide extend 0.5\n"+
+                            "Move forward 1.5 inches\n"+
+                            "Lower 580\n"+
+                            "Slide retract 0.2\n"+
+                            "Move backward 3 inches\n"+
+                            "Claw open\n"+
+                            "Lift base\n"+
+                            // Specimen 1 is hung
+                            "Strafe right 31 inches\n"+
+                            "Move forward 22 inches\n"+
+                            "Strafe right 11 inches\n"+
+                            "Move backward 44 inches\n"+
+                            "Move forward 46 inches\n" +
+                            "TurnA counterclockwise 90 degrees\n" + //positive or negative 90?
+                            "Move backward 12 inches\n" +
+                            "Lift highChamber\n"
             );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
