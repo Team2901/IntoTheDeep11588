@@ -30,7 +30,7 @@ public class QualTeleop extends OpMode {
         PRE_ClOSED
     }
     Double targetTurnAngle;
-    int[] slidesV_position = {RI3WHardware.linearSlidesBase, RI3WHardware.lowChamber, RI3WHardware.highChamber, RI3WHardware.lowBasket, RI3WHardware.highBasket};
+    int[] slidesV_position = {0, RI3WHardware.linearSlidesBase, RI3WHardware.lowChamber, RI3WHardware.highChamber, RI3WHardware.lowBasket, RI3WHardware.highBasket};
     TeleopState currentState = TeleopState.DRIVER_CONTROL;
     ClawState currentClawState = ClawState.CLOSED;
     int slidesVPositionCurrent = 0;
@@ -72,7 +72,7 @@ public class QualTeleop extends OpMode {
         telemetry.addLine("- Right stick= Turns robot");
         telemetry.addLine("- X = turn R +180");
         telemetry.addLine("Gamepad 2 Controls");
-        telemetry.addLine("- Claw: A=close, B=open");
+        telemetry.addLine("- Claw: B = Toggle claw open-close");
         telemetry.addLine("- slideH: RT=retract, RB=extend");
         telemetry.addLine("- slideV: LT=lower, LB=raise");
         telemetry.addLine("- Y= reset v slides encoders");
@@ -116,25 +116,25 @@ public class QualTeleop extends OpMode {
         if (gamepad_2.dpad_up.isPressed()) {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
             // Does not need touch sensor
         } else if (gamepad_2.dpad_down.isPressed() && (!robot.touchRight.isPressed() && !robot.touchLeft.isPressed())) {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.slidesV.setTargetPosition(robot.slidesV.getCurrentPosition());
-            robot.slidesV.setPower(-RI3WHardware.linearSlidesPower-0.1);
+            robot.slidesV.setPower(-RI3WHardware.linearSlidesPower);
         } else if(gamepad_2.left_trigger.isInitialPress() && slidesVPositionCurrent > 0){
             //down
             robot.slidesV.setTargetPosition(slidesV_position[--slidesVPositionCurrent]);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower+0.1);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
         } else if(gamepad_2.left_bumper.isInitialPress() && slidesVPositionCurrent < slidesV_position.length-1){
             //up
             robot.slidesV.setTargetPosition(slidesV_position[++slidesVPositionCurrent]);
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
         } else {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setPower(RI3WHardware.linearSlidesPower + 0.2);
+            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
         }
 
 
