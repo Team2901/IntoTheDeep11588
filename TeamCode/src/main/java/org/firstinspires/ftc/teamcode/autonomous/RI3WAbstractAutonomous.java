@@ -407,12 +407,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
                 }
                 case "Clap":{
                     int clapTimes = Integer.parseInt(components[1]);
-                    for(int i = 0; i < clapTimes; i++){
-                        robot.openClaw();
-                        waitUntil(500);
-                        robot.closeClaw();
-                        waitUntil(500);
-                    }
+                    clap(clapTimes);
                 }
             }
             if (AutoConfig.getInstance().debugMode){
@@ -520,6 +515,8 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
     }
 
+    /*
+                            OLD
     public void moveUntil(double target_dist_in) {
         double current_dist = robot.dSensor.getDistance(DistanceUnit.INCH);
 
@@ -550,5 +547,20 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetryLog(robot.frontRight);
         telemetryLog(robot.backLeft);
         telemetryLog(robot.backRight);
+    }*/
+
+    public void moveUntil(double target_dist_in) {
+        double current_dist = robot.dSensor.getDistance(DistanceUnit.INCH);
+        clap(2);
+        move(current_dist - target_dist_in, 0);
+    }
+
+    private void clap(int numClaps) {
+        for(int i = 0; i < numClaps; i++){
+            robot.openClaw();
+            waitUntil(500);
+            robot.closeClaw();
+            waitUntil(500);
+        }
     }
 }
