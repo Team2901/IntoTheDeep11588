@@ -19,6 +19,8 @@ public class QualTeleop extends OpMode {
     public ImprovedGamepad gamepad_1;
     private ImprovedGamepad gamepad_2;
 
+    boolean clawClosed = true;
+
     enum TeleopState{
         DRIVER_CONTROL,
         CENTERING
@@ -142,13 +144,19 @@ public class QualTeleop extends OpMode {
         }
 
         if (gamepad_2.b.isInitialPress()) {
-            robot.openClaw();
-        } else if (gamepad_2.a.isInitialPress()) {
-            robot.closeClaw();
+            clawClosed = !clawClosed;
+            if (clawClosed){
+                robot.closeClaw();
+            }else{
+                robot.openClaw();
+            }
+        }
+//        else if (gamepad_2.a.isInitialPress()) {
+//            robot.closeClaw();
 //            currentClawState = ClawState.PRE_ClOSED;
 //            robot.slidesV.setTargetPosition(0);
 //            robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-        }
+//        }
 //        if(robot.slidesV.getCurrentPosition() == 0 && currentClawState == ClawState.PRE_ClOSED){
 //            currentClawState = ClawState.CLOSED;
 //            robot.closeClaw();
