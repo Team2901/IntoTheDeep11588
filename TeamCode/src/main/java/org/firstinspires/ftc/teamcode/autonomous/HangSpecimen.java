@@ -51,7 +51,7 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                             //"Wait 1000 ms\n" +
                             //"Move forward 14 inches\n"+
                             "Lift ground\n"+
-                            "MoveToWithin 5 inches"+
+                            "MoveToWithin 5 inches\n"+
                             "Claw close\n" +
                             "Lift base\n"+
                             "Strafe right 50 inches\n"+

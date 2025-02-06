@@ -179,7 +179,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.slidesV.setTargetPosition(0);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-0) > 100)){
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()) > 100)){
                 telemetry.addData("Distance from target:", Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.linearSlidesPower));
                 telemetry.update();
                 idle();
