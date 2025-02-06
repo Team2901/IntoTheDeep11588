@@ -155,7 +155,7 @@ public class RI3WHardware {
             slidesV = hardwareMap.get(DcMotorEx.class, "slidesV");
             //telemetry.addData("PID coefficients RTP", slidesV.getPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION));
             //telemetry.addData("PID coefficients RUE", slidesV.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
-            slidesV.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(10, 3, 0, 50, MotorControlAlgorithm.PIDF));
+            slidesV.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(5, 3, 0, 40, MotorControlAlgorithm.PIDF));
         }catch(IllegalArgumentException e) {
             slidesV = new MockDcMotor();
             telemetry.addLine("Can't find slide V: making a mock");
