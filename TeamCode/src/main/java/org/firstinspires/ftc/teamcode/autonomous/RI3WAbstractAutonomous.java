@@ -16,6 +16,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     public RI3WHardware robot = new RI3WHardware();
+    int highChamberAuto = RI3WHardware.highChamber;
     public ImprovedGamepad gamepad;
     public String currentStep = "none";
     QualTeleop.ClawState currentClawState = QualTeleop.ClawState.CLOSED;
@@ -141,9 +142,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         }
         else if (position == SlidePosition.highChamber) {
             robot.slidesV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.slidesV.setTargetPosition(RI3WHardware.highChamber);
+            robot.slidesV.setTargetPosition(highChamberAuto);
             robot.slidesV.setPower(RI3WHardware.linearSlidesPower);
-            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.highChamber) > 100)){
+            while(opModeIsActive() && (Math.abs(robot.slidesV.getCurrentPosition()-highChamberAuto) > 100)){
                 telemetry.addData("Distance from target3:", Math.abs(robot.slidesV.getCurrentPosition()-RI3WHardware.highChamber));
                 telemetry.update();
                 idle();
@@ -449,6 +450,9 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addLine();
         telemetry.addData("Debug", AutoConfig.getInstance().debugMode);
         telemetry.addLine("Start: Enter debugMode");
+        telemetry.addData("highChamber Ticks: ", highChamberAuto);
+        telemetry.addLine("Dpad Right: add 10 to highChamber");
+        telemetry.addLine("Dpad Left: subtract 10 to highChamber");
 
         telemetry.update();
     }
@@ -496,6 +500,12 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
             if (gamepad.start.isInitialPress()){
                 AutoConfig x = AutoConfig.getInstance();
                 x.debugMode = !x.debugMode;
+            }
+            if (gamepad.dpad_right.isInitialPress()){
+                highChamberAuto += 10;
+            }
+            if(gamepad.dpad_left.isInitialPress()){
+                highChamberAuto -= 10;
             }
         }
         FileUtilities.writeAutoConfig();
