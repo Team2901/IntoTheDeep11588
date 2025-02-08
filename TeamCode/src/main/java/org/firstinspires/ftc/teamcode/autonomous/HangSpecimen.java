@@ -27,6 +27,28 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                             "Move forward 50 inches\n"+
                             "Strafe right 12 inches\n"
             );
+
+        } else if (AutoConfig.getInstance().whereToStart == StartingPosition.LEFT_2){
+            parsePath(
+                    "Claw close\n"+
+                            "Lift base\n"+
+                            "Move forward 25 inches\n"+
+                            "Lift highChamber\n"+
+                            "Slide extend 0.5\n"+
+                            "Move forward 1.5 inches\n"+
+                            "Lower 580\n"+
+                            "Slide retract 0.2\n"+
+                            "Move backward 3 inches\n"+
+                            "Claw open\n"+
+                            "Lift base\n"+
+                            // Specimen 1 is hung
+                            "Strafe left 45 inches\n"+
+                            "Move forward 27 inches\n" +
+                            // Start turning to park
+                            "TurnA clockwise 90 degrees\n" + //positive or negative 90?
+                            "Move backward 12 inches\n" +
+                            "Lift highChamber\n"
+            );
         } else if (AutoConfig.getInstance().whereToStart == StartingPosition.RIGHT) {
             parsePath(
                     "Claw close\n"+

@@ -90,6 +90,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
         telemetry.addData("Current Position - bL", robot.backLeft.getCurrentPosition());
         telemetry.addData("Current Position - bR", robot.backRight.getCurrentPosition());
         telemetry.addData("ParsePath step:", currentStep);
+        telemetry.addData("Distance sensor val (in)", robot.dSensor.getDistance(DistanceUnit.INCH));
         telemetry.update();
     }
 
@@ -427,6 +428,7 @@ public abstract class RI3WAbstractAutonomous extends LinearOpMode {
 
     enum StartingPosition {
         LEFT,
+        LEFT_2,
         RIGHT
     }
     public void help(){

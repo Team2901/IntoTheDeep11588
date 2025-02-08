@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.autonomous.RI3WAbstractAutonomous;
 
 /*
  * This OpMode illustrates how to use the REV Robotics 2M Distance Sensor.
@@ -17,24 +21,32 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * See the sensor's product page: https://www.revrobotics.com/rev-31-1505/
  */
-@TeleOp(name = "DistanceSensorTest", group = "Sensor")
-public class DistanceSensorTest extends LinearOpMode {
+@Autonomous(name = "DistanceSensorTest", group = "Sensor")
+public class DistanceSensorTest extends RI3WAbstractAutonomous {
 
     private DistanceSensor sensorDistance;
 
     @Override
     public void runOpMode() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        robot.init(hardwareMap, telemetry);
+        setUp();
+
         // you can use this as a regular DistanceSensor.
         sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_distance");
 
         // you can also cast this to a Rev2mDistanceSensor if you want to use added
         // methods associated with the Rev2mDistanceSensor class.
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) sensorDistance;
-
         telemetry.addData(">>", "Press start to continue");
         telemetry.update();
 
         waitForStart();
+        parsePath(
+                "Move 10 inches\n" +
+                "MoveToWithin 8 inches\n"
+        );
+
         while(opModeIsActive()) {
             // generic DistanceSensor methods.
             telemetry.addData("deviceName", sensorDistance.getDeviceName() );
