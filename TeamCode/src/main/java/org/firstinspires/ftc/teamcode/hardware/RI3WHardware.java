@@ -65,7 +65,7 @@ public class RI3WHardware {
     public static int highBasket = 5917; // in ticks; 45 inches from ground to claw
     public static int lowBasket = 3909; // in ticks; 28.25 inches from ground to claw
     public static int lowChamber = 2000; // 15 inches
-    public static int highChamber = 4300; // original 3781 ticks // 26 inches from ground to claw // 4020
+    public static int highChamber = 4200; // original 3781 ticks // 26 inches from ground to claw // 4300   4020
     public Servo claw;
     public DcMotorEx frontLeft;
     public DcMotorEx backLeft;
