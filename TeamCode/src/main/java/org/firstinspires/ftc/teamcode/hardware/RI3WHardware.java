@@ -48,7 +48,7 @@ public class RI3WHardware {
     public static double linearSlidesPower = .5; // Constant speed the linear slides will move at.
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.6;
-    public static double CLAW_CLOSED_POSITION = 0.2;
+    public static double CLAW_CLOSED_POSITION = 0.1;
     public final double SLIDESH_MAX = 0.56;
     public final double SLIDESH_MIN = 0.16;
 
@@ -64,7 +64,7 @@ public class RI3WHardware {
     public static int linearSlidesBase = (int) (2*TICKS_PER_INCH_SLIDES);
     public static int highBasket = 5917; // in ticks; 45 inches from ground to claw
     public static int lowBasket = 3909; // in ticks; 28.25 inches from ground to claw
-    public static int lowChamber = 2000; // 15 inches
+    public static int lowChamber = 2500; // 15 inches
     public static int highChamber = 4200; // original 3781 ticks // 26 inches from ground to claw // 4300   4020
     public Servo claw;
     public DcMotorEx frontLeft;

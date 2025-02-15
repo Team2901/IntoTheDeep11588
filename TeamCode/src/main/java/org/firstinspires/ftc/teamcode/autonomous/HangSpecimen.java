@@ -54,9 +54,9 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                     "Claw close\n"+
                             "Lift base\n"+
                             "Move forward 25 inches\n"+
-                            "Lift highChamber\n"+
+                            "Lift lowChamber\n"+
                             "Slide extend 0.5\n"+
-                            "Move forward 2.5 inches\n"+
+                            "Move forward 2.95 inches\n"+
                             "Lower 580\n"+
                             "Slide retract 0.2\n"+
                             "Move backward 4 inches\n"+
@@ -66,8 +66,13 @@ public class HangSpecimen extends RI3WAbstractAutonomous {
                             "Strafe right 31 inches\n"+
                             "Move forward 22 inches\n"+
                             "Strafe right 11 inches\n"+
-                            "Move backward 44 inches\n"
+                            "Move backward 44 inches\n"+
                             // Specimen 2 has been pushed into area
+                            "Strafe left 5 inches\n"+
+                            "Move forward 44 inches\n"+
+                            "Strafe right 10 inches\n"+
+                            "Move backward 44 inches\n"
+                            // Specimen 3 has been pushed into area
 //                            "Move forward 16 inches\n"+
 //                            "TurnA clockwise 180 degrees\n"+
 //                            "Wait 1000 ms\n" +
