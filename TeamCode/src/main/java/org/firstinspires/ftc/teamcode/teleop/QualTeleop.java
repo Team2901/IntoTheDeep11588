@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Utilities.ImprovedGamepad;
+import org.firstinspires.ftc.teamcode.Vision.DetectedSample;
 import org.firstinspires.ftc.teamcode.Vision.QualVisionProcessor;
+import org.firstinspires.ftc.teamcode.Vision.TrackedSample;
 import org.firstinspires.ftc.teamcode.hardware.RI3WHardware;
 
 @TeleOp(name = "QualTeleop")
@@ -227,8 +229,9 @@ public class QualTeleop extends OpMode {
         telemetry.addData("slideV Target Pos", robot.slidesV.getTargetPosition());
 
         // This doesn't work rn
-        if (robot.getDetectedSample() != null){
-            telemetry.addData("Best Sample", robot.getDetectedSample().toString());
+        TrackedSample seenSample = robot.getDetectedSample();
+        if (seenSample != null){
+            telemetry.addData("Best Sample", seenSample.toString());
         } else {
             telemetry.addLine("No detected sample.");
         }
