@@ -45,7 +45,7 @@ public class QualTeleop extends OpMode {
         // Update our telemetry to use FTC Dashboard
         telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry(), telemetry);
 
-        robot.init(this.hardwareMap, telemetry, true);
+        robot.init(this.hardwareMap, telemetry, false);
     }
     // for config
     public void init_loop() {

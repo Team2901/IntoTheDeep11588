@@ -114,7 +114,7 @@ public class RI3WHardware {
         backRight = hardwareMap.get(DcMotorEx.class, "backRight");
         telemetry = _telemetry;
 
-        dSensor = hardwareMap.get(DistanceSensor.class, "dSensor");
+        // dSensor = hardwareMap.get(DistanceSensor.class, "dSensor");
 
         String configurationName = ConfigUtilities.getRobotConfigurationName();
         if (configurationName.equals("coachbot")) {

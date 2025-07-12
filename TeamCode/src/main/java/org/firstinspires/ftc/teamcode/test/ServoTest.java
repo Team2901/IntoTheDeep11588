@@ -17,7 +17,6 @@ import java.util.Set;
 //tests servo
 @TeleOp(name = "ServoTest", group = "test")
 public class ServoTest extends OpMode {
-    public RI3WHardware robot = new RI3WHardware();
     public ImprovedGamepad gamepad;
     List<Map.Entry<String, Servo>> servoList = new ArrayList<>();
     Integer activeIndex = (0);
@@ -28,26 +27,31 @@ public class ServoTest extends OpMode {
     public void help(){
         telemetry.addLine("Use Dpad to choose motor");
         telemetry.addLine("dpad.up = next servo");
-        telemetry.addData("current motor", servoList.get(activeIndex).getKey());
-        telemetry.addData("Position of Servo: ", set_position);
-        telemetry.addLine("y = open");
-        telemetry.addLine("a = close");
+        telemetry.addLine("dpad.dn = prev servo");
+        telemetry.addLine("y = open/extend");
+        telemetry.addLine("a = close/retract");
         telemetry.addLine("x = slowly open");
         telemetry.addLine("b = slowly close");
-        telemetry.update();
     }
+
+    public void telemetry(){
+        telemetry.addData("current motor", servoList.get(activeIndex).getKey());
+        telemetry.addData("Position of Servo: ", set_position);
+    }
+
     @Override
     public void init() {
         gamepad = new ImprovedGamepad(gamepad1, new ElapsedTime(), "Gamepad");
-        robot.init(this.hardwareMap, telemetry);
         Set<Map.Entry<String, Servo>> servoSet = this.hardwareMap.servo.entrySet();
         servoList.addAll(servoSet);
+        help();
     }
 
     @Override
     public void loop() {
         gamepad.update();
         help();
+        telemetry();
         // Change to isPressed but need to do later
         if (gamepad.y.isInitialPress()) {
             set_position = set_position+0.1;
@@ -72,6 +76,12 @@ public class ServoTest extends OpMode {
         }
         if(activeIndex == servoList.size()){
             activeIndex = 0;
+        }
+        if(gamepad.dpad_down.isInitialPress()){
+            activeIndex--;
+        }
+        if(activeIndex == -1){
+            activeIndex = servoList.size() - 1;
         }
         servoList.get(activeIndex).getValue().setPosition(set_position);
     }
