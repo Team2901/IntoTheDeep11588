@@ -49,7 +49,7 @@ public class RI3WHardware {
     public static double clawOffset = -5.5; // offset when claw is up, in inches
     public static double CLAW_OPEN_POSITION = 0.6;
     public static double CLAW_CLOSED_POSITION = 0.2;
-    public final double SLIDESH_MAX = 0.7;
+    public final double SLIDESH_MAX = 2;
     public final double SLIDESH_MIN = 0.16;
 
     public void closeClaw() {
@@ -265,11 +265,11 @@ public class RI3WHardware {
             robotTurnPower = turnPower;
             return turnPower;
     }
-
+/*
     public TrackedSample getDetectedSample() {
         return testProcessor.detectedSample;
     }
-
+*/
     public double getVisionPortalWidth() {
         return testProcessor.targetSize.width;
     }
@@ -283,6 +283,7 @@ public class RI3WHardware {
         return QualVisionProcessor.interestColor;
     }
 
+/*
     public double getPos(){
         power = 0;
         error = 0;
@@ -323,4 +324,6 @@ public class RI3WHardware {
         timer.reset();
         return power;
     }
+ */
 }
+

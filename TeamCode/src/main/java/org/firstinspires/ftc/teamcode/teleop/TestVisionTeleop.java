@@ -51,6 +51,7 @@ public class TestVisionTeleop extends OpMode {
 
     @Override
     public void loop() {
+        /*
         double power = 0;
         double error = 0;
         TrackedSample detectedSample = robot.getDetectedSample();
@@ -91,11 +92,13 @@ public class TestVisionTeleop extends OpMode {
         /* robot.frontLeft.setPower(power);
         robot.frontRight.setPower(-power);
         robot.backLeft.setPower(-power);
-        robot.backRight.setPower(power);*/
+        robot.backRight.setPower(power);
 
         telemetry.addData("power", power);
         telemetry.addData("error", error);
         telemetry.addData("errorSum", errorSum);
         timer.reset();
+        */
     }
+
 }

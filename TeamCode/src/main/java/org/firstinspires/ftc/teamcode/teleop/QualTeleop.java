@@ -203,7 +203,7 @@ public class QualTeleop extends OpMode {
 
         if (currentState == TeleopState.DRIVER_CONTROL || (x > 0) || (y > 0) || (turningPower > 0)){
         } else if (currentState == TeleopState.CENTERING){
-            x = robot.getPos();
+            //x = robot.getPos();
         }
         robot.frontLeft.setPower(y + x + turningPower);
         robot.frontRight.setPower(y - x - turningPower);
@@ -228,13 +228,14 @@ public class QualTeleop extends OpMode {
         telemetry.addData("slideV Position", robot.slidesV.getCurrentPosition());
         telemetry.addData("slideV Target Pos", robot.slidesV.getTargetPosition());
 
-        // This doesn't work rn
+        /* This doesn't work rn
         TrackedSample seenSample = robot.getDetectedSample();
         if (seenSample != null){
             telemetry.addData("Best Sample", seenSample.toString());
         } else {
             telemetry.addLine("No detected sample.");
         }
+        */
 
         telemetry.addData("power", robot.power);
         telemetry.addData("error", robot.error);
